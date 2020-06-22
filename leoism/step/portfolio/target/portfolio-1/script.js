@@ -26,3 +26,15 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+/**
+ * Adds a random quote to the page
+ */
+function getRandomQuote() {
+    const quotes = ["It is what it is.", "With great power, comes great responsibility.", "What once was once is now"];
+
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    const quoteContainer = document.getElementById('quote-container');
+    quoteContainer.innerText = quote;
+}
