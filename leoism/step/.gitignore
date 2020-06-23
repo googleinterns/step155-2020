@@ -1,0 +1,3 @@
+# exclude tests and walkthroughs
+tests/
+walkthroughs/
