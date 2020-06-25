@@ -26,3 +26,15 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+function drawCardOfTheDay() {
+  const deck =
+      ['The Fool', 'The Magician', 'The High Priestess', 'The Empress'];
+
+  // Draw a random card.
+  const card = deck[Math.floor(Math.random() * deck.length)];
+
+  // Add it to the page.
+  const tarotDeck = document.getElementById('tarot-reading');
+  tarotDeck.innerText = card;
+}
