@@ -1,7 +1,3 @@
-#about-text {
-  padding: 10px;
-}
-
 #about-title {
   text-align: center;
 }
@@ -69,6 +65,10 @@
   margin-right: auto;
   max-width: 750px;
   width: 90%;
+}
+
+.main-content-text {
+  padding: 10px;
 }
 
 #nav-buttons {
