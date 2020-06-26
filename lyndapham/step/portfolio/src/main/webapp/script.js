@@ -17,13 +17,14 @@
  */
 function addFunFact() {
   const facts =
-      ['I am the youngest of 6!',
-      'I like to sing!', 
-      'I am Vietnamese-Chinese American.', 
-      'I have lived in the Greater Seattle Area my entire life.', 
-      'I am a Cancer (July birthday... can you guess the day?)',
-      'I love to thrift.',
-      'It\'s July 12th :)'];
+      [
+        'I am the youngest of 6!',
+        'I like to sing!',
+        'I am Vietnamese-Chinese American.',
+        'I have lived in the Greater Seattle Area my entire life.',
+        'I am a Cancer (July birthday... can you guess the day?)',
+        'I love to thrift.',
+        'It\'s July 12th :)'];
 
   // Pick a random greeting.
   const fact = facts[Math.floor(Math.random() * facts.length)];
