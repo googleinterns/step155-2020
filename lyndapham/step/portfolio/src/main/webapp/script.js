@@ -24,7 +24,8 @@ function addFunFact() {
         'I have lived in the Greater Seattle Area my entire life.',
         'I am a Cancer (July birthday... can you guess the day?)',
         'I love to thrift.',
-        'It\'s July 12th :)'];
+        'It\'s July 12th :)'
+      ];
 
   // Pick a random greeting.
   const fact = facts[Math.floor(Math.random() * facts.length)];
