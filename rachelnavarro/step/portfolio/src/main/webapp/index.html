@@ -4,37 +4,40 @@
     <meta charset="UTF-8">
     <title>Rachel Navarro's Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300" rel="stylesheet">
     <script src="script.js"></script>
   </head>
   <body>
     <div id="content">
       <h1>Rachel Navarro's Portfolio</h1>
-
-      <!--INTRO SECTION- ADD A PHOTO -->
-      <h3>About Me</h3>
-      <p>Hi there, and welcome to my portfolio! I'm Rachel(she/her/hers), a current STEP intern here at Google. I'm also a rising junior at 
-         UC Irvine(zot zot zot!), where I am majoring in Computer Science with a specialization in Intelligent Systems. When I'm not coding, 
-	 you can probably find me:
-      </p>
-      <ul>
-	      <li>Practicing yoga. (<a href="https://en.wikipedia.org/wiki/Shavasana">Shavasana, or "corpse pose,"</a> is my favorite!) </li>
-	      <li>Consuming an ungodly amount of caffienated drinks. </li>
-	      <li>Attempting to skateboard. (And eating the pavement every. single. time.) </li>
-	      <li>Watching Tarantino films. </li>
-	      <li>Trying my hand at baking. (Still searching for the perfect vegan chocolate chip cookie recipe!) </li>
-	      <li>Scrolling endlessly through Tik Tok. (lol) </li>
-      </ul>
-
+      <!-- INTRODUCTION SECTION-->
+      <h3>About</h3>
+      <div class = "about">
+      	<img src="https://storage.cloud.google.com/rachelnavarro-step-2020.appspot.com/me.jpg" height="50%" width="50%">
+	<p>Hi there, and welcome to my portfolio!</p>
+	<p>I'm Rachel(she/her/hers), a current STEP intern here at Google. I'm 
+	   also a rising junior at UC Irvine(zot zot zot!), where I am majoring in Computer Science with a specialization 
+	   in Intelligent Systems. When I'm not coding, you can probably find me:
+        </p>
+      	<ul>
+	      	<li>Practicing yoga. (<a href="https://en.wikipedia.org/wiki/Shavasana">Shavasana, or "corpse pose,"</a> is my favorite!) </li>
+	      	<li>Consuming an ungodly amount of caffienated drinks. </li>
+	      	<li>Attempting to skateboard. (And eating the pavement every. single. time.) </li>
+	      	<li>Watching Tarantino films. </li>
+	      	<li>Trying my hand at baking. (Still searching for the perfect vegan chocolate chip cookie recipe!) </li>
+	      	<li>Scrolling endlessly through Tik Tok. (lol) </li>
+      	</ul>
+      </div>
+      <br>
       <p> I've always had an affinity for utilizing my creativity to build new things. I'm very curious about technology and the ways in 
          which it can be used to fix, connect, and ultimately improve our world. I am also passionate about using tech as a way to give voice
 	 to marginalized communities, and I can't wait to someday create tools that can be used to help drive positive societal change. 
       </p>
-
-      <!-- LINKS TO SOCIAL MEDIA- ORGANIZE INTO A TABLE -->
+      <!-- LINKS TO SOCIAL MEDIA -->
       <h3>Socials</h3>
       <p>Let's connect on social media!</p>
       <form action="https://www.linkedin.com/in/rachel-navarro-922b70191">
-	      <input type="submit" value="Add me on LinkedIn!" />
+	      <input type="submit" value="Add me on LinkedIn!"/>
       </form>
       <p> </p>
       <form action="https://github.com/rtnavarr">
@@ -44,21 +47,19 @@
       <form action="https://open.spotify.com/user/rnvaro">
 	      <input type="submit" value="Share music with me on Spotify!" />
       </form>
-
       <!-- TAROT READING -->
       <h3>Tarot Reading Simulation</h3>
       <p>In April 2020, I started learning how to read tarot cards as a fun side hobby. Click the button below to draw your card of the day!</p>
       <p> </p>
-      <button onclick="drawCardOfTheDay()">Generate my tarot card of the day!</button> <!--IMPLEMENT THIS --> 
+      <button onclick="drawCardOfTheDay()">Generate my tarot card of the day!</button>  
+      <p> </p>
       <div id="tarot-reading"></div>
-
+      <!-- LINKS TO OTHER PAGES -->
+      <h3>Get To Know Me</h3>
       <p>Click <a href="places.html">here</a> to explore some of my favorite places on earth! 
       <p>Click <a href="resume.html">here</a> to check out my resume! 
+      <p>Click <a href="images.html">here</a> to view my photography gallery! 
 
-      <!-- ADD A PHOTO GALLERY LIKE THE GIVEN STANLEY SAMPLE-->
-      <!-- EMBED A PLAYLIST -->
-      <!-- EMBED A PDF OF MY RESUME -->
-      <!-- LINKS TO CAUSES/PETITIONS I'VE SIGNED -->
     </div>
   </body>
 </html>
