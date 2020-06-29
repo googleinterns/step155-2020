@@ -31,10 +31,29 @@ function addRandomGreeting() {
  * Adds a random quote to the page
  */
 function getRandomQuote() {
-    const quotes = ["It is what it is.", "With great power, comes great responsibility.", "What once was once is now"];
+  const quotes = ["It is what it is.", "With great power, comes great responsibility.", "What once was once is now"];
 
-    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
-    const quoteContainer = document.getElementById('quote-container');
-    quoteContainer.innerText = quote;
+  const quoteContainer = document.getElementById('quote-container');
+  quoteContainer.innerText = quote;
+}
+
+function getComments() {
+  const responsePromise = fetch("/data");
+
+  responsePromise.then((response) => response.json()).then((comments) => {
+    document.getElementById("comments-container")
+      .appendChild(createComment(comments[0]));
+    document.getElementById("comments-container")
+      .appendChild(createComment(comments[1]));
+    document.getElementById("comments-container")
+      .appendChild(createComment(comments[2]));
+  });
+}
+
+function createComment(comment) {
+  const divElement = document.createElement("div");
+  divElement.innerText = comment;
+  return divElement;
 }
