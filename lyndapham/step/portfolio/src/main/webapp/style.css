@@ -1,22 +1,22 @@
 #nav-bar {
-    background-color: #edb245;
-    width: 100%;
-    top: 0%;
-    height: 60px;
-    align-items: center;
-    justify-content: space-between;
+  background-color: #edb245;
+  width: 100%;
+  top: 0%;
+  height: 60px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #nav-bar a {
-    color: white;
-    padding: 20px 16px;
-    text-align: center;
-    float: left;
-    text-decoration: none;
+  color: white;
+  padding: 20px 16px;
+  text-align: center;
+  float: left;
+  text-decoration: none;
 }
 
 #nav-bar a:hover {
-    color: gray;
+  color: gray;
 }
 
 #content {
