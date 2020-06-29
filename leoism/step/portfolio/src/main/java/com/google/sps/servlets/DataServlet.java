@@ -29,6 +29,7 @@ public class DataServlet extends HttpServlet {
   private ArrayList<String> comments = new ArrayList();
 
   public DataServlet() {
+    /** Add some temporary hard coded comments. */
     comments.add("Nice website!");
     comments.add("I like the blue color.");
     comments.add("Very magical.");
@@ -39,17 +40,5 @@ public class DataServlet extends HttpServlet {
     response.setContentType("application/json;");
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(comments));
-  }
-
-  private String toJSON(ArrayList<String> comments) {
-    String json = "{";
-    json += "\"comments\": [";
-    json += "\"" + comments.get(0) + "\"" + ",";
-    json += "\"" + comments.get(1) + "\"" + ",";
-    json += "\"" + comments.get(2) + "\"";
-    json += "]";
-    json += "}";
-
-    return json;
   }
 }
