@@ -41,14 +41,12 @@ function getRandomQuote() {
 
 function getComments() {
   const responsePromise = fetch("/data");
+  const commentContainer = document.getElementById("comments-container");
 
   responsePromise.then((response) => response.json()).then((comments) => {
-    document.getElementById("comments-container")
-      .appendChild(createComment(comments[0]));
-    document.getElementById("comments-container")
-      .appendChild(createComment(comments[1]));
-    document.getElementById("comments-container")
-      .appendChild(createComment(comments[2]));
+    commentContainer.appendChild(createComment(comments[0]));
+    commentContainer.appendChild(createComment(comments[1]));
+    commentContainer.appendChild(createComment(comments[2]));
   });
 }
 
