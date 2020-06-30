@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Lynda's Portfolio</title>
@@ -7,47 +7,56 @@
     <script src="script.js"></script>
   </head>
   <body>
-    <div id="intro">
-      <h1>My Portfolio</h1>
-      <p>Hi there! I'm Lynda, a sophomore at the  University of Washington studying Computer Science.</p>
-      <p>Click here to get a random fact about me:</p>
-      <button onclick="addFunFact()">press</button>
-      <div id="fact-container"></div>
+    <div id="nav-bar">
+      <a href="index.html">Home</a>
+      <a href="essays.html">Writing</a>
     </div>
 
-    <div id="projects">
+    <div id="content">
+      <div id="intro">
+        <h1>My Portfolio</h1>
+        <p>Hi there! I'm Lynda, a sophomore at the  University of Washington studying Computer Science.</p>
+        <p>Click here to get a random fact about me:</p>
+        <button onclick="addFunFact()">press</button>
+        <div id="fact-container"></div>
+      </div>
+
+      <br> <br>
+
+      <div id="projects">
         <h1>Recent Projects</h1>
         <p>Spring Quarter 2020: I was elected as UW ACM-W's PR Officer! I am so excited to provide students in computer science with opportunities
-            to network with our industry affliates and to learn about different careers in technology.</p>
+          to network with our industry affliates and to learn about different careers in technology.</p>
         <p>Spring Quarter 2020: I was involved in <a href="https://www.mealmatchup.org/">Meal Matchup</a>, a project designed by a UW student
-            and lecturer team.</p>
+          and lecturer team.</p>
         <p>Winter Quarter 2020: I was the props master and dramaturg for Vietgone, a musical put on by <a href="https://uwuts.org/">Undergraduate
-            Theater Society</a>, a theater club at UW. I also took a drama class this quarter. These experiences strengthened my resolve to minor in drama!</p>
+          Theater Society</a>, a theater club at UW. I also took a drama class this quarter. These experiences strengthened my resolve to minor in drama!</p>
         <p>2018-2019: I was on a design team for <a href="https://depts.washington.edu/adaptuw/">HuskyADAPT</a>, a club at UW that looks to partner
-            with community members to design solutions for various issues in accessibility. I also attended a toy adaptation and soldered for the first time.</p>
+          with community members to design solutions for various issues in accessibility. I also attended a toy adaptation and soldered for the first time.</p>
         <p> I also love to write (but I don't have the chance to write as much as I like to). I often joke that it was chance that I pursued computer
-            science instead of an English degree. <a href="essays.html">Check out some of my favorite essays!</a></p>
-    </div>
-        
-    <div id="photo-gallery">
-        <!-- TODO: display as a carousel that you can click on and view short stories about each photo -->
-        <img src="/images/bridge.jpg" alt="picture of a bridge taken on a walk around UW campus" width="33%" height="33%">
-        <img src="/images/kerrypark.jpg" alt="a view of Seattle from Kerry Park" width="33%" height="33%">
-        <img src="/images/fav.jpg" alt="Dick's, my favorite late-night craving" width="33%" height="33%">
-        <img src="/images/fish.jpg" alt="two fish caught on one line" width="33%" height="33%">
-        <img src="/images/plants.jpg" alt="the plants in my room" width="33%" height="33%">
-        <img src="/images/sky.jpg" alt="blue skies in Seattle" width="33%" height="33%">
+          science instead of an English degree. <a href="essays.html">Check out some of my favorite essays!</a></p>
+      </div>
     </div>
 
+    <div id="photo-gallery">
+      <!-- TODO: display as a carousel that you can click on and view short stories about each photo -->
+      <img src="/images/bridge.jpg" alt="picture of a bridge taken on a walk around UW campus" width="350" height="480">
+      <img src="/images/kerrypark.jpg" alt="a view of Seattle from Kerry Park" width="350" height="480">
+      <img src="/images/fav.jpg" alt="Dick's, my favorite late-night craving" width="350" height="480">
+      <img src="/images/fish.jpg" alt="two fish caught on one line" width="350" height="480">
+      <img src="/images/plants.jpg" alt="the plants in my room" width="350" height="480">
+      <img src="/images/sky.jpg" alt="blue skies in Seattle" width="350" height="480">
+    </div>
+
+    <br> <br>
+    
     <div id="contact-me">
-        <a href="https://www.linkedin.com/in/lynda-pham/">
-            <img src="https://1000logos.net/wp-content/uploads/2017/03/LinkedIn-Logo.png"
-            width="5%" height="5%">
-        </a>
-        <a href="https://www.instagram.com/lphamela/">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png"
-            width="5%" height="5%">
-        </a>
+      <a href="https://www.linkedin.com/in/lynda-pham/">
+        <img src="https://1000logos.net/wp-content/uploads/2017/03/LinkedIn-Logo.png" alt="linkedin logo" width="60" height="60">
+      </a>
+      <a href="https://www.instagram.com/lphamela/">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png" alt="instagram logo" width="60" height="60">
+      </a>
     </div>
   </body>
 </html>
