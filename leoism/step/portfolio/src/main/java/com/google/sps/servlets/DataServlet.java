@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+import com.google.sps.data.CommentInformation;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,10 +41,17 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    ArrayList<String> comments = new ArrayList<String>();
+    ArrayList<CommentInformation> comments = new ArrayList<CommentInformation>();
+
     for (Entity entity : results.asIterable()) {
       String comment = (String) entity.getProperty("comment");
-      comments.add(comment);
+      String name = (String) entity.getProperty("name");
+      long timestamp = (long) entity.getProperty("timestamp");
+
+      CommentInformation commentInformation =
+          new CommentInformation(comment, name, timestamp);
+
+      comments.add(commentInformation);
     }
 
     Gson gson = new Gson();
@@ -53,20 +61,25 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = request.getParameter("user-comment");
-    if (comment.isEmpty()) {
+    String name = request.getParameter("user-name");
+
+    // Check for name is not required since the HTML input requires that the
+    // user provide a name.
+    if (comment.isEmpty()) { 
       response.setContentType("text/html");
       response.getWriter().println("Please enter a valid comment.");
       return;
     }
 
-    storeComment(comment);
+    storeComment(comment, name);
 
     response.sendRedirect("/index.html");
   }
 
-  private void storeComment(String comment) {
+  private void storeComment(String comment, String name) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("comment", comment);
+    commentEntity.setProperty("name", name);
     commentEntity.setProperty("timestamp", new Date().getTime());
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

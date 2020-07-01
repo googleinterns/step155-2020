@@ -12,20 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function drawCardOfTheDay() {
-  const deck =
-      ['The Fool', 'The Magician', 'The High Priestess', 'The Empress'];
+package com.google.sps.data;
 
-  // Draw a random card.
-  const card = deck[Math.floor(Math.random() * deck.length)];
+/** Class containing Comment information. */
+public final class CommentInformation {
 
-  // Add it to the page.
-  const tarotDeck = document.getElementById('tarot-reading');
-  tarotDeck.innerText = card;
-}
+  private final String name;
+  private final String comment;
+  private final long timestamp;
 
-function displayGreeting() {
-  fetch('/data').then(response => response.text()).then((greeting) => {
-    document.getElementById('greeting-container').innerText = greeting;
-  });
+  public CommentInformation(String comment, String name, long timestamp) {
+    this.comment = comment;
+    this.name = name;
+    this.timestamp = timestamp;
+  }
+
+  public String getName() { return name; }
+
+  public String getComment() { return comment; }
+
+  public long getTimeStamp() { return timestamp; }
+
 }
