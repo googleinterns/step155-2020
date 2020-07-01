@@ -66,11 +66,18 @@ function createComment(commentInformation) {
 function loadComments() {
   const responsePromise = fetch('/data');
   const commentsContainer = document.getElementById('comments-container');
-  const amtCurrentlyDisplayed = parseInt(commentsContainer.getAttribute('data-display'));
+  const amtCurrentlyDisplayed =
+      parseInt(commentsContainer.getAttribute('data-display'));
 
   const nextTenComments = amtCurrentlyDisplayed + 10;
   responsePromise.then((response) => response.json()).then((comments) => {
     for (let i = amtCurrentlyDisplayed; i < nextTenComments; i++) {
+      // Make load more button not appear when all comments have been loaded.
+      if (i === comments.length - 1) {
+        const loadMoreButton = document.getElementById('load-more-button');
+        loadMoreButton.style.display = 'none';
+      }
+
       if (comments[i] === undefined) {
         commentsContainer.setAttribute('data-display', i);
         break;
