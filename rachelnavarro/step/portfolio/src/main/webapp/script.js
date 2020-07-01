@@ -23,3 +23,9 @@ function drawCardOfTheDay() {
   const tarotDeck = document.getElementById('tarot-reading');
   tarotDeck.innerText = card;
 }
+
+function displayGreeting() {
+  fetch('/data').then(response => response.text()).then((greeting) => {
+    document.getElementById('greeting-container').innerText = greeting;
+  });
+}
