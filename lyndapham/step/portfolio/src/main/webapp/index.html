@@ -6,11 +6,14 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="getGreeting()">
     <div id="nav-bar">
       <a href="index.html">Home</a>
       <a href="essays.html">Writing</a>
     </div>
+
+    <!-- Pop up with Hello Lynda! message fetched from /data-->
+    <div id="greeting-container"></div>
 
     <div id="content">
       <div id="intro">
