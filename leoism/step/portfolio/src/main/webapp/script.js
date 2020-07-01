@@ -44,7 +44,7 @@ function getComments() {
   const commentContainer = document.getElementById("comments-container");
 
   responsePromise.then((response) => response.json()).then((comments) => {
-    for(let comment of comments) {
+    for (let comment of comments) {
       commentContainer.appendChild(createComment(comment));
     }
   });

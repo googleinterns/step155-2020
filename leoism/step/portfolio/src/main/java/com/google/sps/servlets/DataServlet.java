@@ -38,7 +38,7 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = request.getParameter("user-comment");
-    if (comment.length() == 0) {
+    if (comment.isEmpty()) {
       response.setContentType("text/html");
       response.getWriter().println("Please enter a valid comment.");
       return;
