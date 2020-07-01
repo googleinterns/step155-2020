@@ -24,6 +24,14 @@
   color: #000;
 }
 
+.comment-content-box {
+  background-color: #eee;
+  margin: 10px auto 10px auto;
+  max-width: 750px;
+  padding: 10px;
+  width: 90%;
+}
+
 #content {
   margin-left: auto;
   margin-right: auto;
@@ -96,6 +104,11 @@
   color: #fff;
   margin: 0;
   padding: 10px;
+}
+
+.user-information {
+  font-weight: bolder;
+  margin: 0;
 }
 
 #welcome-text {

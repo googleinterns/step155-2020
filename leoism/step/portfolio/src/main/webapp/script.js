@@ -44,14 +44,28 @@ function getComments() {
   const commentContainer = document.getElementById("comments-container");
 
   responsePromise.then((response) => response.json()).then((comments) => {
-    for (let comment of comments) {
-      commentContainer.appendChild(createComment(comment));
+    for (let commentInformation of comments) {
+      commentContainer.appendChild(createComment(commentInformation));
     }
   });
 }
 
-function createComment(comment) {
-  const divElement = document.createElement("div");
-  divElement.innerText = comment;
-  return divElement;
+function createComment(commentInformation) {
+  const commentBox = document.createElement("div");
+  const commentText = document.createElement("p");
+  const barrier = document.createElement("hr");
+  const userInformationElement = document.createElement("p");
+
+  commentBox.setAttribute("class", "comment-content-box");
+  userInformationElement.setAttribute("class", "user-information");
+
+  commentText.innerText = commentInformation.comment;
+  const readableDate = new Date(commentInformation.timestamp).toLocaleString();
+  userInformationElement.innerText = commentInformation.name + " on " + readableDate;
+
+  commentBox.appendChild(commentText);
+  commentBox.appendChild(barrier);
+  commentBox.appendChild(userInformationElement);
+
+  return commentBox;
 }
