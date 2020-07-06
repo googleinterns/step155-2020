@@ -26,34 +26,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<String> arr;
-  Cookie choc;
+  private ArrayList<String> cookies;
 
   @Override
   public void init() {
-    arr = new ArrayList<>();
-    arr.add("Chocolate chip");
-    arr.add("Oatmeal raisin");
-    arr.add("Snickerdoodle");
-
-    choc = new Cookie ("Chocolate chip", 5);
+    cookies = new ArrayList<>();
+    cookies.add("Chocolate chip");
+    cookies.add("Oatmeal raisin");
+    cookies.add("Snickerdoodle");
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
-    String json = gson.toJson(choc);
+    String json = gson.toJson(cookies);
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
-}
-
-class Cookie {
-    String name;
-    int cost;
-
-    public Cookie (String str, int c) {
-        name = str;
-        cost = c;
-    }
 }
