@@ -27,22 +27,22 @@ import com.google.gson.Gson;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  //Initialize messages with 3 hard-coded values
-  private ArrayList<String> messages = new ArrayList<String>(Arrays.asList("Hi!", "Bonjour!", "Hola!"));
+  private ArrayList<String> messages;
+
+  @Override
+  public void init() {
+    messages = new ArrayList<String>(Arrays.asList("Hi!", "Bonjour!", "Hola!"));
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //Convert messages into a JSON string
     String json = convertToJSON(messages);
 
-    //Send JSON response
+    // Send JSON response
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
 
-  /**
-   * Converts messages into a JSON string using the Gson library. 
-   */
   private String convertToJSON(ArrayList<String> messages) {
     Gson gson = new Gson();
     String json = gson.toJson(messages);
