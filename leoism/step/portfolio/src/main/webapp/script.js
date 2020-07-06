@@ -70,6 +70,9 @@ function loadComments() {
       parseInt(commentsContainer.getAttribute('data-display'));
 
   const nextTenComments = amtCurrentlyDisplayed + 10;
+
+  // Remains true if the next iteration of 10 comments included 10 comments.
+  let nextTenCommentsLoaded = true;
   responsePromise.then((response) => response.json()).then((comments) => {
     for (let i = amtCurrentlyDisplayed; i < nextTenComments; i++) {
       // Make load more button not appear when all comments have been loaded.
@@ -80,14 +83,15 @@ function loadComments() {
 
       if (comments[i] === undefined) {
         commentsContainer.setAttribute('data-display', i);
+        nextTenCommentsLoaded = false;
         break;
       }
 
       commentsContainer.appendChild(createComment(comments[i]));
+    }
 
-      if (i === nextTenComments - 1) {
-        commentsContainer.setAttribute('data-display', i + 1);
-      }
+    if (nextTenCommentsLoaded) {
+      commentsContainer.setAttribute('data-display', nextTenComments);
     }
   });
 }
