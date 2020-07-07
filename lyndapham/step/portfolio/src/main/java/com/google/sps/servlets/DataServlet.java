@@ -51,6 +51,13 @@ public class DataServlet extends HttpServlet {
     String vote = request.getParameter("picture-vote");
     String comment = request.getParameter("text-input");
 
+    Entity voteEntity = new Entity("Vote");
+    voteEntity.setProperty("vote", vote);
+    voteEntity.setProperty("comment", comment);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(voteEntity);
+
     pictureVotes.add(vote);
 
     // Redirect to refreshed page

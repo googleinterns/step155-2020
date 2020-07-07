@@ -8,7 +8,7 @@ public final class Vote {
   private final String vote;
   private final String comment;
 
-  public Task(String vote, String comment) {
+  public Vote(String vote, String comment) {
     this.vote = vote;
     this.comment = comment;
   }
