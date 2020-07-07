@@ -29,3 +29,9 @@ function displayGreeting() {
     document.getElementById('greeting-container').innerText = greeting;
   });
 }
+
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
+}
