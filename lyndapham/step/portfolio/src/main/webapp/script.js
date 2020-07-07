@@ -37,7 +37,7 @@ function addFunFact() {
 
 function getJson() {
   fetch('/data').then(response => response.text()).then((quote) => {
-    alert(quote);
+    const jsonContainer = document.getElementById('json-container');
+    jsonContainer.innerText = quote;
   });
 }
-
