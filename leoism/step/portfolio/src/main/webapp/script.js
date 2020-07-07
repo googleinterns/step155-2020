@@ -31,7 +31,10 @@ function addRandomGreeting() {
  * Adds a random quote to the page
  */
 function getRandomQuote() {
-  const quotes = ["It is what it is.", "With great power, comes great responsibility.", "What once was once is now"];
+  const quotes = [
+    'It is what it is.', 'With great power, comes great responsibility.',
+    'What once was once is now'
+  ];
 
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
@@ -39,33 +42,59 @@ function getRandomQuote() {
   quoteContainer.innerText = quote;
 }
 
-function getComments() {
-  const responsePromise = fetch("/data");
-  const commentContainer = document.getElementById("comments-container");
-
-  responsePromise.then((response) => response.json()).then((comments) => {
-    for (let commentInformation of comments) {
-      commentContainer.appendChild(createComment(commentInformation));
-    }
-  });
-}
-
 function createComment(commentInformation) {
-  const commentBox = document.createElement("div");
-  const commentText = document.createElement("p");
-  const barrier = document.createElement("hr");
-  const userInformationElement = document.createElement("p");
+  const commentBox = document.createElement('div');
+  const commentText = document.createElement('p');
+  const barrier = document.createElement('hr');
+  const userInformationElement = document.createElement('p');
 
-  commentBox.setAttribute("class", "comment-content-box");
-  userInformationElement.setAttribute("class", "user-information");
+  commentBox.setAttribute('class', 'comment-content-box');
+  userInformationElement.setAttribute('class', 'user-information');
 
   commentText.innerText = commentInformation.comment;
   const readableDate = new Date(commentInformation.timestamp).toLocaleString();
-  userInformationElement.innerText = commentInformation.name + " on " + readableDate;
+  userInformationElement.innerText =
+      commentInformation.name + ' on ' + readableDate;
 
   commentBox.appendChild(commentText);
   commentBox.appendChild(barrier);
   commentBox.appendChild(userInformationElement);
 
   return commentBox;
+}
+
+function loadComments() {
+  const responsePromise = fetch('/data');
+  const commentsContainer = document.getElementById('comments-container');
+  const amtCurrentlyDisplayed =
+      parseInt(commentsContainer.getAttribute('data-display'));
+
+  const nextTenComments = amtCurrentlyDisplayed + 10;
+
+  // Remains true if the next iteration of 10 comments included 10 comments.
+  let nextTenCommentsLoaded = true;
+  responsePromise.then((response) => response.json()).then((comments) => {
+    for (let i = amtCurrentlyDisplayed; i < nextTenComments; i++) {
+      // Make load more button not appear when all comments have been loaded.
+      if (i === comments.length - 1) {
+        const loadMoreButton = document.getElementById('load-more-button');
+        loadMoreButton.style.display = 'none';
+      }
+
+
+      // comments[i] is undefined when this iteration of 10 comments falls
+      // short. For example, the list had 6 comments not the full 10.
+      if (comments[i] === undefined) {
+        commentsContainer.setAttribute('data-display', i);
+        nextTenCommentsLoaded = false;
+        break;
+      }
+
+      commentsContainer.appendChild(createComment(comments[i]));
+    }
+
+    if (nextTenCommentsLoaded) {
+      commentsContainer.setAttribute('data-display', nextTenComments);
+    }
+  });
 }
