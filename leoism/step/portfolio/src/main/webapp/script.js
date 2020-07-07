@@ -81,6 +81,8 @@ function loadComments() {
         loadMoreButton.style.display = 'none';
       }
 
+      // comments[i] is undefined when this iteration of 10 comments falls
+      // short. For example, the list had 6 comments not the full 10.
       if (comments[i] === undefined) {
         commentsContainer.setAttribute('data-display', i);
         nextTenCommentsLoaded = false;
