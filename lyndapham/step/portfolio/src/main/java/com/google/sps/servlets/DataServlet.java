@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,21 +27,29 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<String> cookies;
+  private ArrayList<String> pictureVotes;
 
   @Override
   public void init() {
-    cookies = new ArrayList<>();
-    cookies.add("Chocolate chip");
-    cookies.add("Oatmeal raisin");
-    cookies.add("Snickerdoodle");
+    pictureVotes = new ArrayList<>();
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
-    String json = gson.toJson(cookies);
+    String json = gson.toJson(pictureVotes);
     response.setContentType("application/json;");
     response.getWriter().println(json);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String vote = request.getParameter("picture-vote");
+
+    pictureVotes.add(vote);
+
+    // Redirect to refreshed page
+    response.sendRedirect("/index.html");
   }
 }

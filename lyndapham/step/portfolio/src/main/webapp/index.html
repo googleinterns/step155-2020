@@ -12,9 +12,6 @@
       <a href="essays.html">Writing</a>
     </div>
 
-    <!-- Pop up with Hello Lynda! message fetched from /data-->
-    <div id="json-container"></div>
-
     <div id="content">
       <div id="intro">
         <h1>My Portfolio</h1>
@@ -56,24 +53,29 @@
 
     <div id="content">
       <form action="/data" method="POST">
-        <p>Please vote for your favorite picture:</p>
-        <input type="radio" id="bridge-vote" name="vote" value="bridge">
+        <h3>Please vote for your favorite picture:</h3>
+        <input type="radio" id="bridge-vote" name="picture-vote" value="bridge">
         <label for="bridge-vote">Bridge</label><br>
-        <input type="radio" id="park-vote" name="vote" value="park">
+        <input type="radio" id="park-vote" name="picture-vote" value="park">
         <label for="park-vote">Park</label><br>
-        <input type="radio" id="dicks-vote" name="vote" value="dicks">
+        <input type="radio" id="dicks-vote" name="picture-vote" value="dicks">
         <label for="dicks-vote">Dick's</label><br>
-        <input type="radio" id="fish-vote" name="vote" value="fish">
+        <input type="radio" id="fish-vote" name="picture-vote" value="fish">
         <label for="fish-vote">Fishing</label><br>
-        <input type="radio" id="plants-vote" name="vote" value="plants">
+        <input type="radio" id="plants-vote" name="picture-vote" value="plants">
         <label for="plants-vote">Plants</label><br>
-        <input type="radio" id="sky-vote" name="vote" value="sky">
+        <input type="radio" id="sky-vote" name="picture-vote" value="sky">
         <label for="sky-vote">Sky</label><br>
-        <input type="submit" />
+        <input type="submit"/>
       </form>
+      <br> <br>
+
+      <!-- Pop up with Hello Lynda! message fetched from /data-->
+      <h3>Previous Votes:</h3>
+      <div id="json-container"></div>
 
       <br> <br>
-    
+
       <div id="contact-me">
         <a href="https://www.linkedin.com/in/lynda-pham/">
           <img src="https://1000logos.net/wp-content/uploads/2017/03/LinkedIn-Logo.png" alt="linkedin logo" width="60" height="60">
