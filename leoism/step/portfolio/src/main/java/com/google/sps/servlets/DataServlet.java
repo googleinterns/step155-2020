@@ -20,6 +20,9 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
 import com.google.gson.Gson;
 import com.google.sps.data.CommentInformation;
 import java.io.IOException;
@@ -47,9 +50,10 @@ public class DataServlet extends HttpServlet {
       String comment = (String) entity.getProperty("comment");
       String name = (String) entity.getProperty("name");
       long timestamp = (long) entity.getProperty("timestamp");
+      double sentimentScore = (double) entity.getProperty("sentimentScore");
 
       CommentInformation commentInformation =
-          new CommentInformation(comment, name, timestamp);
+          new CommentInformation(comment, name, timestamp, sentimentScore);
 
       comments.add(commentInformation);
     }
@@ -65,24 +69,43 @@ public class DataServlet extends HttpServlet {
 
     // Check for name is not required since the HTML input requires that the
     // user provide a name.
-    if (comment.isEmpty()) { 
+    if (comment.isEmpty()) {
       response.setContentType("text/html");
       response.getWriter().println("Please enter a valid comment.");
       return;
     }
 
-    storeComment(comment, name);
+    double score = determineSentimentScore(comment);
 
-    response.sendRedirect("/index.html");
+    // Prevent users from submitting negative comments.
+    if (score > 0.1) {
+      storeComment(comment, name, score);
+      response.sendRedirect("/");
+    } else {
+      response.setContentType("text/html;");
+      response.getWriter().println("<p>Please refrain from entering negative comments.</p>");
+    }
   }
 
-  private void storeComment(String comment, String name) {
+  private void storeComment(String comment, String name, double sentimentScore) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("comment", comment);
     commentEntity.setProperty("name", name);
     commentEntity.setProperty("timestamp", new Date().getTime());
+    commentEntity.setProperty("sentimentScore", sentimentScore);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
+  }
+
+  private double determineSentimentScore(String comment) throws IOException {
+    Document doc = Document.newBuilder()
+                       .setContent(comment)
+                       .setType(Document.Type.PLAIN_TEXT)
+                       .build();
+    LanguageServiceClient languageService = LanguageServiceClient.create();
+    Sentiment sentiment =
+        languageService.analyzeSentiment(doc).getDocumentSentiment();
+    return sentiment.getScore();
   }
 }
