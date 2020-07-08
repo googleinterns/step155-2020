@@ -21,25 +21,39 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<Comment> comments;
-
-  @Override
-  public void init() {
-    comments = new ArrayList<Comment>();
-  }
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json");
-    String json = new Gson().toJson(comments);
-    response.getWriter().println(json);
+    // Load comments from Datastore, from most to least recent.
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Comment> commentList = new ArrayList<>();
+
+    for (Entity entity : results.asIterable()) {
+      String commentName = (String) entity.getProperty("name");
+      String commentBody = (String) entity.getProperty("body");
+      long timestamp = (long) entity.getProperty("timestamp");
+      Comment com = new Comment(commentBody, commentName);
+      commentList.add(com);
+    }
+    Gson gson = new Gson();
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(commentList));
   }
 
   @Override
@@ -48,9 +62,15 @@ public class DataServlet extends HttpServlet {
     String userBody = getParameter(request, "body-input", "");
     String userName = getParameter(request, "name-input", "");
 
-    // Store the input as a comment 
-    Comment c = new Comment(userBody, userName);
-    comments.add(c);
+    // Create a commentEntity and store it in Datastore 
+    long timestamp = System.currentTimeMillis();
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("body", userBody);
+    commentEntity.setProperty("name", userName);
+    commentEntity.setProperty("timestamp", timestamp);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
 
     // Respond with the result. 
     response.sendRedirect("/index.html");

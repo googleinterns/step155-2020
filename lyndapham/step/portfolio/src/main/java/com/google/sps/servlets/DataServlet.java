@@ -14,13 +14,17 @@
 
 package com.google.sps.servlets;
 
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +43,24 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Query query = new Query("Vote").addSort("vote");
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Vote> votes = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      String vote = (String) entity.getProperty("vote");
+      String comment = (String) entity.getProperty("comment");
+
+      Vote entry = new Vote(vote, comment);
+      votes.add(entry);
+    }
+
     Gson gson = new Gson();
-    String json = gson.toJson(pictureVotes);
+
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(votes));
   }
 
   @Override
