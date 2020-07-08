@@ -27,11 +27,12 @@ function drawCardOfTheDay() {
 
 /** Fetches and loads all previous comments in an unordered list. */
 function displayComments() {
-  fetch('/data').then(response => response.json()).then((allcomments) => {
+  fetch('/data').then(response => response.json()).then((allComments) => {
     var i;
-    for (i = 0; i < allcomments.length; i++) {
+    for (i = 0; i < allComments.length; i++) {
       var datetime = getDateTime();
-      createCommentEntry(allcomments[i].name + ' said "' + allcomments[i].body + "' at " + datetime);
+      var commentString = `${allComments[i].name} said "${allComments[i].body}" at ${datetime}`;
+      createCommentEntry(commentString);
     }
   });
 }
@@ -47,6 +48,6 @@ function createCommentEntry(text) {
 /** Gets date/time in YYYY-MM-DD HH:MM:SS format. */
 function getDateTime() {
   var today = new Date();
-  var datetime = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var datetime = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
   return datetime;
 }

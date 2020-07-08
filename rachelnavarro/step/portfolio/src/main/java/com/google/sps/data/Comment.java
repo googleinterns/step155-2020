@@ -24,9 +24,9 @@ public class Comment {
   
   private final String name;
 
-  public Comment(String userBody, String userName) {
-    this.body = userBody;
-    this.name = userName;
+  public Comment(String body, String name) {
+    this.body = body;
+    this.name = name;
   }
 
   public String getBody() {
