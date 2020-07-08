@@ -14,27 +14,27 @@
 
 package com.google.sps.data;
 
-/** Class containing Comment information. */
-public final class CommentInformation {
+import java.util.ArrayList;
+import java.util.List;
 
+/** Class representing a comment submitted by a user. */
+public class Comment {
+
+  private final String body;
+  
   private final String name;
-  private final String comment;
-  private final long timestamp;
-  private final double sentimentScore;
 
-  public CommentInformation(String comment, String name, long timestamp,
-                            double sentimentScore) {
-    this.comment = comment;
+  public Comment(String body, String name) {
+    this.body = body;
     this.name = name;
-    this.timestamp = timestamp;
-    this.sentimentScore = sentimentScore;
   }
 
-  public String getName() { return name; }
+  public String getBody() {
+    return body;
+  }
 
-  public String getComment() { return comment; }
+  public String getName() {
+    return name;
+  }
 
-  public long getTimeStamp() { return timestamp; }
-
-  public double getSentimentScore() { return sentimentScore; }
 }
