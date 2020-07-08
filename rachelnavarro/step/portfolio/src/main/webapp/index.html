@@ -2,20 +2,28 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Rachel Navarro's Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet'>
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="displayComments()">
+    <div class="parallax"></div>
+    <div class="topnav">
+      <div class="topnav-right">
+        <a href="#about">ABOUT</a>
+        <a href="#socials">SOCIALS</a>
+        <a href="#tarot">TAROT</a>
+        <a href="#other">OTHER</a>
+      </div>
+    </div>
     <div id="content">
       <h1>Rachel Navarro's Portfolio</h1>
-      <p>Click here to get a fetched greeting:</p>
-      <button onclick="displayGreeting()">Fetch a greeting!</button>
-      <div id="greeting-container"></div>
       <!-- INTRODUCTION SECTION-->
+      <div class = "about" id= "about">
       <h3>About</h3>
-      <div class = "about">
         <img src="images/me.jpg" height="55%" width="55%">
 	<p>Hi there, and welcome to my portfolio!</p>
 	<p>I'm Rachel (she/her/hers), a current STEP intern here at Google. I'm also a rising junior at UC Irvine(zot zot zot!), where I am majoring in 
@@ -31,11 +39,14 @@
 	</ul>
       </div>
       <br>
-      <p>I've always had an affinity for utilizing my creativity to build new things. I'm very curious about technology and the ways in which it can be 
-        used to fix, connect, and ultimately improve our world. I am also passionate about using tech as a way to give voice to marginalized communities, 
-        and I can't wait to someday create tools that can be used to help drive positive societal change.
+      <br>
+      <br>
+      </p> I've always had an affinity for utilizing my creativity to build new things. I'm very curious about technology and the ways in which it 
+        can be used to fix, connect, and ultimately improve our world. I am also passionate about using tech as a way to give voice to 
+        marginalized communities, and I can't wait to someday create tools that can be used to help drive positive societal change.
       </p>
       <!-- LINKS TO SOCIAL MEDIA -->
+      <div id = "socials">
       <h3>Socials</h3>
       <p>Let's connect on social media!</p>
       <form action="https://www.linkedin.com/in/rachel-navarro-922b70191">
@@ -49,18 +60,37 @@
       <form action="https://open.spotify.com/user/rnvaro">
         <input type="submit" value="Share music with me on Spotify!"/>
       </form>
+      </div>
       <!-- TAROT READING -->
+      <div id = "tarot">
       <h3>Tarot Reading Simulation</h3>
       <p>In April 2020, I started learning how to read tarot cards as a fun side hobby. Click the button below to draw your card of the day!</p>
       <p> </p>
       <button onclick="drawCardOfTheDay()">Generate my tarot card of the day!</button>  
       <p> </p>
       <div id="tarot-reading"></div>
+      </div>
       <!-- LINKS TO OTHER PAGES -->
+      <div id = "other">
       <h3>Get To Know Me</h3>
       <p>Click <a href="places.html">here</a> to explore some of my favorite places on earth! 
       <p>Click <a href="resume.html">here</a> to check out my resume! 
       <p>Click <a href="images.html">here</a> to view my photography gallery! 
+      </div>
+      <!-- LEAVE A COMMENT SUBMISSION -->
+      <h3>Leave a Comment</h3>
+      <form action="/data" method="POST">
+        <p>Name:</p>
+        <textarea name= "name-input"></textarea>
+        <br/><br/>
+        <p>Comment:</p>
+        <textarea name= "body-input"></textarea>
+        <br/><br/>
+        <input type="submit" />
+      </form>
+      <!-- PREVIOUS COMMENT SUBMISSIONS -->
+      <h3>Comments</h3>
+      <ul id="comments-container"></ul>
     </div>
   </body>
 </html>

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Simulates drawing a tarot card from a deck. */
 function drawCardOfTheDay() {
   const deck =
       ['The Fool', 'The Magician', 'The High Priestess', 'The Empress'];
@@ -24,14 +25,29 @@ function drawCardOfTheDay() {
   tarotDeck.innerText = card;
 }
 
-function displayGreeting() {
-  fetch('/data').then(response => response.text()).then((greeting) => {
-    document.getElementById('greeting-container').innerText = greeting;
+/** Fetches and loads all previous comments in an unordered list. */
+function displayComments() {
+  fetch('/data').then(response => response.json()).then((allComments) => {
+    var i;
+    for (i = 0; i < allComments.length; i++) {
+      var datetime = getDateTime();
+      var commentString = `${allComments[i].name} said "${allComments[i].body}" at ${datetime}`;
+      createCommentEntry(commentString);
+    }
   });
 }
 
-function createListElement(text) {
-  const liElement = document.createElement('li');
-  liElement.innerText = text;
-  return liElement;
+/** Creates an <li> element containing the string "[user] said "[comment]" at [datetime]". */
+function createCommentEntry(text) {
+  var node = document.createElement("LI");
+  var textnode = document.createTextNode(text);
+  node.appendChild(textnode);
+  document.getElementById("comments-container").appendChild(node);
+}
+
+/** Gets date/time in YYYY-MM-DD HH:MM:SS format. */
+function getDateTime() {
+  var today = new Date();
+  var datetime = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+  return datetime;
 }
