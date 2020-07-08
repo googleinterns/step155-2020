@@ -3,35 +3,30 @@
   <head>
     <meta charset="UTF-8">
     <title>My Favorite Places</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjbN6eIDwFuoskbJSlQT2kM0bVnqyKGFw"></script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300" rel="stylesheet">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="loadMaps()">
     <div id="content">
       <h1>My Favorite Places</h1>
       <h3>Let's Explore!</h3>
       <p>In no particular order, here are maps of some of my favorite places that I've traveled to.</p>
       <ol>
-	      <li>DUMBO Waterfront- Brooklyn, New York. <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6049.2209690249965!2d-73.99221660003332!3d40.70457549997275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a316f3eb0fb%3A0xceb1d92c1cafc9c3!2sDumbo%2C%20Brooklyn%2C%20NY%2011201!5e0!3m2!1sen!2sus!4v1593109760512!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe></li>
-	      <p> </p>
-	      <p> </p>
-	      <li>Shinjuku Gyoen National Garden- Tokyo, Japan. <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.667812097884!2d139.7078576506071!3d35.68518063726601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188cc21b93233f%3A0x6a1eb1b5a117f287!2sShinjuku%20Gyoen%20National%20Garden!5e0!3m2!1sen!2sus!4v1593110703257!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe></li>
-	      <p> </p>
-	      <p> </p>
-	      <li>Venice Beach Canals- Los Angeles, California.<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3308.351384961849!2d-118.46987454943601!3d33.98350712870194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2baa2bf5a7289%3A0x96e7291be897f918!2sVenice%20Canals!5e0!3m2!1sen!2sus!4v1593110911197!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe></li>
-	      <p> </p>
-	      <p> </p>
-	      <li>Niagara Falls- Ontario, Canada.<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d23314.119355600855!2d-79.0925925664396!3d43.07792547993032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d34308752dd54b%3A0x340a619f471ce364!2sHorseshoe%20Falls!5e0!3m2!1sen!2sus!4v1593111270008!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe></li>
-	      <p> </p>
-	      <p> </p>
-	      <li>Santorini- Ia, Greece.<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d102754.54445281786!2d25.350418890174595!3d36.40727146149621!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1499ce86adfd9ff7%3A0xb2a761f740d68afc!2sSantorini!5e0!3m2!1sen!2sus!4v1593111588689!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe></li>
-	      <p> </p>
-	      <p> </p>
-	      <li>Gardens by the Bay- Marina Bay, Singapore<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.8172065757767!2d103.85444540675218!3d1.2835472734042732!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1904937e1633%3A0x62099677b59fca76!2sGardens%20by%20the%20Bay!5e0!3m2!1sen!2sus!4v1593111836597!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe></li>
-	      <p> </p>
-	      <p> </p>
-	      <li>Diamond Head Trail- Honolulu, Hawaii. <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29744.9390089592!2d-157.82458121780783!3d21.26682090863177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7c0072619ae2ab3f%3A0xf7fe4029c4a94f59!2sDiamond%20Head!5e0!3m2!1sen!2sus!4v1593112256432!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe></li>
+        <li>DUMBO Waterfront- Brooklyn, New York.<div class="map" id="nyc"></div><br></li>
+        <br>
+        <li>Shinjuku Gyoen National Garden- Tokyo, Japan.<div class="map" id="tokyo"></div><br></li>
+        <br>
+        <li>Venice Beach Canals- Los Angeles, California.<div class="map" id="la"></div><br></li>
+        <br>
+        <li>Niagara Falls- Ontario, Canada.<div class="map" id="niagara"></div><br></li>
+        <br>
+        <li>Santorini- Ia, Greece.<div class="map" id="santorini"></div><br></li>
+        <br>
+        <li>Gardens by the Bay- Marina Bay, Singapore.<div class="map" id="singapore"></div><br></li>
+        <br>
+        <li>Diamond Head Trail- Honolulu, Hawaii.<div class="map" id="hawaii"></div><br></li>
       </ol>
       <p>Click <a href="index.html">here</a> to navigate back to the main page.</p>
     </div>

@@ -95,6 +95,10 @@ html {
   height: 600px;
 }
 
-
+.map {
+  /*border: thin solid black;*/
+  height: 500px;
+  width: 500px;
+}
 
 
