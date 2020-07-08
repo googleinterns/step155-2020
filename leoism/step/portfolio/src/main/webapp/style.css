@@ -110,6 +110,32 @@
   flex: 1;
 }
 
+.table-style {
+  background-color: #63a4ff;
+  border-collapse: collapse;
+  font-family: arial, sans-serif;
+  width: 100%;
+}
+
+.table-text {
+  border-left: 1px solid #dddddd;
+  color: #fff;
+  padding: 8px;
+  text-align: left;
+}
+
+.table-header-style {
+  background-color: #004ba0;
+  border-bottom: 1px solid #dddddd;
+  color: #fff;
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #1976d2;
+}
+
 .title {
   background-color: #1976d2;
   color: #fff;

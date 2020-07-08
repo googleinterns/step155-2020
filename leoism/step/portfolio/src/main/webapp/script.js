@@ -98,3 +98,55 @@ function loadComments() {
     }
   });
 }
+
+function selectAll() {
+  const commentsTable = document.getElementById('comments-table');
+  const areAllSelected =
+      commentsTable.getAttribute('data-all-selected') == 'true';
+  const allInputBoxes = commentsTable.querySelectorAll('tbody>tr>td>input');
+
+  allInputBoxes.forEach((input) => {
+    input.checked = !areAllSelected;
+  });
+
+  commentsTable.setAttribute('data-all-selected', !areAllSelected);
+}
+
+function submitButton() {
+  const url = '/admin';
+  const params = createParameters();
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', url, true);
+  console.log(params);
+  xhr.setRequestHeader('Content-type', 'application/json');
+
+  xhr.send(JSON.stringify(params));
+  alert('Refresh the Page to see the changes!');
+}
+
+function createParameters() {
+  const paramNamesObj = {
+    '1': 'name',
+    '2': 'email',
+    '3': 'sentimentScore',
+    '4': 'comment',
+    '5': 'timestamp'
+  };
+
+  let commentData = [];
+
+  const table = document.getElementById('comments-table')
+  for (let i = 1, row; row = table.rows[i]; i++) {
+    const inputBox = row.cells[0].firstElementChild;
+    if (inputBox && inputBox.checked) {
+      commentData[`comment${i}`] = {};
+      let thisCommentData = commentData[`comment${i}`];
+      commentData.push(thisCommentData);
+      for (let j = 1, column; column = row.cells[j]; j++) {
+        thisCommentData[paramNamesObj[j]] = column.innerText;
+      }
+    }
+  }
+
+  return commentData;
+}
