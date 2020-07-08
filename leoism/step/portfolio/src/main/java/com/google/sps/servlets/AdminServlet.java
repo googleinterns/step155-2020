@@ -34,8 +34,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Servlet that returns some example content. TODO: modify this file to handle
- * comments data
+ * Servlet that deletes comments from the Datastore upon user request.
  */
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
