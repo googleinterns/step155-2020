@@ -34,7 +34,7 @@ public final class CommentInformation {
 
   public String getComment() { return comment; }
 
-  public long getTimeStamp() { return timestamp; }
+  public long getTimestamp() { return timestamp; }
 
   public double getSentimentScore() { return sentimentScore; }
 }
