@@ -114,39 +114,34 @@ function selectAll() {
 
 function submitButton() {
   const url = '/admin';
-  const params = createParameters();
+  const commentKeys = createParameters();
   const xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
-  console.log(params);
+
+  if (commentKeys.length === 0) {
+    alert('There are no comments to delete!');
+    return;
+  }
+
   xhr.setRequestHeader('Content-type', 'application/json');
 
-  xhr.send(JSON.stringify(params));
+  xhr.send(JSON.stringify(commentKeys));
   alert('Refresh the Page to see the changes!');
 }
 
 function createParameters() {
-  const paramNamesObj = {
-    '1': 'name',
-    '2': 'email',
-    '3': 'sentimentScore',
-    '4': 'comment',
-    '5': 'timestamp'
-  };
-
-  let commentData = [];
+  let commentKeys = [];
 
   const table = document.getElementById('comments-table')
+  const commentKeyIdx = 6;
+
   for (let i = 1, row; row = table.rows[i]; i++) {
     const inputBox = row.cells[0].firstElementChild;
-    if (inputBox && inputBox.checked) {
-      commentData[`comment${i}`] = {};
-      let thisCommentData = commentData[`comment${i}`];
-      commentData.push(thisCommentData);
-      for (let j = 1, column; column = row.cells[j]; j++) {
-        thisCommentData[paramNamesObj[j]] = column.innerText;
-      }
+    const commentKeyBox = row.cells[commentKeyIdx];
+    if (inputBox && inputBox.checked && commentKeyBox) {
+      commentKeys.push(commentKeyBox.innerText);
     }
   }
 
-  return commentData;
+  return commentKeys;
 }
