@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -53,9 +54,8 @@ public class DataServlet extends HttpServlet {
       String name = (String) entity.getProperty("name");
       long timestamp = (long) entity.getProperty("timestamp");
       double sentimentScore = (double) entity.getProperty("sentimentScore");
-
-      CommentInformation commentInformation =
-          new CommentInformation(comment, name, timestamp, sentimentScore);
+      String key = (String) entity.getProperty("key");
+      CommentInformation commentInformation = new CommentInformation(comment, name, timestamp, sentimentScore, key);
 
       comments.add(commentInformation);
     }
@@ -107,8 +107,13 @@ public class DataServlet extends HttpServlet {
     commentEntity.setProperty("timestamp", new Date().getTime());
     commentEntity.setProperty("sentimentScore", sentimentScore);
     commentEntity.setProperty("email", email);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+    // To retrieve a proper key, the Datastore must first perform its 'put'
+    // batch actions to generate a key. Once the key is generated store it to
+    // allow identifying messages.
+    commentEntity.setProperty("key",
+                              KeyFactory.keyToString(commentEntity.getKey()));
     datastore.put(commentEntity);
   }
 
