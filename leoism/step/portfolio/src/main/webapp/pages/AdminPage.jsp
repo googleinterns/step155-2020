@@ -23,6 +23,7 @@
         <th class="table-header-style">Sentiment</th>
         <th class="table-header-style">Comment</th>
         <th class="table-header-style">Timestamp</th>
+        <th class="table-header-style">Key</th>
       </tr>
       <c:forEach items="${commentData}" var="comment" varStatus="loop">
         <tr>
@@ -34,6 +35,7 @@
           <td class="table-text">${comment.sentimentScore}</td>
           <td class="table-text">${comment.comment}</td>
           <td class="table-text">${comment.timestamp}</td>
+          <td class="table-text">${comment.key}</td>
         </tr>
       </c:forEach>
     </tbody>
