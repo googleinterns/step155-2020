@@ -17,6 +17,8 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -71,28 +73,16 @@ public class AdminServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     Gson gson = new Gson();
-    CommentInformation[] commentsInformation =
-        gson.fromJson(request.getReader(), CommentInformation[].class);
+    String[] commentKeys = gson.fromJson(request.getReader(), String[].class);
 
     Query query =
         new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    for (Entity entity : results.asIterable()) {
-      Map<String, Object> commentData = entity.getProperties();
-      // A conversion from Object to Long is not possible; therefore, cast to
-      // String before casting to Long.
-      String stringTimestamp = String.valueOf(commentData.get("timestamp"));
-      long dataStoreTimestamp = Long.parseLong(stringTimestamp);
-      for (CommentInformation comment : commentsInformation) {
-        // At the moment, the timestamp is closest unique element for each
-        // comment.
-        if (comment.getTimestamp() == dataStoreTimestamp) {
-          datastore.delete(entity.getKey());
-          break;
-        }
-      }
+    for (String commentKeyString : commentKeys) {
+      Key datastoreKey = KeyFactory.stringToKey(commentKeyString);
+      datastore.delete(datastoreKey);
     }
   }
 }
