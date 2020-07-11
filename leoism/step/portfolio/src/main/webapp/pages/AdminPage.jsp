@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
 
 <!DOCTYPE html>
 <html>
@@ -30,12 +31,12 @@
           <td class="table-text">
             <input type="checkbox"/>
           </td>
-          <td class="table-text">${comment.name}</td>
-          <td class="table-text">${comment.email}</td>
-          <td class="table-text">${comment.sentimentScore}</td>
-          <td class="table-text">${comment.comment}</td>
-          <td class="table-text">${comment.timestamp}</td>
-          <td class="table-text">${comment.key}</td>
+          <td class="table-text">${comment.getProperty("name")}</td>
+          <td class="table-text">${comment.getProperty("email")}</td>
+          <td class="table-text">${comment.getProperty("sentimentScore")}</td>
+          <td class="table-text">${comment.getProperty("comment")}</td>
+          <td class="table-text">${comment.getProperty("timestamp")}</td>
+          <td class="table-text">${KeyFactory.keyToString(comment.getKey())}</td>
         </tr>
       </c:forEach>
     </tbody>

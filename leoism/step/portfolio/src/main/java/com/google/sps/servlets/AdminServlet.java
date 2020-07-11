@@ -57,14 +57,7 @@ public class AdminServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    ArrayList<Map<String, Object>> comments =
-        new ArrayList<Map<String, Object>>();
-
-    for (Entity entity : results.asIterable()) {
-      comments.add(entity.getProperties());
-    }
-
-    request.setAttribute("commentData", comments);
+    request.setAttribute("commentData", results.asIterator());
     request.getRequestDispatcher("/pages/AdminPage.jsp")
         .forward(request, response);
   }
@@ -72,6 +65,14 @@ public class AdminServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+
+    if (!userService.isUserLoggedIn()) {
+      String loginUrl = userService.createLoginURL("/admin");
+      response.sendRedirect(loginUrl);
+      return;
+    }
+
     Gson gson = new Gson();
     String[] commentKeys = gson.fromJson(request.getReader(), String[].class);
 
