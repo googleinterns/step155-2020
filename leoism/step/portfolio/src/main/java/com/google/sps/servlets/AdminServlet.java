@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -25,19 +24,14 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
-import com.google.sps.data.CommentInformation;
 import java.io.IOException;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import java.util.ArrayList;
-import java.util.Map;
 
-/**
- * Servlet that deletes comments from the Datastore upon user request.
- */
+/** Servlet that deletes comments from the Datastore upon user request. */
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
   @Override
@@ -51,20 +45,17 @@ public class AdminServlet extends HttpServlet {
       return;
     }
 
-    Query query =
-        new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     request.setAttribute("commentData", results.asIterator());
-    request.getRequestDispatcher("/pages/AdminPage.jsp")
-        .forward(request, response);
+    request.getRequestDispatcher("/pages/AdminPage.jsp").forward(request, response);
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
     if (!userService.isUserLoggedIn()) {
@@ -76,8 +67,7 @@ public class AdminServlet extends HttpServlet {
     Gson gson = new Gson();
     String[] commentKeys = gson.fromJson(request.getReader(), String[].class);
 
-    Query query =
-        new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
