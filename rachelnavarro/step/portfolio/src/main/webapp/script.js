@@ -55,22 +55,19 @@ function getDateTime() {
 /** Creates and loads maps for all the locations featured in places.html. 
  * TODO: fetch this info from a java servlet instead of hardcoding */
 function loadMaps() {
-  var placeCoordinates = [
-    [40.704381, -73.990588], // DUMBO Waterfront- Brooklyn, New York
-    [35.685028, 139.709880], // Shinjuku Gyoen National Garden- Tokyo, Japan
-    [33.983814, -118.467551], // Venice Beach Canals- Los Angeles, California
-    [43.079886, -79.075159], // Niagara Falls- Ontario, Canada
-    [36.458416, 25.371504], // Santorini- Ia, Greece
-    [1.281364, 103.863677], // Gardens by the Bay- Marina Bay, Singapore
-    [21.263983, -157.805827]  // Diamond Head Trail- Honolulu, Hawaii
-  ]
+  var placesMap = new Map();
+  placesMap.set("nyc", [40.704381, -73.990588]); // DUMBO Waterfront- Brooklyn, New York
+  placesMap.set("tokyo", [35.685028, 139.709880]); // Shinjuku Gyoen National Garden- Tokyo, Japan
+  placesMap.set("la", [33.983814, -118.467551]); // Venice Beach Canals- Los Angeles, California
+  placesMap.set("niagara", [43.079886, -79.075159]); // Niagara Falls- Ontario, Canada
+  placesMap.set("santorini", [36.458416, 25.371504]); // Santorini- Ia, Greece
+  placesMap.set("singapore", [1.281364, 103.863677]); // Gardens by the Bay- Marina Bay, Singapore
+  placesMap.set("hawaii", [21.263983, -157.805827]); // Diamond Head Trail- Honolulu, Hawaii
 
-  var placeNames = [ "nyc", "tokyo", "la", "niagara", "santorini", "singapore", "hawaii" ];
-
-  var i;
-  for (i = 0; i < placeCoordinates.length; i++) {
-    createMap(placeCoordinates[i][0], placeCoordinates[i][1], placeNames[i]);
+  for (const [key, value] of placesMap.entries()) {
+    createMap(value[0], value[1], key);
   }
+
 }
 
 /** Creates a map of a location and adds it to the page. */
