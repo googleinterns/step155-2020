@@ -22,20 +22,26 @@ public final class CommentInformation {
   private final long timestamp;
   private final double sentimentScore;
 
-  public CommentInformation(String comment, String name, long timestamp,
-                            double sentimentScore) {
+  public CommentInformation(String comment, String name, long timestamp, double sentimentScore) {
     this.comment = comment;
     this.name = name;
     this.timestamp = timestamp;
     this.sentimentScore = sentimentScore;
   }
 
-  public String getName() { return name; }
+  public String getName() {
+    return name;
+  }
 
-  public String getComment() { return comment; }
+  public String getComment() {
+    return comment;
+  }
 
-  public long getTimestamp() { return timestamp; }
+  public long getTimestamp() {
+    return timestamp;
+  }
 
-  public double getSentimentScore() { return sentimentScore; }
-
+  public double getSentimentScore() {
+    return sentimentScore;
+  }
 }

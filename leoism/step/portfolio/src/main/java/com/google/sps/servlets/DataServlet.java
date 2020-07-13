@@ -28,12 +28,12 @@ import com.google.cloud.language.v1.Sentiment;
 import com.google.gson.Gson;
 import com.google.sps.data.CommentInformation;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Date;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
@@ -54,7 +54,8 @@ public class DataServlet extends HttpServlet {
       long timestamp = (long) entity.getProperty("timestamp");
       double sentimentScore = (double) entity.getProperty("sentimentScore");
 
-      CommentInformation commentInformation = new CommentInformation(comment, name, timestamp, sentimentScore);
+      CommentInformation commentInformation =
+          new CommentInformation(comment, name, timestamp, sentimentScore);
 
       comments.add(commentInformation);
     }
@@ -98,8 +99,7 @@ public class DataServlet extends HttpServlet {
     }
   }
 
-  private void storeComment(String comment, String name, double sentimentScore,
-                            String email) {
+  private void storeComment(String comment, String name, double sentimentScore, String email) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("comment", comment);
     commentEntity.setProperty("name", name);
@@ -111,13 +111,10 @@ public class DataServlet extends HttpServlet {
   }
 
   private double determineSentimentScore(String comment) throws IOException {
-    Document doc = Document.newBuilder()
-                       .setContent(comment)
-                       .setType(Document.Type.PLAIN_TEXT)
-                       .build();
+    Document doc =
+        Document.newBuilder().setContent(comment).setType(Document.Type.PLAIN_TEXT).build();
     LanguageServiceClient languageService = LanguageServiceClient.create();
-    Sentiment sentiment =
-        languageService.analyzeSentiment(doc).getDocumentSentiment();
+    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
     return sentiment.getScore();
   }
 }
