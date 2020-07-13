@@ -98,3 +98,50 @@ function loadComments() {
     }
   });
 }
+
+function selectAll() {
+  const commentsTable = document.getElementById('comments-table');
+  const areAllSelected =
+      commentsTable.getAttribute('data-all-selected') == 'true';
+  const allInputBoxes = commentsTable.querySelectorAll('tbody>tr>td>input');
+
+  allInputBoxes.forEach((input) => {
+    input.checked = !areAllSelected;
+  });
+
+  commentsTable.setAttribute('data-all-selected', !areAllSelected);
+}
+
+function submitButton() {
+  const url = '/admin';
+  const commentKeys = createParameters();
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', url, true);
+
+  if (commentKeys.length === 0) {
+    alert('There are no comments to delete!');
+    return;
+  }
+
+  xhr.setRequestHeader('Content-type', 'application/json');
+
+  xhr.send(JSON.stringify(commentKeys));
+  alert('Refresh the Page to see the changes!');
+}
+
+function createParameters() {
+  let commentKeys = [];
+
+  const table = document.getElementById('comments-table')
+  const commentKeyIdx = 6;
+
+  for (let i = 1, row; row = table.rows[i]; i++) {
+    const inputBox = row.cells[0].firstElementChild;
+    const commentKeyBox = row.cells[commentKeyIdx];
+    if (inputBox && inputBox.checked && commentKeyBox) {
+      commentKeys.push(commentKeyBox.innerText);
+    }
+  }
+
+  return commentKeys;
+}

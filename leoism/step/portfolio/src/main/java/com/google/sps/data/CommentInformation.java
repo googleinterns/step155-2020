@@ -14,7 +14,11 @@
 
 package com.google.sps.data;
 
-/** Class containing Comment information. */
+/**
+ * Class containing information on Comments. The class allows converting the properties of a comment
+ * into a JSON parsable object that the JavaScript can read to display the comments on a page. The
+ * timestamp is stored in milliseconds since the Unix Epoch.
+ */
 public final class CommentInformation {
 
   private final String name;
@@ -22,19 +26,27 @@ public final class CommentInformation {
   private final long timestamp;
   private final double sentimentScore;
 
-  public CommentInformation(String comment, String name, long timestamp,
-                            double sentimentScore) {
+  public CommentInformation(String comment, String name, long timestamp, double sentimentScore) {
     this.comment = comment;
     this.name = name;
     this.timestamp = timestamp;
     this.sentimentScore = sentimentScore;
   }
 
-  public String getName() { return name; }
+  public String getName() {
+    return name;
+  }
 
-  public String getComment() { return comment; }
+  public String getComment() {
+    return comment;
+  }
 
-  public long getTimeStamp() { return timestamp; }
+  // Returns the milliseconds since the Unix Epoch.
+  public long getTimestamp() {
+    return timestamp;
+  }
 
-  public double getSentimentScore() { return sentimentScore; }
+  public double getSentimentScore() {
+    return sentimentScore;
+  }
 }
