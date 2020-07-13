@@ -14,7 +14,11 @@
 
 package com.google.sps.data;
 
-/** Class containing Comment information. */
+/**
+ * Class containing information on Comments. The class allows converting the properties of a comment
+ * into a JSON parsable object that the JavaScript can read to display the comments on a page. The
+ * timestamp is stored in milliseconds since the Unix Epoch.
+ */
 public final class CommentInformation {
 
   private final String name;
@@ -37,6 +41,7 @@ public final class CommentInformation {
     return comment;
   }
 
+  // Returns the milliseconds since the Unix Epoch.
   public long getTimestamp() {
     return timestamp;
   }
