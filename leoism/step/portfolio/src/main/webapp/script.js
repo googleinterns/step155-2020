@@ -174,10 +174,10 @@ function sendNewComment(button) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     body: `index=${idx}&new-comment=${encodeURIComponent(newComment)}`
   }).then((res) => {
-    if(res.status === 404) {
-      alert("The message you are trying to edit no longer exists.");
-    } else if(res.status === 403) {
-      alert("You are trying to edit a message which you do not own.");
+    if (res.status === 404) {
+      alert('The message you are trying to edit no longer exists.');
+    } else if (res.status === 403) {
+      alert('You are trying to edit a message which you do not own.');
     }
 
     location.reload();
