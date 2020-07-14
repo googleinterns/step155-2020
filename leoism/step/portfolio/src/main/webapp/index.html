@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body class="borderless default" onload="getComments()">
+  <body class="borderless default" onload="loadComments()">
     <nav id="header-div">
       <ul id="nav-buttons">
         <li class="nav-button"><a class="nav-button" href="pages/about.html">About</a></li>
@@ -20,6 +20,18 @@
         Welcome to my Portfolio! Use the tabs above to navigate my website.
       </section>
     </div>
-    <div class="main-content-box" id="comments-container"></div>
+    <div data-display="0" id="comments-container"></div>
+    <button  id="load-more-button" onclick="loadComments()" type="button">
+      Load More Comments
+    </button>
+    <div class="main-content-box">
+      <form action="/data" method="POST">
+        <p>Name:</p>
+        <input name="user-name" type="text" required/>
+        <p>Comment:</p>
+        <textarea name="user-comment">Nice website!</textarea>
+        <input type="submit"/>
+      </form>
+    </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="getJson()">
     <div id="nav-bar">
       <a href="index.html">Home</a>
       <a href="essays.html">Writing</a>
@@ -15,7 +15,8 @@
     <div id="content">
       <div id="intro">
         <h1>My Portfolio</h1>
-        <p>Hi there! I'm Lynda, a sophomore at the  University of Washington studying Computer Science.</p>
+        <p>Hi there! I'm Lynda, a sophomore (rising junior!) at the University of Washington studying Computer Science.</p>
+        <p>I use she/her pronouns.</p>
         <p>Click here to get a random fact about me:</p>
         <button onclick="addFunFact()">press</button>
         <div id="fact-container"></div>
@@ -49,14 +50,41 @@
     </div>
 
     <br> <br>
-    
-    <div id="contact-me">
-      <a href="https://www.linkedin.com/in/lynda-pham/">
-        <img src="https://1000logos.net/wp-content/uploads/2017/03/LinkedIn-Logo.png" alt="linkedin logo" width="60" height="60">
-      </a>
-      <a href="https://www.instagram.com/lphamela/">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png" alt="instagram logo" width="60" height="60">
-      </a>
+
+    <div id="content">
+      <form action="/data" method="POST">
+        <h3>Please vote for your favorite picture:</h3>
+        <input type="radio" id="bridge-vote" name="picture-vote" value="bridge">
+        <label for="bridge-vote">Bridge</label><br>
+        <input type="radio" id="park-vote" name="picture-vote" value="park">
+        <label for="park-vote">Park</label><br>
+        <input type="radio" id="dicks-vote" name="picture-vote" value="dicks">
+        <label for="dicks-vote">Dick's</label><br>
+        <input type="radio" id="fish-vote" name="picture-vote" value="fish">
+        <label for="fish-vote">Fishing</label><br>
+        <input type="radio" id="plants-vote" name="picture-vote" value="plants">
+        <label for="plants-vote">Plants</label><br>
+        <input type="radio" id="sky-vote" name="picture-vote" value="sky">
+        <label for="sky-vote">Sky</label><br>
+        <textarea name="text-input">Feel free to leave a comment here!</textarea>
+        <input type="submit"/>
+      </form>
+      <br> <br>
+
+      <!-- Pop up with Hello Lynda! message fetched from /data-->
+      <h3>Previous Votes:</h3>
+      <div id="json-container"></div>
+
+      <br> <br>
+
+      <div id="contact-me">
+        <a href="https://www.linkedin.com/in/lynda-pham/">
+          <img src="https://1000logos.net/wp-content/uploads/2017/03/LinkedIn-Logo.png" alt="linkedin logo" width="60" height="60">
+        </a>
+        <a href="https://www.instagram.com/lphamela/">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png" alt="instagram logo" width="60" height="60">
+        </a>
+      </div>
     </div>
   </body>
 </html>

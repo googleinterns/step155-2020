@@ -34,3 +34,10 @@ function addFunFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
+
+function getJson() {
+  fetch('/data').then(response => response.text()).then((quote) => {
+    const jsonContainer = document.getElementById('json-container');
+    jsonContainer.innerText = quote;
+  });
+}
