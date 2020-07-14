@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -53,9 +54,11 @@ public class DataServlet extends HttpServlet {
       String name = (String) entity.getProperty("name");
       long timestamp = (long) entity.getProperty("timestamp");
       double sentimentScore = (double) entity.getProperty("sentimentScore");
+      String email = (String) entity.getProperty("email");
+      String key = KeyFactory.keyToString(entity.getKey());
 
       CommentInformation commentInformation =
-          new CommentInformation(comment, name, timestamp, sentimentScore);
+          new CommentInformation(comment, name, timestamp, sentimentScore, key, email);
 
       comments.add(commentInformation);
     }
