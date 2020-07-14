@@ -64,8 +64,8 @@ function loadMaps() {
   placesMap.set("singapore", [1.281364, 103.863677]); // Gardens by the Bay- Marina Bay, Singapore
   placesMap.set("hawaii", [21.263983, -157.805827]); // Diamond Head Trail- Honolulu, Hawaii
 
-  for (const [key, value] of placesMap.entries()) {
-    createMap(value[0], value[1], key);
+  for (const [key, [latitude, longitude]] of placesMap.entries()) {
+    createMap(latitude, longitude, key);
   }
 
 }
