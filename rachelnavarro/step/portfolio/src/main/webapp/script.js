@@ -51,3 +51,29 @@ function getDateTime() {
   var datetime = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
   return datetime;
 }
+
+/** Creates and loads maps for all the locations featured in places.html. 
+ * TODO: fetch this info from a java servlet instead of hardcoding */
+function loadMaps() {
+  var placesMap = new Map();
+  placesMap.set("nyc", [40.704381, -73.990588]); // DUMBO Waterfront- Brooklyn, New York
+  placesMap.set("tokyo", [35.685028, 139.709880]); // Shinjuku Gyoen National Garden- Tokyo, Japan
+  placesMap.set("la", [33.983814, -118.467551]); // Venice Beach Canals- Los Angeles, California
+  placesMap.set("niagara", [43.079886, -79.075159]); // Niagara Falls- Ontario, Canada
+  placesMap.set("santorini", [36.458416, 25.371504]); // Santorini- Ia, Greece
+  placesMap.set("singapore", [1.281364, 103.863677]); // Gardens by the Bay- Marina Bay, Singapore
+  placesMap.set("hawaii", [21.263983, -157.805827]); // Diamond Head Trail- Honolulu, Hawaii
+
+  for (const [key, [latitude, longitude]] of placesMap.entries()) {
+    createMap(latitude, longitude, key);
+  }
+
+}
+
+/** Creates a map of a location and adds it to the page. */
+function createMap(latitude, longitude, name) {
+  console.log("creating " + name);
+  const map = new google.maps.Map(
+      document.getElementById(name),
+      {center: {lat: latitude, lng: longitude}, zoom: 15});
+}
