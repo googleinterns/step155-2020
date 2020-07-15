@@ -6,4 +6,8 @@ command:
 
 ```bash
 mvn package appengine:run
-```
+
+UPDATE 7/13/20:
+To run the dev server for the portfolio, execute the bash script: ./runPortfolio.sh
+This runs a script to substitute all instances of 'MY_API_KEY' with the value of the 
+MY_API_KEY environment variable, and subsequently runs the dev server.

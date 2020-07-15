@@ -42,6 +42,18 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.edit-button {
+  border-color: #1976d2;
+  border-radius: 5px;
+  border-style: solid;
+  float: right;
+}
+
+#edit-comment-field {
+  display: block;
+  width: 95%;
+}
+
 .icon-spacing {
     padding: 0 20px 0 20px;
 }
@@ -108,6 +120,32 @@
 .row {
   flex-basis: 100%;
   flex: 1;
+}
+
+.table-style {
+  background-color: #63a4ff;
+  border-collapse: collapse;
+  font-family: arial, sans-serif;
+  width: 100%;
+}
+
+.table-text {
+  border-left: 1px solid #dddddd;
+  color: #fff;
+  padding: 8px;
+  text-align: left;
+}
+
+.table-header-style {
+  background-color: #004ba0;
+  border-bottom: 1px solid #dddddd;
+  color: #fff;
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #1976d2;
 }
 
 .title {
