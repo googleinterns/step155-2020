@@ -1,3 +1,11 @@
-# exclude tests and walkthroughs
+# ignore tests and walkthroughs
 tests/
-walkthroughs/
+
+# exclude week 5 from being ignored
+!walkthroughs/
+walkthroughs/*
+!walkthroughs/week-5-tdd/
+walkthroughs/week-5-tdd/*
+!walkthroughs/week-5-tdd/project/
+!walkthroughs/week-5-tdd/project/*
+
