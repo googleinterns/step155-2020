@@ -71,8 +71,8 @@ public final class FindMeetingQuery {
    * returns true.
    */
   private boolean areRequiredAttendeesPresent(
-      Collection<String> requiredAttendees, Collection<String> presentAttendess) {
-    for (String attendee : presentAttendess) {
+      Collection<String> requiredAttendees, Collection<String> presentAttendees) {
+    for (String attendee : presentAttendees) {
       if (!requiredAttendees.contains(attendee)) {
         return false;
       }
