@@ -74,8 +74,8 @@ public class DataServlet extends HttpServlet {
     if (hidden) {
       response.setContentType("text/html;");
       response
-      .getWriter()
-      .println("Some messages have been hidden due to language! Please be kind.");
+        .getWriter()
+        .println("Some messages have been hidden due to language! Please be kind.");
     }
   }
 
