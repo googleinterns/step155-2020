@@ -61,8 +61,8 @@ public class DataServlet extends HttpServlet {
       double score = (double) entity.getProperty("sentimentScore");
       Vote entry = new Vote(vote, comment, score);
       if (score < -0.6) {
-          hidden = true;
-          continue;
+        hidden = true;
+        continue;
       }
       votes.add(entry);
     }
