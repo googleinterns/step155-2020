@@ -66,11 +66,15 @@ public class DataServlet extends HttpServlet {
     }
 
     Gson gson = new Gson();
+    if (!votes.isEmpty()) {
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(votes));
+    }
 
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(votes));
-    response.setContentType("text/html;");
-    response.getWriter().println("Some messages have been hidden due to language! Please be kind.");
+    if (hidden) {
+      response.setContentType("text/html;");
+      response.getWriter().println("Some messages have been hidden due to language! Please be kind.");
+    }
   }
 
   @Override
