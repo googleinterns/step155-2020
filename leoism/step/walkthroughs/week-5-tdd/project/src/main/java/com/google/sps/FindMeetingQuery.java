@@ -94,7 +94,8 @@ public final class FindMeetingQuery {
   }
 
   /** Returns an ArrayList of TimeRange of all slots that are occupied by events. */
-  private ArrayList<TimeRange> getCombinedSlotsTaken(Collection<Event> events, MeetingRequest request) {
+  private ArrayList<TimeRange> getCombinedSlotsTaken(
+      Collection<Event> events, MeetingRequest request) {
     ArrayList<TimeRange> slotsTaken = new ArrayList<TimeRange>();
     Collection<String> mandatoryAttendees = request.getAttendees();
     Collection<String> eventAttendees = allEventAttendees(events);
