@@ -32,7 +32,7 @@ public final class FindMeetingQuery {
       return slotsOpen;
     }
 
-    ArrayList<TimeRange> slotsTaken = getSlotsTaken(events, request);
+    ArrayList<TimeRange> slotsTaken = getCombinedSlotsTaken(events, request);
 
     int previousEndTime = TimeRange.START_OF_DAY;
     for (TimeRange occupied : slotsTaken) {
@@ -42,7 +42,7 @@ public final class FindMeetingQuery {
 
     slotsOpen.add(TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true));
 
-    return sufficientTimeAvailable(slotsOpen, request);
+    return getAvailableTimes(slotsOpen, request);
   }
 
   /**
@@ -72,8 +72,8 @@ public final class FindMeetingQuery {
    */
   private boolean areRequiredAttendeesPresent(
       Collection<String> requiredAttendees, Collection<String> presentAttendees) {
-    for (String attendee : presentAttendees) {
-      if (!requiredAttendees.contains(attendee)) {
+    for (String attendee : requiredAttendees) {
+      if (!presentAttendees.contains(attendee)) {
         return false;
       }
     }
@@ -94,17 +94,17 @@ public final class FindMeetingQuery {
   }
 
   /** Returns an ArrayList of TimeRange of all slots that are occupied by events. */
-  private ArrayList<TimeRange> getSlotsTaken(Collection<Event> events, MeetingRequest request) {
+  private ArrayList<TimeRange> getCombinedSlotsTaken(Collection<Event> events, MeetingRequest request) {
     ArrayList<TimeRange> slotsTaken = new ArrayList<TimeRange>();
     Collection<String> mandatoryAttendees = request.getAttendees();
     Collection<String> eventAttendees = allEventAttendees(events);
+    boolean mandatoryAttendeesPresent =
+        areRequiredAttendeesPresent(mandatoryAttendees, eventAttendees);
 
     for (Event event : events) {
       TimeRange requestedTime = event.getWhen();
       TimeRange overlappedCombined = doesOverlap(requestedTime, slotsTaken);
 
-      boolean mandatoryAttendeesPresent =
-          areRequiredAttendeesPresent(eventAttendees, mandatoryAttendees);
       if (!mandatoryAttendeesPresent) {
         continue;
       }
@@ -124,7 +124,7 @@ public final class FindMeetingQuery {
    * duration. If there is a sufficient time slot, it is added to an ArrayList of TimeRange. When
    * all slots have been checked, returns an ArrayList of TimeRange with sufficient times.
    */
-  private ArrayList<TimeRange> sufficientTimeAvailable(
+  private ArrayList<TimeRange> getAvailableTimes(
       ArrayList<TimeRange> slotsOpen, MeetingRequest request) {
     ArrayList<TimeRange> sufficientTimes = new ArrayList<TimeRange>();
     for (TimeRange availableSlot : slotsOpen) {
