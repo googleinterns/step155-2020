@@ -22,7 +22,7 @@ public final class VoteResponse {
     this.voteList.addAll(voteList);
     this.message = message;
   }
-  
+
   public List getList() {
     return voteList;
   }
