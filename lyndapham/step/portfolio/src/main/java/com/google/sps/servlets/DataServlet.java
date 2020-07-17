@@ -67,7 +67,9 @@ public class DataServlet extends HttpServlet {
     }
 
     if (hidden) {
-      res = new VoteResponse(votes, "Some messages have been hidden due to language! Please be kind.");
+      res =
+          new VoteResponse(
+              votes, "Some messages have been hidden due to language! Please be kind.");
     } else {
       res = new VoteResponse(votes);
     }
