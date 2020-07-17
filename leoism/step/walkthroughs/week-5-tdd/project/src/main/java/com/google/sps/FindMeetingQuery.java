@@ -19,6 +19,10 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public final class FindMeetingQuery {
+  /**
+   * Returns a Collection of TimeRange for the requested meeting can take place and attendees can
+   * attend. Assumes that all events are provided in order from start of day to end of day.
+   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     ArrayList<TimeRange> slotsOpen = new ArrayList<TimeRange>();
 
@@ -50,7 +54,7 @@ public final class FindMeetingQuery {
    * TimeRange is removed and a new TimeRange is returned with the events time merged. Otherwise,
    * returns null if no TimeRange overlaps.
    */
-  private TimeRange doesOverlap(TimeRange requestedTime, ArrayList<TimeRange> slotsTaken) {
+  private TimeRange combineOverlaps(TimeRange requestedTime, ArrayList<TimeRange> slotsTaken) {
     for (TimeRange occupied : slotsTaken) {
       if (requestedTime.overlaps(occupied)) {
         // If an overlap occurs, merge them by getting the earliest start time and the latest start
@@ -93,7 +97,10 @@ public final class FindMeetingQuery {
     return eventAttendees;
   }
 
-  /** Returns an ArrayList of TimeRange of all slots that are occupied by events. */
+  /**
+   * Returns an ArrayList of TimeRange of all slots that are occupied by events. Assumes that all
+   * events are provided in sorted order from start of day to end of day.
+   */
   private ArrayList<TimeRange> getCombinedSlotsTaken(
       Collection<Event> events, MeetingRequest request) {
     ArrayList<TimeRange> slotsTaken = new ArrayList<TimeRange>();
@@ -101,14 +108,13 @@ public final class FindMeetingQuery {
     Collection<String> eventAttendees = allEventAttendees(events);
     boolean mandatoryAttendeesPresent =
         areRequiredAttendeesPresent(mandatoryAttendees, eventAttendees);
+    if (!mandatoryAttendeesPresent) {
+      return slotsTaken;
+    }
 
     for (Event event : events) {
       TimeRange requestedTime = event.getWhen();
-      TimeRange overlappedCombined = doesOverlap(requestedTime, slotsTaken);
-
-      if (!mandatoryAttendeesPresent) {
-        continue;
-      }
+      TimeRange overlappedCombined = combineOverlaps(requestedTime, slotsTaken);
 
       if (overlappedCombined != null) {
         slotsTaken.add(overlappedCombined);
