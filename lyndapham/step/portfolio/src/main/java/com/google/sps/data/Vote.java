@@ -2,7 +2,7 @@
 
 package com.google.sps.servlets;
 
-/** An item on a todo list. */
+/** A vote for a picture. */
 public final class Vote {
 
   private final String vote;

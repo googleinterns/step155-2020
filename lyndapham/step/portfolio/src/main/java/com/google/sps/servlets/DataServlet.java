@@ -51,6 +51,7 @@ public class DataServlet extends HttpServlet {
 
     List<Vote> votes = new ArrayList<>();
     boolean hidden = false;
+    VoteResponse res;
 
     for (Entity entity : results.asIterable()) {
       String vote = (String) entity.getProperty("vote");
@@ -65,17 +66,18 @@ public class DataServlet extends HttpServlet {
       votes.add(entry);
     }
 
-    Gson gson = new Gson();
-    if (!votes.isEmpty()) {
-      response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(votes));
-    }
-
     if (hidden) {
-      response.setContentType("text/html;");
-      response
-          .getWriter()
-          .println("Some messages have been hidden due to language! Please be kind.");
+      res = new VoteResponse(votes, "Some messages have been hidden due to language! Please be kind.");
+    } else {
+      res = new VoteResponse(votes);
+    }
+    Gson gson = new Gson();
+    response.setContentType("application/json;");
+    if (!res.getList().isEmpty()) {
+      response.getWriter().println(gson.toJson(res.getList()));
+    }
+    if (res.getMessage() != null) {
+      response.getWriter().println(gson.toJson(res.getMessage()));
     }
   }
 
