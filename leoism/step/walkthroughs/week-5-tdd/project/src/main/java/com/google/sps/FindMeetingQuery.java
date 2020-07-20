@@ -15,8 +15,9 @@
 package com.google.sps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 
 public final class FindMeetingQuery {
   /**
@@ -24,8 +25,7 @@ public final class FindMeetingQuery {
    * attend. Assumes that all events are provided in order from start of day to end of day.
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    ArrayList<TimeRange> slotsOpen = new ArrayList<TimeRange>();
-
+    ArrayList<TimeRange> slotsOpen = new ArrayList<>();
     // A requested meeting duration longer than the time of day should not be possible.
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
       return slotsOpen;
@@ -36,17 +36,42 @@ public final class FindMeetingQuery {
       return slotsOpen;
     }
 
-    ArrayList<TimeRange> slotsTaken = getCombinedSlotsTaken(events, request);
+    ArrayList<TimeRange> slotsTaken = getCombinedSlotsTaken(events, request, false);
+
+    slotsOpen = calculateOpenSlots(slotsTaken, request.getDuration());
+
+    // There are no optional attendees so there is no need to check if they can attend or not.
+    if (request.getOptionalAttendees().isEmpty()) {
+      return slotsOpen;
+    }
+
+    return getAvailableOptionalTimes(slotsOpen, events, request);
+  }
+
+  /**
+   * Given an ArrayList of TimeRange of slots that are unavailble and a requested meetings duration,
+   * an ArrayList of TimeRange is returned of all time slots that are equal to or greater than the
+   * requested meeting duration.
+   */
+  private ArrayList<TimeRange> calculateOpenSlots(ArrayList<TimeRange> slotsTaken, long duration) {
+    ArrayList<TimeRange> slotsOpen = new ArrayList<>();
 
     int previousEndTime = TimeRange.START_OF_DAY;
     for (TimeRange occupied : slotsTaken) {
-      slotsOpen.add(TimeRange.fromStartEnd(previousEndTime, occupied.start(), false));
+      TimeRange potentialOpenSlot =
+          TimeRange.fromStartEnd(previousEndTime, occupied.start(), false);
+      if (potentialOpenSlot.duration() >= duration) {
+        slotsOpen.add(potentialOpenSlot);
+      }
       previousEndTime = occupied.end();
     }
 
-    slotsOpen.add(TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true));
+    // END_OF_DAY is + 1 because END_OF_DAY is not inclusive by default.
+    if (previousEndTime != TimeRange.END_OF_DAY + 1) {
+      slotsOpen.add(TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true));
+    }
 
-    return getAvailableTimes(slotsOpen, request);
+    return slotsOpen;
   }
 
   /**
@@ -70,31 +95,18 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Checks if all required attendees (those that the event is booked under) are the same as the one
-   * making the Meeting Request. Returns false if a required attendee is not present. Otherwise,
-   * returns true.
+   * Returns true if at least one required attendee is present. If no required attendees are
+   * present, returns false.
    */
   private boolean areRequiredAttendeesPresent(
       Collection<String> requiredAttendees, Collection<String> presentAttendees) {
     for (String attendee : requiredAttendees) {
-      if (!presentAttendees.contains(attendee)) {
-        return false;
+      if (presentAttendees.contains(attendee)) {
+        return true;
       }
     }
-    return true;
-  }
 
-  /**
-   * Stores all attendees which the event is booked under and stores them inside a Set to avoid
-   * duplicates. Returns a HashSet with all attendees booked under an event.
-   */
-  private HashSet<String> allEventAttendees(Collection<Event> events) {
-    HashSet<String> eventAttendees = new HashSet<String>();
-    for (Event event : events) {
-      eventAttendees.addAll(event.getAttendees());
-    }
-
-    return eventAttendees;
+    return false;
   }
 
   /**
@@ -102,43 +114,64 @@ public final class FindMeetingQuery {
    * events are provided in sorted order from start of day to end of day.
    */
   private ArrayList<TimeRange> getCombinedSlotsTaken(
-      Collection<Event> events, MeetingRequest request) {
-    ArrayList<TimeRange> slotsTaken = new ArrayList<TimeRange>();
-    Collection<String> mandatoryAttendees = request.getAttendees();
-    Collection<String> eventAttendees = allEventAttendees(events);
-    boolean mandatoryAttendeesPresent =
-        areRequiredAttendeesPresent(mandatoryAttendees, eventAttendees);
-    if (!mandatoryAttendeesPresent) {
-      return slotsTaken;
-    }
+      Collection<Event> events, MeetingRequest request, boolean isOptional) {
+    ArrayList<TimeRange> slotsTaken = new ArrayList<>();
+    Collection<String> currentAttendees =
+        isOptional ? request.getOptionalAttendees() : request.getAttendees();
 
     for (Event event : events) {
+      boolean mandatoryAttendeesPresent =
+          areRequiredAttendeesPresent(currentAttendees, event.getAttendees());
+      if (!mandatoryAttendeesPresent) {
+        continue;
+      }
+
       TimeRange requestedTime = event.getWhen();
       TimeRange overlappedCombined = combineOverlaps(requestedTime, slotsTaken);
 
       if (overlappedCombined != null) {
         slotsTaken.add(overlappedCombined);
-        continue;
+      } else {
+        slotsTaken.add(requestedTime);
       }
-      slotsTaken.add(requestedTime);
     }
 
     return slotsTaken;
   }
 
   /**
-   * Checks all available slots to see if the there is sufficient time for the requested meeting
-   * duration. If there is a sufficient time slot, it is added to an ArrayList of TimeRange. When
-   * all slots have been checked, returns an ArrayList of TimeRange with sufficient times.
+   * Returns a Collection of TimeRange slots with the optional attendees considered. Gets all
+   * possible TimeRange openings for optional attendees. If no optional attendees can attend, then
+   * the previous TimeRange slots are returned.
    */
-  private ArrayList<TimeRange> getAvailableTimes(
-      ArrayList<TimeRange> slotsOpen, MeetingRequest request) {
-    ArrayList<TimeRange> sufficientTimes = new ArrayList<TimeRange>();
-    for (TimeRange availableSlot : slotsOpen) {
-      if (availableSlot.duration() >= request.getDuration()) {
-        sufficientTimes.add(availableSlot);
+  private Collection<TimeRange> getAvailableOptionalTimes(
+      ArrayList<TimeRange> currSlotsOpen, Collection<Event> events, MeetingRequest request) {
+
+    ArrayList<TimeRange> newOpenSlots = new ArrayList<>();
+    newOpenSlots.addAll(currSlotsOpen);
+    ArrayList<TimeRange> slotsTaken = getCombinedSlotsTaken(events, request, true);
+
+    // Since elements inside newOpenSlots may be deleted, they are stored temporarily so that
+    // slotsTaken can also remove the TimeRanges.
+    List<Object> tempHolderForDeletion = Arrays.asList(newOpenSlots.toArray());
+    newOpenSlots.removeAll(Arrays.asList(slotsTaken.toArray()));
+    slotsTaken.removeAll(tempHolderForDeletion);
+
+    // Traditional for loop is used to prevent forEach iterators from throwing modification
+    // exceptions.
+    for (int i = 0; i < slotsTaken.size(); i++) {
+      TimeRange slotTaken = slotsTaken.get(i);
+      if (request.getDuration() > slotTaken.duration()) {
+        slotsTaken.remove(slotTaken);
       }
     }
-    return sufficientTimes;
+
+    if (slotsTaken.isEmpty() && !newOpenSlots.isEmpty()) {
+      return newOpenSlots;
+    }
+
+    newOpenSlots = calculateOpenSlots(slotsTaken, request.getDuration());
+
+    return newOpenSlots.isEmpty() ? currSlotsOpen : newOpenSlots;
   }
 }
