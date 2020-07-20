@@ -16,8 +16,8 @@ package com.google.sps;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,15 +28,16 @@ public final class FindMeetingQuery {
   private int currentTime = 0;
 
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+    // Zero out possibleTimes and currentTime with every call to query().
+    possibleTimes = new ArrayList<TimeRange>();
+    currentTime = 0;
 
     // Get prescheduled events and data about the meeting request.
     long meetingLength = request.getDuration();
-    ArrayList<String> meetingAttendees = new ArrayList<String>(request.getAttendees());
-    ArrayList<String> meetingOptionalAttendees = new ArrayList<String>(request.getOptionalAttendees());
     ArrayList<Event> prescheduledEvents = new ArrayList<Event>(events);
 
     // A meeting with no atendees(and no optional attendees) can be scheduled for any time of the day.
-    if (meetingAttendees.size() == 0 && meetingOptionalAttendees.size() == 0) {
+    if (request.getAttendees().size() == 0 && request.getOptionalAttendees().size() == 0) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
@@ -48,9 +49,8 @@ public final class FindMeetingQuery {
     // Sort the prescheduled events by their start time.
     Collections.sort(prescheduledEvents, sortByStart);
 
-
     // Determine available times and update possibleTimes based off of findings.
-    getPossibleTimes(prescheduledEvents, meetingAttendees, meetingLength);
+    getPossibleTimes(prescheduledEvents, request.getAttendees(), meetingLength);
     return possibleTimes;
   }
 
@@ -62,7 +62,7 @@ public final class FindMeetingQuery {
   /*
    * See if a prescheduled event and the requested meeting have an attendee in common.
    */
-  private boolean attendeesInCommon(ArrayList<String> meetingAttendees, ArrayList<String> eventAttendees) {
+  private boolean attendeesInCommon(Collection<String> meetingAttendees, ArrayList<String> eventAttendees) {
     for (String attendee : eventAttendees) {
       if (meetingAttendees.contains(attendee)) {
         return true;
@@ -88,11 +88,10 @@ public final class FindMeetingQuery {
     currentTime = prescheduledEvent.getWhen().end();
   }
 
-
   /*
    * Update possibleTimes to include any times during which the meeting request could be scheduled.
    */
-  private void getPossibleTimes(ArrayList<Event> prescheduledEvents, ArrayList<String> meetingAttendees, long meetingLength) {
+  private void getPossibleTimes(ArrayList<Event> prescheduledEvents, Collection<String> meetingAttendees, long meetingLength) {
 
     for (Event event : prescheduledEvents) {
 
