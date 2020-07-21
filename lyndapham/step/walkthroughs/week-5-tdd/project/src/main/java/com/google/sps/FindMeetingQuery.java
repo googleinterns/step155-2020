@@ -23,6 +23,7 @@ public final class FindMeetingQuery {
   /** This class finds available meeting times given a MeetingRequest */
 
   /**
+   * 
    * Returns a Collection of TimeRanges that would be suitable for a meeting
    * @param events events that are already taking place for some attendees
    * @param request the MeetingRequest with its details
