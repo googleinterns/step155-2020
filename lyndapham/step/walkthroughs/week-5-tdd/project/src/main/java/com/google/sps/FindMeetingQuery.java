@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+/** This class finds available meeting times given a MeetingRequest */
 public final class FindMeetingQuery {
-  /** This class finds available meeting times given a MeetingRequest */
 
   /**
    * Returns a Collection of TimeRanges that would be suitable for a meeting
