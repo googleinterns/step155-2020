@@ -24,12 +24,11 @@ public final class FindMeetingQuery {
 
   /**
    * Returns a Collection of TimeRanges that would be suitable for a meeting
-   * @param  events  events that are already taking place for some attendees
-   * @param  request the MeetingRequest with its details
-   * @return         suitable times for the meeting
-   *
-   *    <p> Assumptions All events are passed correctly formatted to MeetingRequest All attendees
-   *    are mandatory All events that attendees are attending are provided
+   * @param events events that are already taking place for some attendees
+   * @param request the MeetingRequest with its details
+   * @return suitable times for the meeting
+   *     <p>Assumptions All events are passed correctly formatted to MeetingRequest All attendees
+   *     are mandatory All events that attendees are attending are provided
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     ArrayList<TimeRange> unavailableTimes = new ArrayList<>();
@@ -89,7 +88,7 @@ public final class FindMeetingQuery {
         } else if (collapsed.get(collapsedIdx).overlaps(uncollapsed.get(i))) {
           // start should be smallest start time, end should be the largest end time
           int start =
-              (collapsed.get(collapsedIdx).start() < uncollapsed.get(i).start()) 
+              (collapsed.get(collapsedIdx).start() < uncollapsed.get(i).start())
                   ? collapsed.get(collapsedIdx).start()
                   : uncollapsed.get(i).start();
           int end =
