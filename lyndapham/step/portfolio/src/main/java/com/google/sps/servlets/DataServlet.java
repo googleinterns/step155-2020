@@ -14,17 +14,18 @@
 
 package com.google.sps.servlets;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
 import com.google.gson.Gson;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -49,18 +50,37 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     List<Vote> votes = new ArrayList<>();
+    boolean hidden = false;
+    VoteResponse res;
+
     for (Entity entity : results.asIterable()) {
       String vote = (String) entity.getProperty("vote");
       String comment = (String) entity.getProperty("comment");
 
-      Vote entry = new Vote(vote, comment);
+      double score = (double) entity.getProperty("sentimentScore");
+      Vote entry = new Vote(vote, comment, score);
+      if (score < -0.6) {
+        hidden = true;
+        continue;
+      }
       votes.add(entry);
     }
 
+    if (hidden) {
+      res =
+          new VoteResponse(
+              votes, "Some messages have been hidden due to language! Please be kind.");
+    } else {
+      res = new VoteResponse(votes);
+    }
     Gson gson = new Gson();
-
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(votes));
+    if (!res.getList().isEmpty()) {
+      response.getWriter().println(gson.toJson(res.getList()));
+    }
+    if (res.getMessage() != null) {
+      response.getWriter().println(gson.toJson(res.getMessage()));
+    }
   }
 
   @Override
@@ -69,9 +89,17 @@ public class DataServlet extends HttpServlet {
     String vote = request.getParameter("picture-vote");
     String comment = request.getParameter("text-input");
 
+    Document doc =
+        Document.newBuilder().setContent(comment).setType(Document.Type.PLAIN_TEXT).build();
+    LanguageServiceClient languageService = LanguageServiceClient.create();
+    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+    double score = (double) sentiment.getScore();
+    languageService.close();
+
     Entity voteEntity = new Entity("Vote");
     voteEntity.setProperty("vote", vote);
     voteEntity.setProperty("comment", comment);
+    voteEntity.setProperty("sentimentScore", score);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(voteEntity);
