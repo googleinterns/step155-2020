@@ -88,10 +88,8 @@ public final class FindMeetingQuery {
           continue;
         } else if (collapsed.get(collapsedIdx).overlaps(uncollapsed.get(i))) {
           // start should be smallest start time, end should be the largest end time
-          int start =
-              Math.min(collapsed.get(collapsedIdx).start(), uncollapsed.get(i).start());
-          int end =
-              Math.max(collapsed.get(collapsedIdx).end(), uncollapsed.get(i).end());
+          int start = Math.min(collapsed.get(collapsedIdx).start(), uncollapsed.get(i).start());
+          int end = Math.max(collapsed.get(collapsedIdx).end(), uncollapsed.get(i).end());
           collapsed.add(TimeRange.fromStartEnd(start, end, false));
           collapsed.remove(collapsedIdx);
         } else {
