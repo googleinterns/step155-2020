@@ -110,7 +110,7 @@ public final class FindMeetingQuery {
     for (TimeRange time : unavailableTimes) {
       TimeRange newTime = TimeRange.fromStartEnd(startTime, time.start(), false);
       if (newTime.duration() >= request.getDuration()) {
-        availableTimes.add(TimeRange.fromStartEnd(startTime, time.start(), false));
+        availableTimes.add(newTime);
       }
       startTime = time.end();
     }
