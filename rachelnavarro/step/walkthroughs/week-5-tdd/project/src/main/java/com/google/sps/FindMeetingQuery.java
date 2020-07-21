@@ -36,28 +36,19 @@ public final class FindMeetingQuery {
     long meetingLength = request.getDuration();
     ArrayList<Event> prescheduledEvents = new ArrayList<Event>(events);
 
-    // A meeting with no atendees(and no optional attendees) can be scheduled for any time of the day.
-    if (request.getAttendees().size() == 0 && request.getOptionalAttendees().size() == 0) {
-      return Arrays.asList(TimeRange.WHOLE_DAY);
-    }
-
     // A meeting that has a negative duration or that is longer than the whole day cannot be scheduled at all.
     if (meetingLength < 0 || meetingLength > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
     }
 
     // Sort the prescheduled events by their start time.
+    Comparator<Event> sortByStart =  (Event eventA, Event eventB) -> Long.compare(eventA.getWhen().start(), eventB.getWhen().start());
     Collections.sort(prescheduledEvents, sortByStart);
 
     // Determine available times and update possibleTimes based off of findings.
     getPossibleTimes(prescheduledEvents, request.getAttendees(), meetingLength);
     return possibleTimes;
   }
-
-  /*
-   * Sort events by their start times.
-   */
-  private Comparator<Event> sortByStart =  (Event eventA, Event eventB) -> Long.compare(eventA.getWhen().start(), eventB.getWhen().start());
 
   /*
    * See if a prescheduled event and the requested meeting have an attendee in common.
