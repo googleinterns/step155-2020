@@ -44,7 +44,9 @@ public final class FindMeetingQuery {
     Collections.sort(prescheduledEvents, sortByStart);
 
     // Determine available times and update possibleTimes based off of findings.
-    possibleTimes = getPossibleTimes(possibleTimes, prescheduledEvents, request.getAttendees(), meetingLength, currentTime);
+    possibleTimes =
+        getPossibleTimes(
+            possibleTimes, prescheduledEvents, request.getAttendees(), meetingLength, currentTime);
     return possibleTimes;
   }
 
@@ -62,12 +64,12 @@ public final class FindMeetingQuery {
   }
 
   /*
-   * Get time between now and prescheduled event. 
+   * Get time between now and prescheduled event.
    */
   private int getTimeBetween(Event prescheduledEvent, int currentTime) {
-    int eventStart = prescheduledEvent.getWhen().start(); 
+    int eventStart = prescheduledEvent.getWhen().start();
     int eventEnd = prescheduledEvent.getWhen().end();
-    return eventStart - currentTime; 
+    return eventStart - currentTime;
   }
 
   /*
@@ -82,19 +84,19 @@ public final class FindMeetingQuery {
 
     for (Event event : prescheduledEvents) {
 
-      ArrayList<String> eventAttendees = new ArrayList<String>(event.getAttendees()); 
+      ArrayList<String> eventAttendees = new ArrayList<String>(event.getAttendees());
 
       if (attendeesInCommon(meetingAttendees, eventAttendees)) {
         
         // If there's no more time left for the meeting, don't schedule it.
-        if (currentTime + meetingLength > TimeRange.END_OF_DAY) { 
+        if (currentTime + meetingLength > TimeRange.END_OF_DAY) {
           return possibleTimes;
         }
 
         // If there's enough time between now and the prescheduled event, schedule the requested
         // meeting in-between.
         int timeBetween = getTimeBetween(event, currentTime);
-        if (timeBetween >= meetingLength) { 
+        if (timeBetween >= meetingLength) {
           TimeRange availableSlot = TimeRange.fromStartDuration(currentTime, timeBetween);
           possibleTimes.add(availableSlot);
           currentTime = event.getWhen().end();
@@ -108,7 +110,7 @@ public final class FindMeetingQuery {
 
     // Schedule meeting towards the end of the day, if possible.
     int timeRemainingToday = TimeRange.END_OF_DAY - currentTime;
-    if (timeRemainingToday >= meetingLength) { 
+    if (timeRemainingToday >= meetingLength) {
       possibleTimes.add(TimeRange.fromStartEnd(currentTime, TimeRange.END_OF_DAY, true));
     }
     return possibleTimes;
