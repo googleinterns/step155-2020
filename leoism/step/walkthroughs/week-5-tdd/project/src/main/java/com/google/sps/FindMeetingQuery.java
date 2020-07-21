@@ -19,6 +19,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Class that finds open time slots for a requested meeting when all mandatory attendees can attend.
+ * Assumes that all events are provided in order from start of day to end of day.
+ */
 public final class FindMeetingQuery {
   /**
    * Returns a Collection of TimeRange for the requested meeting can take place and attendees can
