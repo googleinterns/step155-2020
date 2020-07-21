@@ -16,30 +16,29 @@ h1 {
   font-size: 40px;
 }
 
-.about:after { 
-
-  content: ''; 
-  clear: both; 
-  visibility: hidden; 
+.about::after {
+  content: '';
+  clear: both;
+  visibility: hidden;
 }
 
-.about img { 
-  float: left; 
+.about img {
+  float: left;
   margin-right: 100px;
   width: 35%;
   border-radius: 50%;
 }
 
-.about h2 { 
+.about h2 {
   font-size: 30px;
 }
 
-.about p { 
+.about p {
   overflow: hidden;
   font-size: 15px;
 }
 
-.about ul { 
+.about ul {
   overflow: hidden;
   font-size: 15px;
 }
@@ -63,7 +62,7 @@ h1 {
 .parallax {
   background-image: linear-gradient(to right, #b3b3bf, #e8bfa3, #d3caba, #9edce7);
   overflow: hidden;
-  height: 50px; 
+  height: 50px;
 
   /* Create parallax scrolling effect */
   background-attachment: fixed;
@@ -84,7 +83,7 @@ html {
 .topnav a {
   float: left;
   color: black;
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -126,18 +125,23 @@ html {
 }
 
 @keyframes typewriter {
-  0%, 100% {
+  0%,
+  100% {
     width: 0;
   }
-  20%, 80% {
+
+  20%,
+  80% {
     width: 13em;
   }
 }
 
 @keyframes caret {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
