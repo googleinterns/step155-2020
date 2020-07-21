@@ -27,10 +27,9 @@ public final class FindMeetingQuery {
   /**
    * Param:
    *
-   * Assumptions: Events are sorted (? is this necessary?)
-   *              All events are passed correctly to MeetingRequest
-   *              All events that attendees are attending are provided
+   * Assumptions: All events are passed correctly formatted to MeetingRequest
    *              All attendees are mandatory
+   *              All events that attendees are attending are provided
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     ArrayList<TimeRange> unavailableTimes = new ArrayList<>();
@@ -65,26 +64,25 @@ public final class FindMeetingQuery {
   }
 
   private Boolean containsAttendee(Event event, MeetingRequest request) {
-      for (String attendee: event.getAttendees()) {
-          if (request.getAttendees().contains(attendee)) {
-              return true;
-          }
+    for (String attendee: event.getAttendees()) {
+      if (request.getAttendees().contains(attendee)) {
+        return true;
       }
-      return false;
+    }
+    return false;
   }
 
   private ArrayList<TimeRange> collapseUnavailableTimes(ArrayList<TimeRange> uncollapsed) {
     ArrayList<TimeRange> collapsed = new ArrayList<>();
     if (uncollapsed.size() > 0) {
       collapsed.add(uncollapsed.get(0));
-      int collapsedIdx = 0; // could also use size() - 1
+      int collapsedIdx = 0;
       for (int i = 1; i < uncollapsed.size(); i++) {
-        // check if next TimeRange is equal to, is contained in, or overlaps, with collapsed time
+        // check if next TimeRange is equal to, contained in, or overlaps, with collapsed time
         if (collapsed.get(collapsedIdx).equals(uncollapsed.get(i)) ||
           collapsed.get(collapsedIdx).contains(uncollapsed.get(i)) ||
           uncollapsed.get(i).contains(collapsed.get(collapsedIdx))) {
           continue;
-          // TODO: test if equals check is necessary
         } else if (collapsed.get(collapsedIdx).overlaps(uncollapsed.get(i))) {
           // start should be smallest start time, end should be the largest end time
           int start = (collapsed.get(collapsedIdx).start() < uncollapsed.get(i).start()) ? 
@@ -107,17 +105,17 @@ public final class FindMeetingQuery {
     ArrayList<TimeRange> availableTimes = new ArrayList<>();
     int startTime = TimeRange.START_OF_DAY;
     for (TimeRange time : unavailableTimes) {
-      availableTimes.add(TimeRange.fromStartEnd(startTime, time.start(), false));
+      TimeRange newTime = TimeRange.fromStartEnd(startTime, time.start(), false);
+      if (newTime.duration() >= request.getDuration()) {
+        availableTimes.add(TimeRange.fromStartEnd(startTime, time.start(), false));
+      }
       startTime = time.end();
     }
 
-    availableTimes.add(TimeRange.fromStartEnd(startTime, TimeRange.END_OF_DAY, true));
-
-    for (TimeRange time : availableTimes) {
-        if (time.duration() < request.getDuration()) {
-            availableTimes.remove(time);
-        }
+    if (startTime != TimeRange.END_OF_DAY + 1) {
+      availableTimes.add(TimeRange.fromStartEnd(startTime, TimeRange.END_OF_DAY, true));
     }
+
     return availableTimes;
   }
 }
