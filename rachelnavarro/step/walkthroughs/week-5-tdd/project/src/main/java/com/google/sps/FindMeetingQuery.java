@@ -104,7 +104,7 @@ public final class FindMeetingQuery {
         }
 
         // Otherwise, move on to trying the next available time option after the prescheduled event.
-        currentTime = Math.max(currentTime, event.getWhen().end()); 
+        currentTime = Math.max(currentTime, event.getWhen().end());
       }
     }
 
