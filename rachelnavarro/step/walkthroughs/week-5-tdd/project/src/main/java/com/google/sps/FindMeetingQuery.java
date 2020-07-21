@@ -22,13 +22,10 @@ import java.util.Comparator;
 
 public final class FindMeetingQuery {
 
-  private ArrayList<TimeRange> possibleTimes = new ArrayList<TimeRange>();
-  private int currentTime = 0;
-
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    // Zero out possibleTimes and currentTime with every call to query().
-    possibleTimes = new ArrayList<TimeRange>();
-    currentTime = 0;
+    // Initialize possibleTimes and currentTime.
+    ArrayList<TimeRange> possibleTimes = new ArrayList<TimeRange>();
+    int currentTime = 0;
 
     // Get prescheduled events and data about the meeting request.
     long meetingLength = request.getDuration();
@@ -47,7 +44,7 @@ public final class FindMeetingQuery {
     Collections.sort(prescheduledEvents, sortByStart);
 
     // Determine available times and update possibleTimes based off of findings.
-    getPossibleTimes(prescheduledEvents, request.getAttendees(), meetingLength);
+    possibleTimes = getPossibleTimes(possibleTimes, prescheduledEvents, request.getAttendees(), meetingLength, currentTime);
     return possibleTimes;
   }
 
@@ -74,20 +71,14 @@ public final class FindMeetingQuery {
   }
 
   /*
-   * Squeeze in the requested meeting between now and the prescheduled event. 
-   */
-  private void scheduleMeetingBetween(Event prescheduledEvent, int timeBetween) {
-    possibleTimes.add(TimeRange.fromStartDuration(currentTime, timeBetween));
-    currentTime = prescheduledEvent.getWhen().end();
-  }
-
-  /*
    * Update possibleTimes to include any times during which the meeting request could be scheduled.
    */
-  private void getPossibleTimes(
+  private ArrayList<TimeRange> getPossibleTimes(
+      ArrayList<TimeRange> possibleTimes,
       ArrayList<Event> prescheduledEvents,
       Collection<String> meetingAttendees,
-      long meetingLength) {
+      long meetingLength,
+      int currentTime) {
 
     for (Event event : prescheduledEvents) {
 
@@ -97,14 +88,16 @@ public final class FindMeetingQuery {
         
         // If there's no more time left for the meeting, don't schedule it.
         if (currentTime + meetingLength > TimeRange.END_OF_DAY) { 
-          return;
+          return possibleTimes;
         }
 
         // If there's enough time between now and the prescheduled event, schedule the requested
         // meeting in-between.
         int timeBetween = getTimeBetween(event, currentTime);
         if (timeBetween >= meetingLength) { 
-          scheduleMeetingBetween(event, timeBetween);
+          TimeRange availableSlot = TimeRange.fromStartDuration(currentTime, timeBetween);
+          possibleTimes.add(availableSlot);
+          currentTime = event.getWhen().end();
           continue;
         }
 
@@ -118,6 +111,7 @@ public final class FindMeetingQuery {
     if (timeRemainingToday >= meetingLength) { 
       possibleTimes.add(TimeRange.fromStartEnd(currentTime, TimeRange.END_OF_DAY, true));
     }
+    return possibleTimes;
   }
 
 }
