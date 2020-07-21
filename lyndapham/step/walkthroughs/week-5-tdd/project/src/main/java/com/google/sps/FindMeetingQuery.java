@@ -20,14 +20,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 public final class FindMeetingQuery {
-  /*
-    This class finds available meeting times given an Event.
-  */
+  /** This class finds available meeting times given a MeetingRequest */
 
   /**
-   * Param:
+   * Returns a Collection of TimeRanges that would be suitable for a meeting
+   * @param  events  events that are already taking place for some attendees
+   * @param  request the MeetingRequest with its details
+   * @return         suitable times for the meeting
    *
-   * Assumptions: All events are passed correctly formatted to MeetingRequest
+   * Assumptions  All events are passed correctly formatted to MeetingRequest
    *              All attendees are mandatory
    *              All events that attendees are attending are provided
    */
@@ -44,12 +45,12 @@ public final class FindMeetingQuery {
     }
 
     unavailableTimes = getUnavailableTimes(events, request);
-
     availableTimes = getAvailableTimes(unavailableTimes, request);
 
     return availableTimes;
   }
 
+  /** Returns an ArrayList of unavailable time blocks for the meeting */
   private ArrayList<TimeRange> getUnavailableTimes(Collection<Event> events, MeetingRequest request) {
     ArrayList<TimeRange> unavailableTimes = new ArrayList<>();
 
@@ -63,6 +64,7 @@ public final class FindMeetingQuery {
     return unavailableTimes;
   }
 
+  /** Returns whether the event passed in contains any of the meeting's attendees */
   private Boolean containsAttendee(Event event, MeetingRequest request) {
     for (String attendee: event.getAttendees()) {
       if (request.getAttendees().contains(attendee)) {
@@ -72,6 +74,7 @@ public final class FindMeetingQuery {
     return false;
   }
 
+  /** Combines and returns unavailable times into larger time blocks */
   private ArrayList<TimeRange> collapseUnavailableTimes(ArrayList<TimeRange> uncollapsed) {
     ArrayList<TimeRange> collapsed = new ArrayList<>();
     if (uncollapsed.size() > 0) {
@@ -92,7 +95,7 @@ public final class FindMeetingQuery {
           collapsed.add(TimeRange.fromStartEnd(start, end, false));
           collapsed.remove(collapsedIdx);
         } else {
-          // there is no overlap, just add to collapsed as a different entity
+          // there is no overlap, just add to collapsed as a separate event
           collapsed.add(uncollapsed.get(i));
           collapsedIdx++;
         }
@@ -101,6 +104,7 @@ public final class FindMeetingQuery {
     return collapsed;
   }
 
+  /** Returns an ArrayList of available time blocks for the meeting */
   private ArrayList<TimeRange> getAvailableTimes(ArrayList<TimeRange> unavailableTimes, MeetingRequest request) {
     ArrayList<TimeRange> availableTimes = new ArrayList<>();
     int startTime = TimeRange.START_OF_DAY;
