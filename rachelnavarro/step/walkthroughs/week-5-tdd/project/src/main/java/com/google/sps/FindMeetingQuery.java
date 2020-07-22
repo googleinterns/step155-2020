@@ -43,6 +43,22 @@ public final class FindMeetingQuery {
             Long.compare(eventA.getWhen().start(), eventB.getWhen().start());
     Collections.sort(prescheduledEvents, sortByStart);
 
+    // Take optional attendees into consideration when scheduling requests. 
+    if (request.getOptionalAttendees().size() != 0) {
+      if (request.getAttendees().size() == 0) {
+        return getPossibleTimes(possibleTimes, prescheduledEvents, request.getOptionalAttendees(), meetingLength, currentTime);
+      }
+      ArrayList<TimeRange> possibleTimesOpt = new ArrayList<TimeRange>();
+      ArrayList<TimeRange> timesThatWorkForBoth = new ArrayList<TimeRange>();
+      possibleTimes = getPossibleTimes(possibleTimes, prescheduledEvents, request.getAttendees(), meetingLength, currentTime);
+      possibleTimesOpt = getPossibleTimes(possibleTimesOpt, prescheduledEvents, request.getOptionalAttendees(), meetingLength, currentTime);
+      timesThatWorkForBoth = intersection(possibleTimes, possibleTimesOpt, meetingLength);
+      if (!timesThatWorkForBoth.isEmpty()) {
+        return timesThatWorkForBoth;
+      }
+      possibleTimes.clear();
+    }
+
     // Determine available times and update possibleTimes based off of findings.
     possibleTimes =
         getPossibleTimes(
@@ -114,6 +130,35 @@ public final class FindMeetingQuery {
       possibleTimes.add(TimeRange.fromStartEnd(currentTime, TimeRange.END_OF_DAY, true));
     }
     return possibleTimes;
+  }
+
+  
+  /*
+   * Determine times that would accomodate optional and mandatory employees.
+   */
+  private ArrayList<TimeRange> intersection (ArrayList<TimeRange> possibleTimes, ArrayList<TimeRange> possibleTimesOpt, long meetingLength) {
+
+    ArrayList<TimeRange> timesThatWork = new ArrayList<TimeRange>();
+    ArrayList<TimeRange> finalTimesThatWork = new ArrayList<TimeRange>();
+
+    for (TimeRange possibleTime : possibleTimes) {
+      for (TimeRange possibleTimeOpt : possibleTimesOpt) {
+        if (possibleTime.overlaps(possibleTimeOpt)) { 
+          int startTime = Math.max(possibleTime.start(), possibleTimeOpt.start());
+          int endTime = Math.min(possibleTime.end(), possibleTimeOpt.end());
+          timesThatWork.add(TimeRange.fromStartEnd(startTime, endTime, false));
+        }
+      }
+    }
+
+    for (TimeRange timeThatWorks : timesThatWork) {
+      if (timeThatWorks.duration() >= meetingLength) {
+        finalTimesThatWork.add(timeThatWorks);
+      }
+    }
+
+    return finalTimesThatWork;
+
   }
 
 }
