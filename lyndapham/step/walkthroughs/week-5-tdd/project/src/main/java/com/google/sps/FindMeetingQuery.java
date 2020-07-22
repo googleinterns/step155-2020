@@ -59,8 +59,8 @@ public final class FindMeetingQuery {
         unavailableTimes.add(event.getWhen());
       }
     }
-    unavailableTimes = collapseUnavailableTimes(unavailableTimes);
     Collections.sort(unavailableTimes, TimeRange.ORDER_BY_START);
+    unavailableTimes = collapseUnavailableTimes(unavailableTimes);
     return unavailableTimes;
   }
 
