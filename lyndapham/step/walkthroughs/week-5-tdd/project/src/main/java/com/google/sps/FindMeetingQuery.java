@@ -158,7 +158,6 @@ public final class FindMeetingQuery {
     return (availableTimes.isEmpty()) ? availableTimesMandatory : availableTimes;
   }
 
-
   /** Returns available time blocks for the meeting */
   private List<TimeRange> getAvailableTimes(List<TimeRange> unavailableTimes, long duration) {
     List<TimeRange> availableTimes = new ArrayList<>();
