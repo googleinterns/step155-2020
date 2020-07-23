@@ -110,8 +110,8 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Returns available time blocks for the meeting after considering mandatory and
-   * optional attendees
+   * Returns available time blocks for the meeting after considering mandatory and optional
+   * attendees
    */
   private List<TimeRange> getAvailableTimes(
       List<TimeRange> unavailableTimesMandatory,
@@ -142,13 +142,14 @@ public final class FindMeetingQuery {
           break;
         }
         if (timeOpt.overlaps(timeMan)) {
-            TimeRange newTime = (timeMan.start() < timeOpt.start())
-                ? TimeRange.fromStartEnd(timeOpt.start(), timeMan.end(), false)
-                : TimeRange.fromStartEnd(timeMan.start(), timeOpt.end(), false);
-            if (newTime.duration() >= request.getDuration()) {
-                availableTimes.add(newTime);
-                break;
-            }
+          TimeRange newTime =
+              (timeMan.start() < timeOpt.start())
+                  ? TimeRange.fromStartEnd(timeOpt.start(), timeMan.end(), false)
+                  : TimeRange.fromStartEnd(timeMan.start(), timeOpt.end(), false);
+          if (newTime.duration() >= request.getDuration()) {
+            availableTimes.add(newTime);
+            break;
+          }
         }
       }
     }
@@ -158,8 +159,7 @@ public final class FindMeetingQuery {
   }
 
   /** Returns available time blocks for the meeting */
-  private List<TimeRange> getAvailableTimes(
-      List<TimeRange> unavailableTimes, long duration) {
+  private List<TimeRange> getAvailableTimes(List<TimeRange> unavailableTimes, long duration) {
     List<TimeRange> availableTimes = new ArrayList<>();
     int startTime = TimeRange.START_OF_DAY;
 
