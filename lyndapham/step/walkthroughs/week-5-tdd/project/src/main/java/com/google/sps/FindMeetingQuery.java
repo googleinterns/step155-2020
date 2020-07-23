@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /** This class finds available meeting times given a MeetingRequest */
 public final class FindMeetingQuery {
@@ -32,9 +33,9 @@ public final class FindMeetingQuery {
    *     are mandatory All events that attendees are attending are provided
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    ArrayList<TimeRange> unavailableTimesMandatory = new ArrayList<>();
-    ArrayList<TimeRange> unavailableTimesOptional = new ArrayList<>();
-    ArrayList<TimeRange> availableTimes = new ArrayList<>();
+    List<TimeRange> unavailableTimesMandatory = new ArrayList<>();
+    List<TimeRange> unavailableTimesOptional = new ArrayList<>();
+    List<TimeRange> availableTimes = new ArrayList<>();
 
     if (request.getAttendees().isEmpty() && request.getOptionalAttendees().isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
@@ -53,10 +54,10 @@ public final class FindMeetingQuery {
     return availableTimes;
   }
 
-  /** Returns an ArrayList of unavailable time blocks for the meeting */
-  private ArrayList<TimeRange> getUnavailableTimes(
+  /** Returns unavailable time blocks for the meeting */
+  private List<TimeRange> getUnavailableTimes(
       Collection<Event> events, MeetingRequest request, boolean isMandatory) {
-    ArrayList<TimeRange> unavailableTimes = new ArrayList<>();
+    List<TimeRange> unavailableTimes = new ArrayList<>();
 
     for (Event event : events) {
       if (containsAttendee(event, request, isMandatory)) {
@@ -82,8 +83,8 @@ public final class FindMeetingQuery {
   }
 
   /** Combines and returns unavailable times into larger time blocks */
-  private ArrayList<TimeRange> collapseUnavailableTimes(ArrayList<TimeRange> uncollapsed) {
-    ArrayList<TimeRange> collapsed = new ArrayList<>();
+  private List<TimeRange> collapseUnavailableTimes(List<TimeRange> uncollapsed) {
+    List<TimeRange> collapsed = new ArrayList<>();
     if (uncollapsed.size() > 0) {
       collapsed.add(uncollapsed.get(0));
       int collapsedIdx = 0;
@@ -109,19 +110,19 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Returns an ArrayList of available time blocks for the meeting after considering mandatory and
+   * Returns available time blocks for the meeting after considering mandatory and
    * optional attendees
    */
-  private ArrayList<TimeRange> getAvailableTimes(
-      ArrayList<TimeRange> unavailableTimesMandatory,
-      ArrayList<TimeRange> unavailableTimesOptional,
+  private List<TimeRange> getAvailableTimes(
+      List<TimeRange> unavailableTimesMandatory,
+      List<TimeRange> unavailableTimesOptional,
       MeetingRequest request) {
 
-    ArrayList<TimeRange> availableTimesMandatory =
-        getAvailableTimes(unavailableTimesMandatory, request);
-    ArrayList<TimeRange> availableTimesOptional =
-        getAvailableTimes(unavailableTimesOptional, request);
-    ArrayList<TimeRange> availableTimes = new ArrayList<>();
+    List<TimeRange> availableTimesMandatory =
+        getAvailableTimes(unavailableTimesMandatory, request.getDuration());
+    List<TimeRange> availableTimesOptional =
+        getAvailableTimes(unavailableTimesOptional, request.getDuration());
+    List<TimeRange> availableTimes = new ArrayList<>();
 
     // there are only mandatory attendees
     if (request.getOptionalAttendees().isEmpty()) {
@@ -138,8 +139,16 @@ public final class FindMeetingQuery {
       for (TimeRange timeMan : availableTimesMandatory) {
         if (timeOpt.contains(timeMan)) {
           availableTimes.add(timeMan);
-          System.out.println(availableTimes);
           break;
+        }
+        if (timeOpt.overlaps(timeMan)) {
+            TimeRange newTime = (timeMan.start() < timeOpt.start())
+                ? TimeRange.fromStartEnd(timeOpt.start(), timeMan.end(), false)
+                : TimeRange.fromStartEnd(timeMan.start(), timeOpt.end(), false);
+            if (newTime.duration() >= request.getDuration()) {
+                availableTimes.add(newTime);
+                break;
+            }
         }
       }
     }
@@ -148,15 +157,15 @@ public final class FindMeetingQuery {
     return (availableTimes.isEmpty()) ? availableTimesMandatory : availableTimes;
   }
 
-  /** Returns an ArrayList of available time blocks for the meeting */
-  private ArrayList<TimeRange> getAvailableTimes(
-      ArrayList<TimeRange> unavailableTimes, MeetingRequest request) {
-    ArrayList<TimeRange> availableTimes = new ArrayList<>();
+  /** Returns available time blocks for the meeting */
+  private List<TimeRange> getAvailableTimes(
+      List<TimeRange> unavailableTimes, long duration) {
+    List<TimeRange> availableTimes = new ArrayList<>();
     int startTime = TimeRange.START_OF_DAY;
 
     for (TimeRange time : unavailableTimes) {
       TimeRange newTime = TimeRange.fromStartEnd(startTime, time.start(), false);
-      if (newTime.duration() >= request.getDuration()) {
+      if (newTime.duration() >= duration) {
         availableTimes.add(newTime);
       }
       startTime = time.end();
