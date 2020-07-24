@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<script src="../scripts/comments.js"></script>
+<body>
+  <div id="user-posts"></div>
+  <hr>
+  <textarea required id="post-entry"></textarea>
+  <br>
+  <img id="image-preview">
+  <br>
+  <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)">
+  <br>
+  <button onclick="postComment()">Post</button>
+</body>
