@@ -1,3 +1,5 @@
+<%! String mapsAPIKey = System.getenv("CAPSTONE_API_KEY"); %>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -8,7 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=CAPSTONE_API_KEY"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= mapsAPIKey %>"></script>
     <script src=" ../scripts/maps_script.js"></script>
   </head>
   <body onload="createMap();">
