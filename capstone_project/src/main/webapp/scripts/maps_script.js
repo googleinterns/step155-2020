@@ -120,30 +120,30 @@ function createMap() { // eslint-disable-line no-unused-vars
  */
 function createContentString(name) {
   const contentString = `<div id="content">
-      <div id="siteNotice">
-      </div>
-      <h1 id="firstHeading" class="firstHeading">${name}</h1>
-      <div id="bodyContent">
-      <p>Here you will find all the latest updates on <b>${name}</b>:</p>`+
+    <div id="siteNotice">
+    </div>
+    <h1 id="firstHeading" class="firstHeading">${name}</h1>
+    <div id="bodyContent">
+    <p>Here you will find all the latest updates on <b>${name}</b>:</p>`+
 
-      // Create pills for tab navigation.
-      `<ul class="nav nav-pills">
-      <li class="active"><a data-toggle="pill" href="#news">News</a></li>
-      <li><a data-toggle="pill" href="#posts">Posts</a></li>
-      </ul>`+
-      // Create content stored in tabs for each pill.
-      `<div class="tab-content">
-      <div id="news" class="tab-pane fade in active">
-      <h3>NEWS</h3>
-      <p>This is where the news feed for ${name} will go.</p>
-      </div>
-      <div id="posts" class="tab-pane fade">
-      <h3>POSTS</h3>
-      <p>This is where the posts for ${name} will go.</p>
-      </div>
-      </div>
-      </div>
-      </div>`;
+    // Create pills for tab navigation.
+    `<ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#news">News</a></li>
+    <li><a data-toggle="pill" href="#posts">Posts</a></li>
+    </ul>`+
+    // Create content stored in tabs for each pill.
+    `<div class="tab-content">
+    <div id="news" class="tab-pane fade in active">
+    <h3>NEWS</h3>
+    <p>This is where the news feed for ${name} will go.</p>
+    </div>
+    <div id="posts" class="tab-pane fade">
+    <h3>POSTS</h3>
+    <p>This is where the posts for ${name} will go.</p>
+    </div>
+    </div>
+    </div>
+    </div>`;
 
   return contentString;
 }
