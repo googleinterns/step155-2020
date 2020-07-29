@@ -115,8 +115,8 @@ function createMap() { // eslint-disable-line no-unused-vars
 }
 
 /** Creates and returns the content string for a marker.
- * @param {string} name
- * @return {string}
+ * @param {string} name - The name of a school.
+ * @return {string} - A contentString containing HTML code for an infowindow.
  */
 function createContentString(name) {
   const contentString =
