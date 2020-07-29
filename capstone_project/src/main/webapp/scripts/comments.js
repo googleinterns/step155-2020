@@ -12,29 +12,65 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Adds the user post to the DOM. */
-function postComment() {
-  const postText = document.getElementById('post-entry').value.trim();
-  const userPosts = document.getElementById('user-posts');
-  const imageURL = document.getElementById('image-preview').src;
-
-  const newPost = document.createElement('div');
-  if (imageURL) {
-    newPost.innerHTML = `<img src="${imageURL}">`;
-  }
-
-  newPost.innerHTML += `<p>${postText}</p>`;
-
-  userPosts.appendChild(newPost);
-  document.getElementById('image-preview').src = '';
-  document.getElementById('image-upload').value = '';
-}
-
 /**
  * Loads a preview of the image to be uploaded.
  * @param {Event} event current state of the image tag
  */
-function previewImage(event) {
+function previewImage(event) { // eslint-disable-line no-unused-vars
   const preview = document.getElementById('image-preview');
   preview.src = URL.createObjectURL(event.target.files[0]);
+}
+
+/** Retrieves all posts from the server and adds them to the DOM. */
+async function loadPosts() { // eslint-disable-line no-unused-vars
+  const posts =
+    await fetch('/post-process')
+        .then((response) => response.json())
+        .then((json) => json);
+
+  const postContainer = document.getElementById('user-posts');
+
+  for (let i = 0; i < posts.length; i++) {
+    const post = posts[i];
+    const postProperties = post.propertyMap;
+
+    const HTML = `
+      ${postProperties.imageURL ?
+        `<img class='post-image' src='${postProperties.imageURL}'>` : ''}
+      <p>${postProperties.text}</p>
+      <div class='interactions'>
+        <button class='upvote-button'
+                onclick='upvotePost(this)'>
+            <i class='upvote'></i></button> ${postProperties.upvotes} 
+      </div>
+    `.trim();
+
+    const postElement = document.createElement('div');
+    postElement.setAttribute('class', 'post-container');
+    postElement.setAttribute('data-id', i);
+    postElement.innerHTML = HTML;
+    postContainer.appendChild(postElement);
+  }
+}
+
+/**
+ * Increases the upvote count of a post locally and server side.
+ * @param {HTMLButtonElement} upvoteBtn the button element of the post to
+ *                                      upvote.
+ */
+async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
+  const interactionsBar = upvoteBtn.parentElement;
+  const id = interactionsBar.parentElement.getAttribute('data-id');
+
+  // Makes the POST request to get the new upvote count on the serverside to
+  // later update it on the client side.
+  const newUpvoteCount = await fetch('/upvote', {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    method: 'POST',
+    body: `id=${id}`,
+  }).then((response) => response.json());
+
+  interactionsBar.innerHTML = `${upvoteBtn.outerHTML} ${newUpvoteCount}`;
 }
