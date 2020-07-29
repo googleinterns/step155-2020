@@ -24,9 +24,7 @@ limitations under the License.
   <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
     <textarea required id="post-entry" name="text"></textarea>
     <br>
-    <img alt=""
-         id="image-preview"
-         src="//:0">
+    <img alt="" id="image-preview" src="//:0">
     <br>
     <input accept="image/*"
            id="image-upload"
