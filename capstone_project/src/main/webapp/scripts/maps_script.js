@@ -152,10 +152,10 @@ function createContentString(name) {
 
 
 /** Creates a marker and its info window and adds these to the map.
- * @param {Object} map
- * @param {number} latitude
- * @param {number} longitude
- * @param {String} name
+ * @param {Object} map - A google maps Map object.
+ * @param {number} latitude - The latitude of the marker's location.
+ * @param {number} longitude - The longitude of the marker's location.
+ * @param {String} name - The name of the school associated with the marker.
  */
 function createMarker(map, latitude, longitude, name) {
   const pos = {lat: latitude, lng: longitude};
