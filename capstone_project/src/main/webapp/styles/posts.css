@@ -1,0 +1,22 @@
+.post-container {
+  border-color: #000;
+  border-style: double;
+  max-width: 512px;
+  width: 50%;
+}
+
+.post-image {
+  width: 100%;
+}
+
+.upvote {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-135deg);
+}
+
+.upvote-button {
+  background-color: rgba(0, 0, 0, 0);
+}
