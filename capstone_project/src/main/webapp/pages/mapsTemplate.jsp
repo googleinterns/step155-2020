@@ -16,15 +16,7 @@
   <body onload="createMap();">
     <div id="content">
       <h1>Maps Feature</h1>
-      <p>This will be the maps feature of our capstone project.</p>
-      <button onclick="showUCINews()">Generate UC Irvine News</button>
-      <ul id="uci-news"></ul>
-      <br>
-      <button onclick="showUWNews()">Generate UW News</button>
-      <ul id="uw-news"></ul>
-      <br>
-      <button onclick="showUWBNews()">Generate UW Bothell News</button>
-      <ul id="uwb-news"></ul>
+      <p>This is the maps feature of our capstone project.</p>
       <br>
       <div id="map"></div>
       <br>
