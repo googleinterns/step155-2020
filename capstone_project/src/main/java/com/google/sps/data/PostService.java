@@ -107,7 +107,7 @@ public class PostService {
     postEntity.setProperty("text", message);
     postEntity.setProperty("upvotes", 0);
     // current milliseconds since the unix epoch.
-    postEntity.setProperty("timestamp", System.currentTimeMillis());
+    postEntity.setProperty("timestamp", clock.millis());
     datastore.put(postEntity);
   }
 
