@@ -29,6 +29,11 @@ import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Clock;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -41,11 +46,17 @@ public class PostService {
   private BlobstoreService blobstore;
   private DatastoreService datastore;
   private ImagesService imagesService;
+  private Clock clock;
 
   public PostService() {
     this.blobstore = BlobstoreServiceFactory.getBlobstoreService();
     this.datastore = DatastoreServiceFactory.getDatastoreService();
     this.imagesService = ImagesServiceFactory.getImagesService();
+    this.clock = Clock.systemUTC();
+  }
+
+  public void setClock(Clock clock) {
+    this.clock = clock;
   }
 
   public void setDatastore(DatastoreService datastore) {
@@ -95,6 +106,8 @@ public class PostService {
     postEntity.setProperty("imageURL", imageURL);
     postEntity.setProperty("text", message);
     postEntity.setProperty("upvotes", 0);
+    // current milliseconds since the unix epoch.
+    postEntity.setProperty("timestamp", System.currentTimeMillis());
     datastore.put(postEntity);
   }
 
@@ -107,6 +120,11 @@ public class PostService {
 
     List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
 
+    String sortType = request.getParameter("sort-type");
+    if (!sortType.equals("default")) {
+      sortEntities(sortType, posts);
+    }
+
     int postID = Integer.parseInt(request.getParameter("id"));
     Entity postToUpvote = posts.get(postID);
 
@@ -114,5 +132,74 @@ public class PostService {
     postToUpvote.setProperty("upvotes", ++currentUpvotes);
     datastore.put(postToUpvote);
     return currentUpvotes;
+  }
+
+  /**
+   * Sorts a list of entities based on the sort type passed in and returns the sorted list. If the
+   * sort type does not exist, an empty list is returned.
+   */
+  public List<Entity> sortEntities(String sortType, List<Entity> entities) {
+    Map<String, Comparator<Entity>> sorters = initializeSorters();
+    Comparator<Entity> sortMethod = sorters.get(sortType);
+    if (sortMethod == null) {
+      return Arrays.asList();
+    }
+
+    Collections.sort(entities, sortMethod);
+    return entities;
+  }
+
+  /** Returns a Map of all comparators. */
+  private Map<String, Comparator<Entity>> initializeSorters() {
+    Map<String, Comparator<Entity>> sorters = new HashMap<>();
+    sorters.put("new", sortByNew());
+    sorters.put("top", sortByTop());
+    sorters.put("trending", sortByTrending());
+    return sorters;
+  }
+
+  /** Returns a Comparator that sorts entities by new, highest timestamp to smallest timestamp. */
+  private Comparator<Entity> sortByNew() {
+    return (Entity first, Entity second) -> {
+      long firstTime = (long) first.getProperty("timestamp");
+      long secondTime = (long) second.getProperty("timestamp");
+      return Long.compare(secondTime, firstTime);
+    };
+  }
+
+  /** Returns a Comparator that sorts by top, most upvotes to least upvotes. */
+  private Comparator<Entity> sortByTop() {
+    return (Entity first, Entity second) -> {
+      long firstUpvotes = (long) first.getProperty("upvotes");
+      long secondUpvotes = (long) second.getProperty("upvotes");
+      return Long.compare(secondUpvotes, firstUpvotes);
+    };
+  }
+
+  /** Returns a comparator that sorts by trending, highest upvote ratio to lowest. */
+  private Comparator<Entity> sortByTrending() {
+    return (Entity first, Entity second) -> {
+      float firstRatio = getUpvoteRatio(first);
+      float secondRatio = getUpvoteRatio(second);
+
+      if (secondRatio > firstRatio) {
+        return 1;
+      }
+      if (secondRatio < firstRatio) {
+        return -1;
+      }
+      return 0;
+    };
+  }
+
+  /** Gets the amount of upvotes a post earned per minute since the time of upload. */
+  private float getUpvoteRatio(Entity post) {
+    long upvotes = (long) post.getProperty("upvotes");
+    long postTime = (long) post.getProperty("timestamp");
+    long currentTime = clock.millis();
+    long msDifference = currentTime - postTime;
+    float minDifference = msDifference / 60f / 1000f;
+
+    return upvotes / minDifference;
   }
 }

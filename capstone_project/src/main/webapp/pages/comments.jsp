@@ -19,7 +19,12 @@ limitations under the License.
 <script src="../scripts/comments.js"></script>
 <link rel="stylesheet" href="../styles/posts.css">
 <body onload="loadPosts()">
-  <div id="user-posts"></div>
+  <div id="sort-types">
+    <button onclick="sortPosts('new')">New</button>
+    <button onclick="sortPosts('top')">Top</button>
+    <button onclick="sortPosts('trending')">Trending</button>
+  </div>
+  <div id="user-posts" data-sort="default"></div>
   <hr>
   <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
     <textarea required id="post-entry" name="text"></textarea>
