@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.google.sps;
 
+import com.google.sps.data.School;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.Assert;
