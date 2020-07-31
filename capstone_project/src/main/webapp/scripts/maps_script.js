@@ -100,3 +100,86 @@ function createArticleEntry(text, schoolName) {
   node.appendChild(a);
   document.getElementById(schoolName).appendChild(node);
 }
+
+/** Creates a map centered at the geographic center of the US and
+ * adds it to the page. */
+function createMap() { // eslint-disable-line no-unused-vars
+  const map = new google.maps.Map(
+      document.getElementById('map'),
+      {center: {lat: 39.828502, lng: -98.579512}, zoom: 4});
+
+  // Create a marker for each school. (TODO: fetch this info from server)
+  createMarker(map, 33.639982, -117.844682, 'UCI');
+  createMarker(map, 47.655277, -122.303606, 'UW');
+  createMarker(map, 47.758821, -122.190725, 'UWB');
+}
+
+/** Creates and returns the content string for a marker.
+ * @param {string} name - The name of a school.
+ * @return {string} - A contentString containing HTML code for an infowindow.
+ */
+function createContentString(name) {
+  const contentString =
+    `<div id="content">
+        <div id="siteNotice">
+        </div>
+        <h1 id="firstHeading" class="firstHeading">${name}</h1>
+        <div id="bodyContent">
+            <p>Here you will find all the latest updates 
+            on <b>${name}</b>:</p>`+
+
+            // Create pills for tab navigation.
+            `<ul class="nav nav-pills">
+             <li class="active"><a data-toggle="pill" href="#news">News</a></li>
+             <li><a data-toggle="pill" href="#posts">Posts</a></li>
+            </ul>`+
+            // Create content stored in tabs for each pill.
+            `<div class="tab-content">
+                <div id="news" class="tab-pane fade in active">
+                    <h3>NEWS</h3>
+                    <p>This is where the news feed for ${name} will go.</p>
+                </div>
+                <div id="posts" class="tab-pane fade">
+                    <h3>POSTS</h3>
+                    <p>This is where the posts for ${name} will go.</p>
+                </div>
+            </div>
+        </div>
+     </div>`;
+
+  return contentString;
+}
+
+
+/** Creates a marker and its info window and adds these to the map.
+ * @param {Object} map - A google maps Map object.
+ * @param {number} latitude - The latitude of the marker's location.
+ * @param {number} longitude - The longitude of the marker's location.
+ * @param {String} name - The name of the school associated with the marker.
+ */
+function createMarker(map, latitude, longitude, name) {
+  const pos = {lat: latitude, lng: longitude};
+  const contentString = createContentString(name);
+
+  // Make the marker.
+  const markerIcon = {
+    url: 'http://maps.google.com/mapfiles/kml/paddle/purple-stars.png',
+    scaledSize: new google.maps.Size(40, 40),
+  };
+
+  const marker = new google.maps.Marker({
+    position: pos,
+    map: map,
+    title: name,
+    icon: markerIcon,
+  });
+
+  // Make the associated info window.
+  const infowindow = new google.maps.InfoWindow({
+    content: contentString,
+  });
+
+  marker.addListener('click', function() {
+    infowindow.open(map, marker);
+  });
+}
