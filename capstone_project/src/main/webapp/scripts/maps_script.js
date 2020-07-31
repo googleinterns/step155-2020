@@ -30,7 +30,7 @@ function createMap() { // eslint-disable-line no-unused-vars
  */
 function loadMarkersOntoMap(map) {
   fetch('/school-data').then((response) => response.json()).then((schools) => {
-    for (school of schools) {
+    for (const school of schools) {
       createMarker(map, school.latitude, school.longitude,
           school.name, school.articles);
     }
