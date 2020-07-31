@@ -52,7 +52,9 @@ async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
     body: `id=${id}&sort-type=${sortedBy}`,
   }).then((response) => response.json());
 
-  interactionsBar.innerHTML = `${upvoteBtn.outerHTML} ${newUpvoteCount}`;
+  if (newUpvoteCount != -1) {
+    interactionsBar.innerHTML = `${upvoteBtn.outerHTML} ${newUpvoteCount}`;
+  }
 }
 
 /**

@@ -116,11 +116,16 @@ public class PostService {
    * the new upvote count after increase.
    */
   public long upvotePost(HttpServletRequest request) {
+    String sortType = request.getParameter("sort-type");
+
+    if (sortType == null) {
+      return -1;
+    }
+
     Query query = new Query("Post");
 
     List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
 
-    String sortType = request.getParameter("sort-type");
     if (!sortType.equals("default")) {
       sortEntities(sortType, posts);
     }

@@ -35,6 +35,10 @@ public class SortServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String sortType = request.getParameter("sort-type");
 
+    if (sortType == null) {
+      return;
+    }
+
     Query query = new Query("Post");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());

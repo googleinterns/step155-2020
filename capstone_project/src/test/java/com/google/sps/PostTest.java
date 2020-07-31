@@ -197,6 +197,14 @@ public final class PostTest extends Mockito {
   }
 
   @Test
+  public void returnNegOneOnNullSortType() {
+    when(request.getParameter("sort-type")).thenReturn(null);
+    long expected = -1;
+    long actual = postService.upvotePost(request);
+    assertEquals(expected, actual);
+  }
+
+  @Test
   public void upvotesCorrectEntityWhenSortedByNew() {
     Entity firstPostEntity = new Entity("Post");
     Entity secondPostEntity = new Entity("Post");
