@@ -182,13 +182,7 @@ public class PostService {
       float firstRatio = getUpvoteRatio(first);
       float secondRatio = getUpvoteRatio(second);
 
-      if (secondRatio > firstRatio) {
-        return 1;
-      }
-      if (secondRatio < firstRatio) {
-        return -1;
-      }
-      return 0;
+      return Float.compare(secondRatio, firstRatio);
     };
   }
 
