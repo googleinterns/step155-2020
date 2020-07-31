@@ -44,10 +44,9 @@ function loadMarkersOntoMap(map) {
  */
 function createNewsFeed(articles) {
   let newsFeed = '<ul>';
-  let i;
 
-  for (i = 0; i < articles.length; i++) {
-    newsFeed += `<li><a href="${articles[i]}">${articles[i]}</a></li>`;
+  for (const article of articles) {
+    newsFeed += `<li><a href="${article}">${article}</a></li>`;
   }
 
   newsFeed += '</ul>';
