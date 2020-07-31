@@ -116,22 +116,23 @@ public class PostService {
    * the new upvote count after increase.
    */
   public long upvotePost(HttpServletRequest request) {
-    String sortType = request.getParameter("sort-type");
-
-    if (sortType == null) {
-      return -1;
-    }
-
     Query query = new Query("Post");
 
     List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
 
-    if (!sortType.equals("default")) {
-      sortEntities(sortType, posts);
+    long postID = Long.parseLong(request.getParameter("id"));
+    Entity postToUpvote = null;
+    for (Entity post : posts) {
+      long entityID = post.getKey().getId();
+      if (entityID == postID) {
+        postToUpvote = post;
+        break;
+      }
     }
 
-    int postID = Integer.parseInt(request.getParameter("id"));
-    Entity postToUpvote = posts.get(postID);
+    if (postToUpvote == null) {
+      return -1;
+    }
 
     long currentUpvotes = (long) postToUpvote.getProperty("upvotes");
     postToUpvote.setProperty("upvotes", ++currentUpvotes);

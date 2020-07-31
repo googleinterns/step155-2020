@@ -115,8 +115,8 @@ public final class PostTest extends Mockito {
     List<Entity> posts = Arrays.asList(postEntity);
     PreparedQuery pqMock = mock(PreparedQuery.class);
 
-    when(request.getParameter("id")).thenReturn("0");
-    when(request.getParameter("sort-type")).thenReturn("default");
+    String postID = Long.toString(postEntity.getKey().getId());
+    when(request.getParameter("id")).thenReturn(postID);
     // Mock datastore to return the prebuilt Entity.
     when(datastore.prepare(any(Query.class))).thenReturn(pqMock);
     when(pqMock.asList(any(FetchOptions.class))).thenReturn(posts);
@@ -124,6 +124,20 @@ public final class PostTest extends Mockito {
     long expected = 1;
     long actual = postService.upvotePost(request);
 
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void returnNegOneOnEntityNotFound() {
+    List<Entity> posts = Arrays.asList();
+    PreparedQuery pqMock = mock(PreparedQuery.class);
+
+    when(datastore.prepare(any(Query.class))).thenReturn(pqMock);
+    when(pqMock.asList(any(FetchOptions.class))).thenReturn(posts);
+    when(request.getParameter("id")).thenReturn("0");
+
+    long expected = -1;
+    long actual = postService.upvotePost(request);
     assertEquals(expected, actual);
   }
 
@@ -192,102 +206,6 @@ public final class PostTest extends Mockito {
 
     List<Entity> expected = Arrays.asList();
     List<Entity> actual = postService.sortEntities("invalid", posts);
-
-    assertEquals(expected, actual);
-  }
-
-  @Test
-  public void returnNegOneOnNullSortType() {
-    when(request.getParameter("sort-type")).thenReturn(null);
-    long expected = -1;
-    long actual = postService.upvotePost(request);
-    assertEquals(expected, actual);
-  }
-
-  @Test
-  public void upvotesCorrectEntityWhenSortedByNew() {
-    Entity firstPostEntity = new Entity("Post");
-    Entity secondPostEntity = new Entity("Post");
-    Entity thirdPostEntity = new Entity("Post");
-    firstPostEntity.setProperty("timestamp", 3L);
-    firstPostEntity.setProperty("upvotes", 0L);
-    secondPostEntity.setProperty("timestamp", 1L);
-    secondPostEntity.setProperty("upvotes", 1L);
-    thirdPostEntity.setProperty("timestamp", 2L);
-    thirdPostEntity.setProperty("upvotes", 2L);
-    List<Entity> posts = Arrays.asList(firstPostEntity, secondPostEntity, thirdPostEntity);
-
-    PreparedQuery pqMock = mock(PreparedQuery.class);
-
-    when(request.getParameter("id")).thenReturn("2");
-    when(request.getParameter("sort-type")).thenReturn("new");
-
-    // Mock datastore to return the prebuilt Entity.
-    when(datastore.prepare(any(Query.class))).thenReturn(pqMock);
-    when(pqMock.asList(any(FetchOptions.class))).thenReturn(posts);
-    postService.upvotePost(request);
-
-    long expected = 2;
-    long actual = (long) posts.get(2).getProperty("upvotes");
-
-    assertEquals(expected, actual);
-  }
-
-  @Test
-  public void upvotesCorrectEntityWhenSortedByTop() {
-    Entity firstPostEntity = new Entity("Post");
-    Entity secondPostEntity = new Entity("Post");
-    Entity thirdPostEntity = new Entity("Post");
-    firstPostEntity.setProperty("upvotes", 0L);
-    secondPostEntity.setProperty("upvotes", 3L);
-    thirdPostEntity.setProperty("upvotes", 2L);
-    List<Entity> posts = Arrays.asList(firstPostEntity, secondPostEntity, thirdPostEntity);
-
-    PreparedQuery pqMock = mock(PreparedQuery.class);
-
-    when(request.getParameter("id")).thenReturn("0");
-    when(request.getParameter("sort-type")).thenReturn("top");
-
-    // Mock datastore to return the prebuilt Entity.
-    when(datastore.prepare(any(Query.class))).thenReturn(pqMock);
-    when(pqMock.asList(any(FetchOptions.class))).thenReturn(posts);
-    postService.upvotePost(request);
-
-    long expected = 4;
-    long actual = (long) posts.get(0).getProperty("upvotes");
-
-    assertEquals(expected, actual);
-  }
-
-  @Test
-  public void upvotesCorrectEntityWhenSortedByTrending() {
-    Clock mockClock = mock(Clock.class);
-    postService.setClock(mockClock);
-    Entity firstPostEntity = new Entity("Post");
-    Entity secondPostEntity = new Entity("Post");
-    Entity thirdPostEntity = new Entity("Post");
-    firstPostEntity.setProperty("timestamp", 100L);
-    firstPostEntity.setProperty("upvotes", 2L);
-    secondPostEntity.setProperty("timestamp", 150L);
-    secondPostEntity.setProperty("upvotes", 50L);
-    thirdPostEntity.setProperty("timestamp", 199L);
-    thirdPostEntity.setProperty("upvotes", 5L);
-    List<Entity> posts = Arrays.asList(firstPostEntity, secondPostEntity, thirdPostEntity);
-
-    PreparedQuery pqMock = mock(PreparedQuery.class);
-
-    when(request.getParameter("id")).thenReturn("1");
-    when(request.getParameter("sort-type")).thenReturn("trending");
-
-    // Mock datastore to return the prebuilt Entity.
-    when(datastore.prepare(any(Query.class))).thenReturn(pqMock);
-    when(pqMock.asList(any(FetchOptions.class))).thenReturn(posts);
-    // Mock clock to return a static value to avoid failing tests.
-    when(mockClock.millis()).thenReturn(200L);
-    postService.upvotePost(request);
-
-    long expected = 51;
-    long actual = (long) posts.get(1).getProperty("upvotes");
 
     assertEquals(expected, actual);
   }

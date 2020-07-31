@@ -84,8 +84,7 @@ async function sortPosts(sortType) { // eslint-disable-line no-unused-vars
 function renderPosts(posts) {
   const postContainer = document.getElementById('user-posts');
 
-  for (let i = 0; i < posts.length; i++) {
-    const post = posts[i];
+  for (const post of posts) {
     const postProperties = post.propertyMap;
 
     const HTML = `
@@ -101,7 +100,7 @@ function renderPosts(posts) {
 
     const postElement = document.createElement('div');
     postElement.setAttribute('class', 'post-container');
-    postElement.setAttribute('data-id', i);
+    postElement.setAttribute('data-id', post.key.id);
     postElement.innerHTML = HTML;
     postContainer.appendChild(postElement);
   }
