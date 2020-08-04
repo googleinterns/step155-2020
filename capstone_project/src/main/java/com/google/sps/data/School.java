@@ -46,4 +46,25 @@ public class School {
   public ArrayList<String> getArticles() {
     return articles;
   }
+
+  // Overriding equals() to compare two School objects
+  @Override
+  public boolean equals(Object o) {
+
+    if (o == this) {
+      return true;
+    }
+
+    if (!(o instanceof School)) {
+      return false;
+    }
+
+    // typecast o to School so that data members can be compared
+    School s = (School) o;
+
+    // Compare the data members and return the result
+    return ((s.getName()).equals(this.name))
+        && (Double.compare(s.getLatitude(), this.latitude) == 0)
+        && (Double.compare(s.getLongitude(), this.longitude) == 0);
+  }
 }

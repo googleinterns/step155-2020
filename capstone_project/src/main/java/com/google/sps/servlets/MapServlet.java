@@ -14,6 +14,14 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.School;
 import java.io.IOException;
@@ -65,15 +73,74 @@ public class MapServlet extends HttpServlet {
 
   /*Add some hard-coded School objects to the array of schools that will later be converted into markers on the map.*/
   public MapServlet() {
-    addUCIToSchools();
-    addUWToSchools();
-    addUWBToSchools();
+    //addUCIToSchools();
+    //addUWToSchools();
+    //addUWBToSchools();
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Load Schools from Datastore.
+    Query query = new Query("School");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    // TODO: remove articleStub
+    ArrayList<String> articleStub = new ArrayList<String>();
+
+    for (Entity entity : results.asIterable()) {
+      String schoolName = (String) entity.getProperty("name");
+      double schoolLatitude = (double) entity.getProperty("latitude");
+      double schoolLongitude = (double) entity.getProperty("longitude");
+      School retrievedSchool = new School(schoolName, schoolLatitude, schoolLongitude, articleStub);
+
+      // Add the School loaded from Datastore to the schools list if it's not already in it.
+      if (!schools.contains(retrievedSchool)) {
+        schools.add(retrievedSchool);
+      }
+    }
+
+    // Send the School objects retrieved from Datastore.
     response.setContentType("application/json;");
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(schools));
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    // Initialize datastore object.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    // Get the input from the school entry form.
+    String userName = getParameter(request, "name-input", "");
+    double userLatitude = Double.parseDouble(getParameter(request, "latitude-input", ""));
+    double userLongitude = Double.parseDouble(getParameter(request, "longitude-input", ""));
+
+    // Check if the School is already in Datastore.
+    Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, userName);
+    Query query = new Query("School").setFilter(nameFilter);
+    PreparedQuery results = datastore.prepare(query);
+
+    // If it is not, create a schoolEntity for the School and add it to Datastore.
+    if (results.countEntities() == 0) {
+      Entity schoolEntity = new Entity("School");
+      schoolEntity.setProperty("name", userName);
+      schoolEntity.setProperty("latitude", userLatitude);
+      schoolEntity.setProperty("longitude", userLongitude);
+      datastore.put(schoolEntity);
+    }
+
+    // Respond with the result.
+    response.sendRedirect("pages/maps.html");
+  }
+
+  /** @return the request parameter, or the default value if not specified */
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
   }
 }

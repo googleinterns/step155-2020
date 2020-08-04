@@ -64,4 +64,35 @@ public final class SchoolTest {
     ArrayList<String> expected = uciNews;
     Assert.assertEquals(expected, actual);
   }
+
+  @Test
+  public void checkEqualsReturnsEqual() {
+    School uci1 = new School("UCI", uciLatitude, uciLongitude, uciNews);
+    School uci2 = new School("UCI", uciLatitude, uciLongitude, uciNews);
+    boolean actual = (uci1.equals(uci2));
+    boolean expected = true;
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void checkEqualsReturnsNotEqual() {
+    School uci1 = new School("UCI", uciLatitude, uciLongitude, uciNews);
+    School uci2 = new School("UCI", uciLatitude+1, uciLongitude, uciNews);
+    boolean actual = (uci1.equals(uci2));
+    boolean expected = false;
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void checkEqualsWorksForContains() {
+    School uci1 = new School("UCI", uciLatitude, uciLongitude, uciNews);
+    School uci2 = new School("UCI", uciLatitude, uciLongitude, uciNews);
+    ArrayList<School> schools = new ArrayList<School>();
+    schools.add(uci1);
+    schools.add(uci2);
+
+    boolean actual = (schools.contains(uci1));
+    boolean expected = true;
+    Assert.assertEquals(expected, actual);
+  }
 }
