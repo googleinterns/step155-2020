@@ -20,9 +20,8 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
@@ -109,18 +108,13 @@ public final class PostTest extends Mockito {
   }
 
   @Test
-  public void upvoteCountIncreasesByOne() {
+  public void upvoteCountIncreasesByOne() throws EntityNotFoundException {
     Entity postEntity = new Entity("Post");
     postEntity.setProperty("upvotes", 0L);
-    List<Entity> posts = Arrays.asList(postEntity);
-    PreparedQuery pqMock = mock(PreparedQuery.class);
 
-    String postID = Long.toString(postEntity.getKey().getId());
-    when(request.getParameter("id")).thenReturn(postID);
+    when(request.getParameter("id")).thenReturn("1");
     // Mock datastore to return the prebuilt Entity.
-    when(datastore.prepare(any(Query.class))).thenReturn(pqMock);
-    when(pqMock.asList(any(FetchOptions.class))).thenReturn(posts);
-
+    when(datastore.get(any(Key.class))).thenReturn(postEntity);
     long expected = 1;
     long actual = postService.upvotePost(request);
 
@@ -129,12 +123,7 @@ public final class PostTest extends Mockito {
 
   @Test
   public void returnNegOneOnEntityNotFound() {
-    List<Entity> posts = Arrays.asList();
-    PreparedQuery pqMock = mock(PreparedQuery.class);
-
-    when(datastore.prepare(any(Query.class))).thenReturn(pqMock);
-    when(pqMock.asList(any(FetchOptions.class))).thenReturn(posts);
-    when(request.getParameter("id")).thenReturn("0");
+    when(request.getParameter("id")).thenReturn("1");
 
     long expected = -1;
     long actual = postService.upvotePost(request);

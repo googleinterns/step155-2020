@@ -22,8 +22,9 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
@@ -116,18 +117,14 @@ public class PostService {
    * the new upvote count after increase.
    */
   public long upvotePost(HttpServletRequest request) {
-    Query query = new Query("Post");
-
-    List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-
     long postID = Long.parseLong(request.getParameter("id"));
+    Key key = KeyFactory.createKey("Post", postID);
     Entity postToUpvote = null;
-    for (Entity post : posts) {
-      long entityID = post.getKey().getId();
-      if (entityID == postID) {
-        postToUpvote = post;
-        break;
-      }
+
+    try {
+      postToUpvote = datastore.get(key);
+    } catch (EntityNotFoundException ok) {
+      // this is okay because by default postToUpvote is null and there is a null check
     }
 
     if (postToUpvote == null) {
