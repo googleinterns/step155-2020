@@ -48,12 +48,14 @@ public class PostService {
   private DatastoreService datastore;
   private ImagesService imagesService;
   private Clock clock;
+  private Map<String, Comparator<Entity>> postSorters;
 
   public PostService() {
     this.blobstore = BlobstoreServiceFactory.getBlobstoreService();
     this.datastore = DatastoreServiceFactory.getDatastoreService();
     this.imagesService = ImagesServiceFactory.getImagesService();
     this.clock = Clock.systemUTC();
+    postSorters = new HashMap<>();
   }
 
   public void setClock(Clock clock) {
@@ -142,8 +144,8 @@ public class PostService {
    * sort type does not exist, an empty list is returned.
    */
   public List<Entity> sortEntities(String sortType, List<Entity> entities) {
-    Map<String, Comparator<Entity>> sorters = initializeSorters();
-    Comparator<Entity> sortMethod = sorters.get(sortType);
+    initializeSorters();
+    Comparator<Entity> sortMethod = postSorters.get(sortType);
     if (sortMethod == null) {
       return Arrays.asList();
     }
@@ -153,40 +155,32 @@ public class PostService {
   }
 
   /** Returns a Map of all comparators. */
-  private Map<String, Comparator<Entity>> initializeSorters() {
-    Map<String, Comparator<Entity>> sorters = new HashMap<>();
-    sorters.put("new", sortByNew());
-    sorters.put("top", sortByTop());
-    sorters.put("trending", sortByTrending());
-    return sorters;
+  private void initializeSorters() {
+    postSorters.put("new", this::sortByNew);
+    postSorters.put("top", this::sortByTop);
+    postSorters.put("trending", this::sortByTrending);
   }
 
   /** Returns a Comparator that sorts entities by new, highest timestamp to smallest timestamp. */
-  private Comparator<Entity> sortByNew() {
-    return (Entity first, Entity second) -> {
-      long firstTime = (long) first.getProperty("timestamp");
-      long secondTime = (long) second.getProperty("timestamp");
-      return Long.compare(secondTime, firstTime);
-    };
+  private int sortByNew(Entity first, Entity second) {
+    long firstTime = (long) first.getProperty("timestamp");
+    long secondTime = (long) second.getProperty("timestamp");
+    return Long.compare(secondTime, firstTime);
   }
 
   /** Returns a Comparator that sorts by top, most upvotes to least upvotes. */
-  private Comparator<Entity> sortByTop() {
-    return (Entity first, Entity second) -> {
-      long firstUpvotes = (long) first.getProperty("upvotes");
-      long secondUpvotes = (long) second.getProperty("upvotes");
-      return Long.compare(secondUpvotes, firstUpvotes);
-    };
+  private int sortByTop(Entity first, Entity second) {
+    long firstUpvotes = (long) first.getProperty("upvotes");
+    long secondUpvotes = (long) second.getProperty("upvotes");
+    return Long.compare(secondUpvotes, firstUpvotes);
   }
 
   /** Returns a comparator that sorts by trending, highest upvote ratio to lowest. */
-  private Comparator<Entity> sortByTrending() {
-    return (Entity first, Entity second) -> {
-      float firstRatio = getUpvoteRatio(first);
-      float secondRatio = getUpvoteRatio(second);
+  private int sortByTrending(Entity first, Entity second) {
+    float firstRatio = getUpvoteRatio(first);
+    float secondRatio = getUpvoteRatio(second);
 
-      return Float.compare(secondRatio, firstRatio);
-    };
+    return Float.compare(secondRatio, firstRatio);
   }
 
   /** Gets the amount of upvotes a post earned per minute since the time of upload. */
