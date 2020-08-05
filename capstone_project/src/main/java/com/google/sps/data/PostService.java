@@ -44,34 +44,54 @@ import javax.servlet.http.HttpServletRequest;
  * into datastore, and upvoting posts.
  */
 public class PostService {
-  private BlobstoreService blobstore;
-  private DatastoreService datastore;
-  private ImagesService imagesService;
-  private Clock clock;
+  private final BlobstoreService blobstore;
+  private final DatastoreService datastore;
+  private final ImagesService imagesService;
+  private final Clock clock;
   private Map<String, Comparator<Entity>> postSorters;
 
-  public PostService() {
-    this.blobstore = BlobstoreServiceFactory.getBlobstoreService();
-    this.datastore = DatastoreServiceFactory.getDatastoreService();
-    this.imagesService = ImagesServiceFactory.getImagesService();
-    this.clock = Clock.systemUTC();
+  public static class Builder {
+    private BlobstoreService blobstore = BlobstoreServiceFactory.getBlobstoreService();
+    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    private Clock clock = Clock.systemUTC();
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public Builder blobstore(BlobstoreService blobstore) {
+      this.blobstore = blobstore;
+      return this;
+    }
+
+    public Builder datastore(DatastoreService datastore) {
+      this.datastore = datastore;
+      return this;
+    }
+
+    public Builder imagesService(ImagesService imagesService) {
+      this.imagesService = imagesService;
+      return this;
+    }
+
+    public Builder clock(Clock clock) {
+      this.clock = clock;
+      return this;
+    }
+
+    public PostService build() {
+      return new PostService(this);
+    }
+  }
+
+  private PostService(Builder builder) {
+    this.blobstore = builder.blobstore;
+    this.datastore = builder.datastore;
+    this.imagesService = builder.imagesService;
+    this.clock = builder.clock;
     postSorters = new HashMap<>();
-  }
-
-  public void setClock(Clock clock) {
-    this.clock = clock;
-  }
-
-  public void setDatastore(DatastoreService datastore) {
-    this.datastore = datastore;
-  }
-
-  public void setBlobstore(BlobstoreService blobstore) {
-    this.blobstore = blobstore;
-  }
-
-  public void setImagesService(ImagesService imagesService) {
-    this.imagesService = imagesService;
+    initializeSorters();
   }
 
   /** Returns the uploaded images' url if an image was uploaded. Otherwise, returns null. */
@@ -144,7 +164,6 @@ public class PostService {
    * sort type does not exist, an empty list is returned.
    */
   public List<Entity> sortEntities(String sortType, List<Entity> entities) {
-    initializeSorters();
     Comparator<Entity> sortMethod = postSorters.get(sortType);
     if (sortMethod == null) {
       return Arrays.asList();

@@ -42,7 +42,7 @@ public class SortServlet extends HttpServlet {
     Query query = new Query("Post");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-    PostService postService = new PostService();
+    PostService postService = PostService.Builder.builder().build();
 
     postService.sortEntities(sortType, posts);
     response.setContentType("application/json");

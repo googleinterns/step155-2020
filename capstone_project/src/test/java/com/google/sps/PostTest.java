@@ -46,6 +46,7 @@ public final class PostTest extends Mockito {
   private DatastoreService datastore;
   private BlobstoreService blobstoreService;
   private ImagesService imagesService;
+  private Clock clock;
   private HttpServletRequest request;
   private LocalServiceTestHelper serviceHelper =
       new LocalServiceTestHelper(
@@ -59,10 +60,15 @@ public final class PostTest extends Mockito {
     blobstoreService = Mockito.mock(BlobstoreService.class);
     imagesService = Mockito.mock(ImagesService.class);
     request = Mockito.mock(HttpServletRequest.class);
-    postService = Mockito.spy(new PostService());
-    postService.setDatastore(datastore);
-    postService.setBlobstore(blobstoreService);
-    postService.setImagesService(imagesService);
+    clock = Mockito.mock(Clock.class);
+    postService =
+        Mockito.spy(
+            PostService.Builder.builder()
+                .datastore(datastore)
+                .blobstore(blobstoreService)
+                .imagesService(imagesService)
+                .clock(clock)
+                .build());
   }
 
   @After
@@ -164,8 +170,6 @@ public final class PostTest extends Mockito {
 
   @Test
   public void postsSortByTrending() {
-    Clock mockClock = mock(Clock.class);
-    postService.setClock(mockClock);
     Entity firstPostEntity = new Entity("Post");
     Entity secondPostEntity = new Entity("Post");
     Entity thirdPostEntity = new Entity("Post");
@@ -180,7 +184,7 @@ public final class PostTest extends Mockito {
     List<Entity> expected = Arrays.asList(thirdPostEntity, secondPostEntity, firstPostEntity);
 
     // Mock clock to return a static value to avoid failing tests.
-    when(mockClock.millis()).thenReturn(200L);
+    when(clock.millis()).thenReturn(200L);
     List<Entity> actual = postService.sortEntities("trending", posts);
 
     assertEquals(expected, actual);

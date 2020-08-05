@@ -33,7 +33,7 @@ public class UpvoteServlet extends HttpServlet {
     response.setContentType("application/json;");
 
     Gson gson = new Gson();
-    long newCount = new PostService().upvotePost(request);
+    long newCount = PostService.Builder.builder().build().upvotePost(request);
 
     response.getWriter().println(gson.toJson(newCount));
   }
