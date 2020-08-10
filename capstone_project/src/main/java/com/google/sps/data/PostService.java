@@ -173,28 +173,28 @@ public class PostService {
     return entities;
   }
 
-  /** Returns a Map of all comparators. */
+  /** Initialized postSorters with method references to the sorting methods. */
   private void initializeSorters() {
     postSorters.put("new", this::sortByNew);
     postSorters.put("top", this::sortByTop);
     postSorters.put("trending", this::sortByTrending);
   }
 
-  /** Returns a Comparator that sorts entities by new, highest timestamp to smallest timestamp. */
+  /** Returns an int for comparison of the entities. Should be used within comparing only. */
   private int sortByNew(Entity first, Entity second) {
     long firstTime = (long) first.getProperty("timestamp");
     long secondTime = (long) second.getProperty("timestamp");
     return Long.compare(secondTime, firstTime);
   }
 
-  /** Returns a Comparator that sorts by top, most upvotes to least upvotes. */
+  /** Returns an int for comparison of the entities. Should be used within comparing only. */
   private int sortByTop(Entity first, Entity second) {
     long firstUpvotes = (long) first.getProperty("upvotes");
     long secondUpvotes = (long) second.getProperty("upvotes");
     return Long.compare(secondUpvotes, firstUpvotes);
   }
 
-  /** Returns a comparator that sorts by trending, highest upvote ratio to lowest. */
+  /** Returns an int for comparison of the entities. Should be used within comparing only. */
   private int sortByTrending(Entity first, Entity second) {
     float firstRatio = getUpvoteRatio(first);
     float secondRatio = getUpvoteRatio(second);
