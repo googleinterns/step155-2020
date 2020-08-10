@@ -46,7 +46,7 @@ public class PostServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PostService postService = new PostService();
+    PostService postService = PostService.Builder.builder().build();
     postService.storePost(request);
     response.sendRedirect("/pages/comments.jsp");
   }

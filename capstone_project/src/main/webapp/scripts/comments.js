@@ -28,10 +28,63 @@ async function loadPosts() { // eslint-disable-line no-unused-vars
         .then((response) => response.json())
         .then((json) => json);
 
+  renderPosts(posts);
+}
+
+/**
+ * Increases the upvote count of a post locally and server side.
+ * @param {HTMLButtonElement} upvoteBtn the button element of the post to
+ *                                      upvote.
+ */
+async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
+  const interactionsBar = upvoteBtn.parentElement;
+  const id = interactionsBar.parentElement.getAttribute('data-id');
+  const postContainer = document.getElementById('user-posts');
+  const sortedBy = postContainer.getAttribute('data-sort');
+
+  // Makes the POST request to get the new upvote count on the serverside to
+  // later update it on the client side.
+  const newUpvoteCount = await fetch('/upvote', {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    method: 'POST',
+    body: `id=${id}&sort-type=${sortedBy}`,
+  }).then((response) => response.json());
+
+  if (newUpvoteCount != -1) {
+    interactionsBar.innerHTML = `${upvoteBtn.outerHTML} ${newUpvoteCount}`;
+  }
+}
+
+/**
+ * Sends a post request to the server to sort the posts by the given sort type.
+ * Then, it displays them on the page.
+ * @param {String} sortType the name of the sorting method to use.
+ */
+async function sortPosts(sortType) { // eslint-disable-line no-unused-vars
+  const sortedPosts = await fetch('/sort-posts', {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    method: 'POST',
+    body: `sort-type=${sortType}`,
+  }).then((response) => response.json());
+
+  const postContainer = document.getElementById('user-posts');
+  postContainer.setAttribute('data-sort', sortType);
+  postContainer.innerHTML = '';
+  renderPosts(sortedPosts);
+}
+
+/**
+ * Renders the posts onto the page.
+ * @param {Array<Entity>} posts an array of the post entities to render.
+ */
+function renderPosts(posts) {
   const postContainer = document.getElementById('user-posts');
 
-  for (let i = 0; i < posts.length; i++) {
-    const post = posts[i];
+  for (const post of posts) {
     const postProperties = post.propertyMap;
 
     const HTML = `
@@ -47,30 +100,8 @@ async function loadPosts() { // eslint-disable-line no-unused-vars
 
     const postElement = document.createElement('div');
     postElement.setAttribute('class', 'post-container');
-    postElement.setAttribute('data-id', i);
+    postElement.setAttribute('data-id', post.key.id);
     postElement.innerHTML = HTML;
     postContainer.appendChild(postElement);
   }
-}
-
-/**
- * Increases the upvote count of a post locally and server side.
- * @param {HTMLButtonElement} upvoteBtn the button element of the post to
- *                                      upvote.
- */
-async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
-  const interactionsBar = upvoteBtn.parentElement;
-  const id = interactionsBar.parentElement.getAttribute('data-id');
-
-  // Makes the POST request to get the new upvote count on the serverside to
-  // later update it on the client side.
-  const newUpvoteCount = await fetch('/upvote', {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    method: 'POST',
-    body: `id=${id}`,
-  }).then((response) => response.json());
-
-  interactionsBar.innerHTML = `${upvoteBtn.outerHTML} ${newUpvoteCount}`;
 }

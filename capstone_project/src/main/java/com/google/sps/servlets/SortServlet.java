@@ -14,27 +14,40 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.PostService;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet that handles upvoting a post. increases the upvote count of a post by one at every POST
- * request.
- */
-@WebServlet("/upvote")
-public class UpvoteServlet extends HttpServlet {
+/** Servlet that handles loading and uploading posts. */
+@WebServlet("/sort-posts")
+public class SortServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
+    String sortType = request.getParameter("sort-type");
+
+    if (sortType == null) {
+      return;
+    }
+
+    Query query = new Query("Post");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    PostService postService = PostService.Builder.builder().build();
+
+    postService.sortEntities(sortType, posts);
+    response.setContentType("application/json");
 
     Gson gson = new Gson();
-    long newCount = PostService.Builder.builder().build().upvotePost(request);
-
-    response.getWriter().println(gson.toJson(newCount));
+    response.getWriter().println(gson.toJson(posts));
   }
 }
