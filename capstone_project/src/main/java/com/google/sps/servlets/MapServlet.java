@@ -26,7 +26,6 @@ import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.School;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,46 +37,6 @@ public class MapServlet extends HttpServlet {
 
   private ArrayList<School> schools = new ArrayList<School>();
 
-  private void addUCIToSchools() {
-    ArrayList<String> uciNews =
-        new ArrayList<String>(
-            Arrays.asList(
-                "https://news.uci.edu/2020/06/30/virtual-nurses-make-a-real-difference/",
-                "https://news.uci.edu/2020/07/07/uci-chancellor-emeritus-michael-v-drake-named-university-of-california-president/",
-                "https://news.uci.edu/2020/06/18/uci-podcast-jessica-millward-on-the-meaning-and-importance-of-juneteenth/"));
-    School uci = new School("UCI", 33.640339, -117.844248, uciNews);
-    schools.add(uci);
-  }
-
-  private void addUWToSchools() {
-    ArrayList<String> uwNews =
-        new ArrayList<String>(
-            Arrays.asList(
-                "https://www.washington.edu/coronavirus/2020/07/10/back-to-school-town-hall/",
-                "https://www.washington.edu/news/2020/07/16/wsas-2020/?utm_source=UW%20News&utm_medium=tile&utm_campaign=UW%20NEWS",
-                "https://www.washington.edu/news/2020/07/29/expert-faq-wildfires-in-the-pacific-northwest-during-the-covid-19-pandemic/"));
-    School uw = new School("UW", 47.655277, -122.303606, uwNews);
-    schools.add(uw);
-  }
-
-  private void addUWBToSchools() {
-    ArrayList<String> uwbNews =
-        new ArrayList<String>(
-            Arrays.asList(
-                "https://news.uci.edu/2020/06/30/virtual-nurses-make-a-real-difference/",
-                "https://news.uci.edu/2020/07/07/uci-chancellor-emeritus-michael-v-drake-named-university-of-california-president/",
-                "https://news.uci.edu/2020/06/18/uci-podcast-jessica-millward-on-the-meaning-and-importance-of-juneteenth/"));
-    School uwb = new School("UWB", 47.758821, -122.190725, uwbNews);
-    schools.add(uwb);
-  }
-
-  /*Add some hard-coded School objects to the array of schools that will later be converted into markers on the map.*/
-  public MapServlet() {
-    //addUCIToSchools();
-    //addUWToSchools();
-    //addUWBToSchools();
-  }
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Load Schools from Datastore.
@@ -85,14 +44,11 @@ public class MapServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    // TODO: remove articleStub
-    ArrayList<String> articleStub = new ArrayList<String>();
-
     for (Entity entity : results.asIterable()) {
       String schoolName = (String) entity.getProperty("name");
       double schoolLatitude = (double) entity.getProperty("latitude");
       double schoolLongitude = (double) entity.getProperty("longitude");
-      School retrievedSchool = new School(schoolName, schoolLatitude, schoolLongitude, articleStub);
+      School retrievedSchool = new School(schoolName, schoolLatitude, schoolLongitude);
 
       // Add the School loaded from Datastore to the schools list if it's not already in it.
       if (!schools.contains(retrievedSchool)) {

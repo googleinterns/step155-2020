@@ -14,7 +14,6 @@
 
 package com.google.sps.data;
 
-import java.util.ArrayList;
 
 /** Class representing a school that corresponds to a pin on the map. */
 public class School {
@@ -22,13 +21,11 @@ public class School {
   private final String name;
   private final double latitude;
   private final double longitude;
-  private ArrayList<String> articles;
 
-  public School(String name, double latitude, double longitude, ArrayList<String> articles) {
+  public School(String name, double latitude, double longitude) {
     this.name = name;
     this.latitude = latitude;
     this.longitude = longitude;
-    this.articles = articles;
   }
 
   public String getName() {
@@ -41,10 +38,6 @@ public class School {
 
   public double getLongitude() {
     return longitude;
-  }
-
-  public ArrayList<String> getArticles() {
-    return articles;
   }
 
   // Overriding equals() to compare two School objects

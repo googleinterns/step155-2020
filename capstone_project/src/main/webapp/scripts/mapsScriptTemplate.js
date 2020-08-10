@@ -34,7 +34,7 @@ function loadMarkersOntoMap(map) {
       url = `https://www.googleapis.com/customsearch/v1?key=CAPSTONE_API_KEY&cx=CAPSTONE_SEARCH_ENG_ID&q=${school.name}`;
       $.getJSON(url, function(result){
         createMarker(map, school.latitude, school.longitude,
-          school.name, school.articles, result);
+          school.name, result);
       });
     }
   });
@@ -100,10 +100,10 @@ function createContentString(name, items) {
  * @param {number} latitude - The latitude of the marker's location.
  * @param {number} longitude - The longitude of the marker's location.
  * @param {string} name - The name of the school associated with the marker.
- * @param {Array.<string>} articles - A list of links to articles
- * about the school.
+ * @param {Array.<Object>} result - A list of JSON objects that represent
+ * the search results for news articles about a school.
  */
-function createMarker(map, latitude, longitude, name, articles, result) {
+function createMarker(map, latitude, longitude, name, result) {
   const pos = {lat: latitude, lng: longitude};
   const contentString = createContentString(name, result.items);
 
