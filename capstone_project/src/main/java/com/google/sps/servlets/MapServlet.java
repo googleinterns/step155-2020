@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -79,7 +80,7 @@ public class MapServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     // If it is not, create a schoolEntity for the School and add it to Datastore.
-    if (results.countEntities() == 0) {
+    if (results.countEntities(FetchOptions.Builder.withDefaults()) == 0) {
       Entity schoolEntity = new Entity("School");
       schoolEntity.setProperty("name", userName);
       schoolEntity.setProperty("latitude", userLatitude);
