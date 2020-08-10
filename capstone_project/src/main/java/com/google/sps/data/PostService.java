@@ -79,7 +79,10 @@ public class PostService {
     initializeSorters();
   }
 
-  /** Returns the uploaded images' url if an image was uploaded. Otherwise, returns null. */
+  /**
+   * Returns the uploaded files' blob key string representation if a file was uploaded. Otherwise,
+   * returns null.
+   */
   public String uploadFile(HttpServletRequest request) {
     Map<String, List<BlobKey>> blobs = blobstore.getUploads(request);
     List<BlobKey> blobKeys = blobs.get("file");
@@ -91,7 +94,7 @@ public class PostService {
   }
 
   /**
-   * Stores the post text and image url into datastore. 'request' much have the parameter 'text'.
+   * Stores the post text and file blobkey into datastore. 'request' must have the parameter 'text'.
    */
   public void storePost(HttpServletRequest request) {
     Entity postEntity = new Entity("Post");
@@ -151,7 +154,7 @@ public class PostService {
     return entities;
   }
 
-  /** Initialized postSorters with method references to the sorting methods. */
+  /** Initializes postSorters with method references to the sorting methods. */
   private void initializeSorters() {
     postSorters.put("new", this::sortByNew);
     postSorters.put("top", this::sortByTop);
