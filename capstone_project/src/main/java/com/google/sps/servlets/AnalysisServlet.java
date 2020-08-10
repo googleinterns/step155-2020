@@ -10,8 +10,11 @@ import com.google.cloud.language.v1.Document.Type;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +23,13 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/analysis")
 public class AnalysisServlet extends HttpServlet {
+  final int MIN_LENGTH = 20;
+  private Map<String, String> resources = new HashMap<>();
 
   @Override
   public void init() {
+      resources.put("Anxiety & Stress", "https://www.inspire.com/groups/mental-health-america/topic/anxiety-and-phobias/?origin=tfr");
+      resources.put("Depression", "https://www.7cups.com/");
   }
 
   @Override
@@ -35,25 +42,50 @@ public class AnalysisServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
-    String submission = request.getParameter("text-input");
-
-    // Document doc =
-    //     Document.newBuilder().setContent(submission).setType(Document.Type.PLAIN_TEXT).build();
-    // LanguageServiceClient languageService = LanguageServiceClient.create();
-    // Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-    // double score = (double) sentiment.getScore();
-    // languageService.close();
+    String init = request.getParameter("text-input");
+    String submission = init;
+    int count = 1;
+    // workaround to ensure string length won't prevent classification
+    while (init.length() * count < MIN_LENGTH) {
+        submission.concat(init);
+        count++;
+    }
     
     List<String> arr = new ArrayList<>();
+    Map<String, String> help = new HashMap<>();
     arr.add(classifyContent(submission));
 
-    
+    for (String str : arr) {
+      int idx = str.lastIndexOf('/');
+      String category = str.substring(idx + 1);
+      if (resources.containsKey(category)) {
+        help.put(resources.get(category), category);
+      }
+    }
 
     response.setContentType("text/html;");
     // response.getWriter().println("sentiment score:" + score);
-    response.getWriter().println(arr);
-    // Redirect to refreshed page
-    // response.sendRedirect("/index.html");
+
+    PrintWriter out = response.getWriter();
+    // then write the response
+    out.println("<html><body>");
+    out.println("<p>Click <a href=\"../pages/maps.html\">here</a> to explore our maps feature.</p>" +
+        "<p>Click <a href=\"../pages/analyze.html\">here</a> to check out our sentiment analysis feature.</p>" +
+        "<p>Click <a href=\"../pages/comments.html\">here</a> to upload a post and view post submissions.</p>" +
+        "<p>Click <a href=\"../../index.html\">here</a> to navigate back to the homepage.</p>");
+    out.println("<h3>We have received your submission.</h3>");
+
+    if (!help.isEmpty()) {
+      out.println("<h4>We detected the following themes in your post. Try the link for resources that may help.</h4>");
+      String res;
+      for (String key : help.keySet()) {
+        res = "<a href=\"" + key + "\">"+ help.get(key) + "</a>";
+        out.println(res);
+      }
+    }
+
+    out.println("</body></html>");
+    out.close();
   }
 
   private String classifyContent(String submission) throws IOException {
@@ -67,9 +99,7 @@ public class AnalysisServlet extends HttpServlet {
       ClassifyTextResponse resp = language.classifyText(req);
 
       for (ClassificationCategory category : resp.getCategoriesList()) {
-        String template = "Category name : %s, Confidence : %.3f\n";
-        String result = String.format(template, category.getName(), category.getConfidence());
-        str = str.concat(result);
+        str = str.concat(category.getName());
       }
     }
     return str;
