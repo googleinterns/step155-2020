@@ -13,12 +13,48 @@
 // limitations under the License.
 
 /**
- * Loads a preview of the image to be uploaded.
- * @param {Event} event current state of the image tag
+ * Loads a preview of the file to be uploaded and determines the proper file
+ * type.
+ * @param {Event} event - current state of the image tag
  */
 function previewImage(event) { // eslint-disable-line no-unused-vars
   const preview = document.getElementById('image-preview');
-  preview.src = URL.createObjectURL(event.target.files[0]);
+  const file = event.target.files[0];
+  preview.src = URL.createObjectURL(file);
+  const fileType = getInputFileType(file);
+  fetchBlobstoreURL(fileType);
+}
+
+/**
+ * Determines whether the uploaded file is a video, image, or neither.
+ * Returns a string representation of the file type name.
+ * @param {File} file - the file to be uploaded.
+ * @return {String} fileType - a string represention of the file type.
+ */
+function getInputFileType(file) {
+  if (file.type.match('video/.*')) {
+    return 'video';
+  }
+
+  if (file.type.match('image/.*')) {
+    return 'image';
+  }
+
+  return 'none';
+}
+
+/**
+ * Fetchs a url for the file to upload with the appropriate file type
+ * parameter.
+ * @param {String} fileType - the file should be 'image' | 'video' | 'none'
+ */
+function fetchBlobstoreURL(fileType) {
+  const form = document.getElementById('post-input');
+  fetch(`/fetch-blobstore-url?file-type=${fileType}`)
+      .then((response) => response.text())
+      .then((url) => {
+        form.action = url;
+      });
 }
 
 /** Retrieves all posts from the server and adds them to the DOM. */
@@ -33,8 +69,8 @@ async function loadPosts() { // eslint-disable-line no-unused-vars
 
 /**
  * Increases the upvote count of a post locally and server side.
- * @param {HTMLButtonElement} upvoteBtn the button element of the post to
- *                                      upvote.
+ * @param {HTMLButtonElement} upvoteBtn - the button element of the post to
+ *                                        upvote.
  */
 async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
   const interactionsBar = upvoteBtn.parentElement;
@@ -60,9 +96,13 @@ async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
 /**
  * Sends a post request to the server to sort the posts by the given sort type.
  * Then, it displays them on the page.
- * @param {String} sortType the name of the sorting method to use.
+ * @param {String} sortType - the name of the sorting method to use.
  */
 async function sortPosts(sortType) { // eslint-disable-line no-unused-vars
+  const postContainer = document.getElementById('user-posts');
+  postContainer.setAttribute('data-sort', sortType);
+  postContainer.innerHTML = '<h1>Loading...</h1>';
+
   const sortedPosts = await fetch('/sort-posts', {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -71,15 +111,13 @@ async function sortPosts(sortType) { // eslint-disable-line no-unused-vars
     body: `sort-type=${sortType}`,
   }).then((response) => response.json());
 
-  const postContainer = document.getElementById('user-posts');
-  postContainer.setAttribute('data-sort', sortType);
   postContainer.innerHTML = '';
   renderPosts(sortedPosts);
 }
 
 /**
  * Renders the posts onto the page.
- * @param {Array<Entity>} posts an array of the post entities to render.
+ * @param {Array<Entity>} posts - an array of the post entities to render.
  */
 function renderPosts(posts) {
   const postContainer = document.getElementById('user-posts');
@@ -88,13 +126,12 @@ function renderPosts(posts) {
     const postProperties = post.propertyMap;
 
     const HTML = `
-      ${postProperties.imageURL ?
-        `<img class='post-image' src='${postProperties.imageURL}'>` : ''}
+      ${getProperFileTag(postProperties.fileType, postProperties.fileBlobKey)}
       <p>${postProperties.text}</p>
       <div class='interactions'>
         <button class='upvote-button'
                 onclick='upvotePost(this)'>
-            <i class='upvote'></i></button> ${postProperties.upvotes} 
+            <i class='upvote'></i></button> ${postProperties.upvotes}
       </div>
     `.trim();
 
@@ -104,4 +141,42 @@ function renderPosts(posts) {
     postElement.innerHTML = HTML;
     postContainer.appendChild(postElement);
   }
+}
+
+/**
+ * Determings the proper tag to use depending on whether the file
+ * is an image, a video or neither. Returns the string represenation
+ * of that tag.
+ * @param {String} fileType - the type of file to render
+ * @param {String} fileBlobKey - the files blobkey string
+ * @return {String} fileTag -  a string representation of the html tag for the
+ *                             file
+ */
+function getProperFileTag(fileType, fileBlobKey) {
+  let fileTag = '';
+  const src = `/serve-file?blob-key=${fileBlobKey}`;
+  if (fileType === 'video') {
+    fileTag = `
+      <video class='post-file' controls>
+        <source src='${src}'>
+      </video>
+    `.trim();
+  } else if (fileType === 'image') {
+    fileTag = `
+    <img class='post-file' src='${src}'>
+    `.trim();
+  }
+
+  return fileTag;
+}
+
+/**
+ * Disables the submit button to prevent multiple uploads while upload is
+ * processing.
+ * @param {Event} event - current state of the input button
+ */
+function disableInput(event) { // eslint-disable-line no-unused-vars
+  // the submit is the last element in the form.
+  const inputButton = event.target.lastElementChild;
+  inputButton.disabled = true;
 }
