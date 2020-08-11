@@ -27,6 +27,8 @@ import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.School;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,10 +38,11 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/school-data")
 public class MapServlet extends HttpServlet {
 
-  private ArrayList<School> schools = new ArrayList<School>();
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    Set<School> schoolsSet = new HashSet<School>();
+
     // Load Schools from Datastore.
     Query query = new Query("School");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -50,14 +53,11 @@ public class MapServlet extends HttpServlet {
       double schoolLatitude = (double) entity.getProperty("latitude");
       double schoolLongitude = (double) entity.getProperty("longitude");
       School retrievedSchool = new School(schoolName, schoolLatitude, schoolLongitude);
-
-      // Add the School loaded from Datastore to the schools list if it's not already in it.
-      if (!schools.contains(retrievedSchool)) {
-        schools.add(retrievedSchool);
-      }
+      schoolsSet.add(retrievedSchool);
     }
 
     // Send the School objects retrieved from Datastore.
+    ArrayList<School> schools = new ArrayList<School>(schoolsSet);
     response.setContentType("application/json;");
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(schools));

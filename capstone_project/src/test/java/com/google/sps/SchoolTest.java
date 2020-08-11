@@ -16,6 +16,8 @@ package com.google.sps;
 
 import com.google.sps.data.School;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,4 +81,26 @@ public final class SchoolTest {
     boolean expected = true;
     Assert.assertEquals(expected, actual);
   }
+
+  @Test
+  public void checkEqualsWorksForSet() {
+    School uci = new School("UCI", uciLatitude, uciLongitude);
+    School ucb = new School("UCB", 37.871942, -122.258476);
+    School ucla = new School("UCLA", 34.068965, -118.445245);
+    Set<School> schools = new HashSet<School>();
+    schools.add(uci);
+    schools.add(uci);
+    schools.add(ucb);
+    schools.add(uci);
+    schools.add(ucla);
+    schools.add(ucla);
+    schools.add(uci);
+
+    ArrayList<School> schoolsList = new ArrayList<School>(schools);
+    int actual = schoolsList.size();
+    int expected = 3;
+    Assert.assertEquals(expected, actual);
+  }
+
+
 }
