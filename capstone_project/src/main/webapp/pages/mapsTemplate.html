@@ -22,13 +22,16 @@
       </p>Submit your school's info below and it'll appear on the map!</p>
       <form action="/school-data" method="POST">
         <p>School Name:</p>
-        <textarea name= "name-input" required></textarea>
+        <!-- <textarea name= "name-input" required></textarea> -->
+        <input name= "name-input" required>
         <br/><br/>
         <p>School Latitude:</p>
-        <textarea name= "latitude-input" required></textarea>
+        <!-- <textarea name= "latitude-input" required></textarea> -->
+        <input type="number" step="0.000001" name= "latitude-input" required>
         <br/><br/>
         <p>School Longitude:</p>
-        <textarea name= "longitude-input" required></textarea>
+        <!-- <textarea name= "longitude-input" required></textarea> -->
+        <input type="number" step="0.000001" name= "longitude-input" required>
         <br/><br/>
         <input type="submit" />
       </form>
