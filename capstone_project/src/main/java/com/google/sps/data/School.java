@@ -40,7 +40,6 @@ public class School {
     return longitude;
   }
 
-  // Overriding equals() to compare two School objects
   @Override
   public boolean equals(Object o) {
 
@@ -57,7 +56,7 @@ public class School {
 
     // Compare the data members and return the result
     return ((s.getName()).equals(this.name))
-        && (Double.compare(s.getLatitude(), this.latitude) == 0)
-        && (Double.compare(s.getLongitude(), this.longitude) == 0);
+        && (s.getLatitude() == this.latitude)
+        && (s.getLongitude() == this.longitude);
   }
 }
