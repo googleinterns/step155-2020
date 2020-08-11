@@ -81,8 +81,8 @@ public class PostService {
   }
 
   /**
-   * Returns the uploaded files' blob key string representation if a file was uploaded. Otherwise,
-   * returns null.
+   * Returns the uploaded files' blob key string representation inside an Optional, if a file was
+   * uploaded. Otherwise, returns an empty Optional object.
    */
   public Optional<String> uploadFile(HttpServletRequest request) {
     Map<String, List<BlobKey>> blobs = blobstore.getUploads(request);

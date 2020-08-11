@@ -81,7 +81,7 @@ public final class PostTest extends Mockito {
 
     // Mock blobstore to return the prebuilt blobs
     when(blobstoreService.getUploads(request)).thenReturn(blobs);
-    Optional<String> expected = Optional.ofNullable(null);
+    Optional<String> expected = Optional.empty();
     Optional<String> actual = postService.uploadFile(request);
     assertEquals(expected, actual);
   }
