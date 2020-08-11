@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.After;
 import org.junit.Before;
@@ -80,8 +81,8 @@ public final class PostTest extends Mockito {
 
     // Mock blobstore to return the prebuilt blobs
     when(blobstoreService.getUploads(request)).thenReturn(blobs);
-    String expected = null;
-    String actual = postService.uploadFile(request);
+    Optional<String> expected = Optional.ofNullable(null);
+    Optional<String> actual = postService.uploadFile(request);
     assertEquals(expected, actual);
   }
 
@@ -94,14 +95,14 @@ public final class PostTest extends Mockito {
     // Mock blobstore to return the prebuilt blobs.
     when(blobstoreService.getUploads(request)).thenReturn(blobs);
     // Since the blobkey does not exist in the blobstore, it is mocked to return a link.
-    String expected = "BlobKey";
-    String actual = postService.uploadFile(request);
+    Optional<String> expected = Optional.of("BlobKey");
+    Optional<String> actual = postService.uploadFile(request);
     assertEquals(expected, actual);
   }
 
   @Test
   public void urlStoredInDatastore() {
-    doReturn("BlobKey").when(postService).uploadFile(request);
+    doReturn(Optional.of("BlobKey")).when(postService).uploadFile(request);
     postService.storePost(request);
 
     verify(datastore).put(any(Entity.class));

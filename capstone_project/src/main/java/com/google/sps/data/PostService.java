@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -83,14 +84,15 @@ public class PostService {
    * Returns the uploaded files' blob key string representation if a file was uploaded. Otherwise,
    * returns null.
    */
-  public String uploadFile(HttpServletRequest request) {
+  public Optional<String> uploadFile(HttpServletRequest request) {
     Map<String, List<BlobKey>> blobs = blobstore.getUploads(request);
     List<BlobKey> blobKeys = blobs.get("file");
+
     if (blobKeys == null || blobKeys.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
 
-    return blobKeys.get(0).getKeyString();
+    return Optional.ofNullable(blobKeys.get(0).getKeyString());
   }
 
   /**
@@ -100,13 +102,13 @@ public class PostService {
     Entity postEntity = new Entity("Post");
     String message = request.getParameter("text");
     String fileType = request.getParameter("file-type");
-    String fileBlobKey = uploadFile(request);
+    Optional<String> fileBlobKey = uploadFile(request);
 
     if (fileType == null || fileType.isEmpty()) {
       fileType = "none";
     }
 
-    postEntity.setProperty("fileBlobKey", fileBlobKey);
+    postEntity.setProperty("fileBlobKey", fileBlobKey.toString());
     postEntity.setProperty("fileType", fileType);
     postEntity.setProperty("text", message);
     postEntity.setProperty("upvotes", 0);
