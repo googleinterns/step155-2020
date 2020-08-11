@@ -95,9 +95,6 @@ public class MapServlet extends HttpServlet {
   /** @return the request parameter, or the default value if not specified */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
+    return value == null ? defaultValue : value;
   }
 }
