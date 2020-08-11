@@ -14,7 +14,6 @@
 
 package com.google.sps.data;
 
-
 /** Class representing a school that corresponds to a pin on the map. */
 public class School {
 

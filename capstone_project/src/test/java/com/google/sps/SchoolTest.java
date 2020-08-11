@@ -101,6 +101,4 @@ public final class SchoolTest {
     int expected = 3;
     Assert.assertEquals(expected, actual);
   }
-
-
 }
