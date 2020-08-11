@@ -55,7 +55,7 @@ public final class SchoolTest {
   public void checkEqualsReturnsEqual() {
     School uci1 = new School("UCI", uciLatitude, uciLongitude);
     School uci2 = new School("UCI", uciLatitude, uciLongitude);
-    boolean actual = (uci1.equals(uci2));
+    boolean actual = uci1.equals(uci2);
     boolean expected = true;
     Assert.assertEquals(expected, actual);
   }
@@ -64,7 +64,7 @@ public final class SchoolTest {
   public void checkEqualsReturnsNotEqual() {
     School uci1 = new School("UCI", uciLatitude, uciLongitude);
     School uci2 = new School("UCI", uciLatitude + 1, uciLongitude);
-    boolean actual = (uci1.equals(uci2));
+    boolean actual = uci1.equals(uci2);
     boolean expected = false;
     Assert.assertEquals(expected, actual);
   }
@@ -77,7 +77,7 @@ public final class SchoolTest {
     schools.add(uci1);
     schools.add(uci2);
 
-    boolean actual = (schools.contains(uci1));
+    boolean actual = schools.contains(uci1);
     boolean expected = true;
     Assert.assertEquals(expected, actual);
   }
