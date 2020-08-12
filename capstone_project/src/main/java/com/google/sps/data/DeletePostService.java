@@ -17,7 +17,6 @@
 package com.google.sps.data;
 
 import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
@@ -38,17 +37,13 @@ public class DeletePostService {
   private Datastore datastore;
   private Clock clock;
 
-  public DeletePostService() {
-    this.datastore = DatastoreOptions.getDefaultInstance().getService();
+  public DeletePostService(Datastore datastore) {
+    this.datastore = datastore;
     this.clock = Clock.systemUTC();
   }
 
   public void setClock(Clock clock) {
     this.clock = clock;
-  }
-
-  public void setDatastore(Datastore datastore) {
-    this.datastore = datastore;
   }
 
   // Retrieves a query of all posts entities in ascending order based on timestamp. Returns a list
