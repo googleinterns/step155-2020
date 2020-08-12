@@ -22,8 +22,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -33,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +44,6 @@ import org.mockito.Mockito;
 public final class PostTest extends Mockito {
   private DatastoreService datastore;
   private BlobstoreService blobstoreService;
-  private ImagesService imagesService;
   private Clock clock;
   private HttpServletRequest request;
   private LocalServiceTestHelper serviceHelper =
@@ -58,7 +56,6 @@ public final class PostTest extends Mockito {
     serviceHelper.setUp();
     datastore = Mockito.mock(DatastoreService.class);
     blobstoreService = Mockito.mock(BlobstoreService.class);
-    imagesService = Mockito.mock(ImagesService.class);
     request = Mockito.mock(HttpServletRequest.class);
     clock = Mockito.mock(Clock.class);
     postService =
@@ -66,7 +63,6 @@ public final class PostTest extends Mockito {
             PostService.Builder.builder()
                 .datastore(datastore)
                 .blobstore(blobstoreService)
-                .imagesService(imagesService)
                 .clock(clock)
                 .build());
   }
@@ -85,8 +81,8 @@ public final class PostTest extends Mockito {
 
     // Mock blobstore to return the prebuilt blobs
     when(blobstoreService.getUploads(request)).thenReturn(blobs);
-    String expected = null;
-    String actual = postService.uploadImage(request);
+    Optional<String> expected = Optional.empty();
+    Optional<String> actual = postService.uploadFile(request);
     assertEquals(expected, actual);
   }
 
@@ -94,20 +90,19 @@ public final class PostTest extends Mockito {
   public void returnUrlBlobstore() {
     List<BlobKey> blobKeys = Arrays.asList(new BlobKey("BlobKey"));
     Map<String, List<BlobKey>> blobs = new HashMap<>();
-    blobs.put("image", blobKeys);
+    blobs.put("file", blobKeys);
 
     // Mock blobstore to return the prebuilt blobs.
     when(blobstoreService.getUploads(request)).thenReturn(blobs);
     // Since the blobkey does not exist in the blobstore, it is mocked to return a link.
-    when(imagesService.getServingUrl(any(ServingUrlOptions.class))).thenReturn("/link_to_image");
-    String expected = "/link_to_image";
-    String actual = postService.uploadImage(request);
+    Optional<String> expected = Optional.of("BlobKey");
+    Optional<String> actual = postService.uploadFile(request);
     assertEquals(expected, actual);
   }
 
   @Test
   public void urlStoredInDatastore() {
-    doReturn("link_to_image").when(postService).uploadImage(request);
+    doReturn(Optional.of("BlobKey")).when(postService).uploadFile(request);
     postService.storePost(request);
 
     verify(datastore).put(any(Entity.class));

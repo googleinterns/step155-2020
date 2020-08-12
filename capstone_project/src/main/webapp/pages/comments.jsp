@@ -12,8 +12,7 @@ limitations under the License.
 --%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
-<%! BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-   String uploadUrl = blobstoreService.createUploadUrl("/post-process"); %>
+<%! BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(); %>
 
 <!DOCTYPE html>
 <script src="../scripts/comments.js"></script>
@@ -26,14 +25,18 @@ limitations under the License.
   </div>
   <div id="user-posts" data-sort="default"></div>
   <hr>
-  <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+  <form action="<%= blobstoreService.createUploadUrl("/post-process?file-type=none") %>"
+        enctype="multipart/form-data"
+        id="post-input"
+        method="POST"
+        onsubmit="disableInput(event)">
     <textarea required id="post-entry" name="text"></textarea>
     <br>
     <img alt="" id="image-preview" src="//:0">
     <br>
-    <input accept="image/*"
+    <input accept="image/*,video/*"
            id="image-upload"
-           name="image"
+           name="file"
            onchange="previewImage(event)"
            type="file">
     <br>

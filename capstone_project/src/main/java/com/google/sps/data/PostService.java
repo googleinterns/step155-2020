@@ -14,8 +14,6 @@
 
 package com.google.sps.data;
 
-import com.google.appengine.api.blobstore.BlobInfo;
-import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -25,11 +23,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.Clock;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -46,14 +40,12 @@ import javax.servlet.http.HttpServletRequest;
 public class PostService {
   private final BlobstoreService blobstore;
   private final DatastoreService datastore;
-  private final ImagesService imagesService;
   private final Clock clock;
   private Map<String, Comparator<Entity>> postSorters;
 
   public static class Builder {
     private BlobstoreService blobstore = BlobstoreServiceFactory.getBlobstoreService();
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    private ImagesService imagesService = ImagesServiceFactory.getImagesService();
     private Clock clock = Clock.systemUTC();
 
     public static Builder builder() {
@@ -70,11 +62,6 @@ public class PostService {
       return this;
     }
 
-    public Builder imagesService(ImagesService imagesService) {
-      this.imagesService = imagesService;
-      return this;
-    }
-
     public Builder clock(Clock clock) {
       this.clock = clock;
       return this;
@@ -88,45 +75,46 @@ public class PostService {
   private PostService(Builder builder) {
     this.blobstore = builder.blobstore;
     this.datastore = builder.datastore;
-    this.imagesService = builder.imagesService;
     this.clock = builder.clock;
     postSorters = new HashMap<>();
     initializeSorters();
   }
 
-  /** Returns the uploaded images' url if an image was uploaded. Otherwise, returns null. */
-  public String uploadImage(HttpServletRequest request) {
+  /**
+   * Returns the uploaded files' blob key string representation inside an Optional, if a file was
+   * uploaded. Otherwise, returns an empty Optional object.
+   */
+  public Optional<String> uploadFile(HttpServletRequest request) {
     Map<String, List<BlobKey>> blobs = blobstore.getUploads(request);
-    List<BlobKey> blobKeys = blobs.get("image");
+    List<BlobKey> blobKeys = blobs.get("file");
+
     if (blobKeys == null || blobKeys.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
 
-    BlobKey blobKey = blobKeys.get(0);
-    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-
-    if (blobInfo == null || blobInfo.getSize() == 0) {
-      blobstore.delete(blobKey);
-    }
-
-    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-
-    try {
-      URL url = new URL(imagesService.getServingUrl(options));
-      return url.getPath();
-    } catch (MalformedURLException e) {
-      return imagesService.getServingUrl(options);
-    }
+    return Optional.ofNullable(blobKeys.get(0).getKeyString());
   }
 
   /**
-   * Stores the post text and image url into datastore. 'request' much have the parameter 'text'.
+   * Stores the post text and file blobkey into datastore. 'request' must have the parameter 'text'.
    */
   public void storePost(HttpServletRequest request) {
     Entity postEntity = new Entity("Post");
     String message = request.getParameter("text");
-    String imageURL = uploadImage(request);
-    postEntity.setProperty("imageURL", imageURL);
+    String fileType = request.getParameter("file-type");
+    Optional<String> fileBlobKey = uploadFile(request);
+
+    if (fileType == null || fileType.isEmpty()) {
+      fileType = "none";
+    }
+
+    // Only set the fileBlobKey if there is one. There is no need to store a blobKey if there isn't
+    // one.
+    if (fileBlobKey.isPresent()) {
+      postEntity.setProperty("fileBlobKey", fileBlobKey.get());
+    }
+
+    postEntity.setProperty("fileType", fileType);
     postEntity.setProperty("text", message);
     postEntity.setProperty("upvotes", 0);
     // current milliseconds since the unix epoch.
@@ -173,7 +161,7 @@ public class PostService {
     return entities;
   }
 
-  /** Initialized postSorters with method references to the sorting methods. */
+  /** Initializes postSorters with method references to the sorting methods. */
   private void initializeSorters() {
     postSorters.put("new", this::sortByNew);
     postSorters.put("top", this::sortByTop);
