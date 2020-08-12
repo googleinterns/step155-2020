@@ -69,9 +69,9 @@ public class MapServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Get the input from the school entry form.
-    String schoolName = getParameter(request, "name-input", "");
-    double schoolLatitude = Double.parseDouble(getParameter(request, "latitude-input", ""));
-    double schoolLongitude = Double.parseDouble(getParameter(request, "longitude-input", ""));
+    String schoolName = request.getParameter("name-input");
+    double schoolLatitude = Double.parseDouble(request.getParameter("latitude-input"));
+    double schoolLongitude = Double.parseDouble(request.getParameter("longitude-input"));
 
     // Check if the School is already in Datastore.
     Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, schoolName);
@@ -89,11 +89,5 @@ public class MapServlet extends HttpServlet {
 
     // Respond with the result.
     response.sendRedirect("pages/maps.html");
-  }
-
-  /** @return the request parameter, or the default value if not specified */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    return value == null ? defaultValue : value;
   }
 }
