@@ -15,9 +15,7 @@
 package com.google.sps;
 
 import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.Key;
 import com.google.sps.data.DeletePostService;
 import java.time.Clock;
 import java.util.Arrays;
@@ -30,12 +28,7 @@ import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public final class DeletePostTest extends Mockito {
-  private Datastore datastore =
-      spy(
-          DatastoreOptions.newBuilder()
-              .setProjectId("google.com:gdconn-step-2020")
-              .build()
-              .getService());
+  private Datastore datastore = mock(Datastore.class);
   private DeletePostService deleteService;
   private Clock clock;
   private final long ONE_DAY = 86400000L;
@@ -50,29 +43,33 @@ public final class DeletePostTest extends Mockito {
 
   @Test
   public void postIsDeletedWhenOlderThan24Hours() {
-    Key key = datastore.newKeyFactory().setKind("Post").newKey("someKey");
-    Entity post1 = Entity.newBuilder(key).set("timestamp", 0L).build();
+    Entity post1 = mock(Entity.class);
 
+    when(post1.getLong("timestamp")).thenReturn(0L);
     when(clock.millis()).thenReturn(ONE_DAY + 1);
+
     List<Entity> posts = Arrays.asList(post1);
     doReturn(posts).when(deleteService).retrieveAllPosts();
+
     deleteService.deleteOldPosts();
-    verify(datastore, times(1)).delete(any(Key.class));
+    verify(datastore, times(1)).delete(any());
   }
 
   @Test
   public void postsNotOlderThan24HoursNotDeleted() {
-    Key key1 = datastore.newKeyFactory().setKind("Post").newKey("someKey1");
-    Key key2 = datastore.newKeyFactory().setKind("Post").newKey("someKey2");
-    Key key3 = datastore.newKeyFactory().setKind("Post").newKey("someKey3");
-    Entity post1 = Entity.newBuilder(key1).set("timestamp", 0L).build();
-    Entity post2 = Entity.newBuilder(key2).set("timestamp", 0L).build();
-    Entity post3 = Entity.newBuilder(key3).set("timestamp", ONE_DAY).build();
+    Entity post1 = mock(Entity.class);
+    Entity post2 = mock(Entity.class);
+    Entity post3 = mock(Entity.class);
 
+    when(post1.getLong("timestamp")).thenReturn(0L);
+    when(post2.getLong("timestamp")).thenReturn(0L);
+    when(post3.getLong("timestamp")).thenReturn(ONE_DAY);
     when(clock.millis()).thenReturn(ONE_DAY);
+
     List<Entity> posts = Arrays.asList(post1, post2, post3);
     doReturn(posts).when(deleteService).retrieveAllPosts();
+
     deleteService.deleteOldPosts();
-    verify(datastore, times(2)).delete(any(Key.class));
+    verify(datastore, times(2)).delete(any());
   }
 }
