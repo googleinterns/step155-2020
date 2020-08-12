@@ -108,7 +108,12 @@ public class PostService {
       fileType = "none";
     }
 
-    postEntity.setProperty("fileBlobKey", fileBlobKey.toString());
+    // Only set the fileBlobKey if there is one. There is no need to store a blobKey if there isn't
+    // one.
+    if (fileBlobKey.isPresent()) {
+      postEntity.setProperty("fileBlobKey", fileBlobKey.get());
+    }
+
     postEntity.setProperty("fileType", fileType);
     postEntity.setProperty("text", message);
     postEntity.setProperty("upvotes", 0);
