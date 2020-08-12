@@ -39,7 +39,11 @@ public class DeletePostService {
   private Clock clock;
 
   public DeletePostService() {
-    this.datastore = DatastoreOptions.getDefaultInstance().getService();
+    this.datastore =
+        DatastoreOptions.newBuilder()
+            .setProjectId("google.com:gdconn-step-2020")
+            .build()
+            .getService();
     this.clock = Clock.systemUTC();
   }
 

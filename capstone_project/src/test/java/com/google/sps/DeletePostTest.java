@@ -30,7 +30,12 @@ import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public final class DeletePostTest extends Mockito {
-  private Datastore datastore = spy(DatastoreOptions.getDefaultInstance().getService());
+  private Datastore datastore =
+      spy(
+          DatastoreOptions.newBuilder()
+              .setProjectId("google.com:gdconn-step-2020")
+              .build()
+              .getService());
   private DeletePostService deleteService;
   private Clock clock;
   private final long ONE_DAY = 86400000L;
