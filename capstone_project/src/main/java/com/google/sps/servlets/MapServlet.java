@@ -26,7 +26,6 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.School;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
