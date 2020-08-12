@@ -57,10 +57,9 @@ public class MapServlet extends HttpServlet {
     }
 
     // Send the School objects retrieved from Datastore.
-    ArrayList<School> schools = new ArrayList<School>(schoolsSet);
     response.setContentType("application/json;");
     Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(schools));
+    response.getWriter().println(gson.toJson(schoolsSet));
   }
 
   @Override
