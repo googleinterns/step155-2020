@@ -84,17 +84,16 @@ public final class SchoolTest {
 
   @Test
   public void checkEqualsWorksForSet() {
-    School uci = new School("UCI", uciLatitude, uciLongitude);
+    School uci1 = new School("UCI", uciLatitude, uciLongitude);
+    School uci2 = new School("UCI", uciLatitude, uciLongitude);
     School ucb = new School("UCB", 37.871942, -122.258476);
     School ucla = new School("UCLA", 34.068965, -118.445245);
     Set<School> schools = new HashSet<School>();
-    schools.add(uci);
-    schools.add(uci);
+    schools.add(uci1);
+    schools.add(uci2);
     schools.add(ucb);
-    schools.add(uci);
     schools.add(ucla);
     schools.add(ucla);
-    schools.add(uci);
 
     ArrayList<School> schoolsList = new ArrayList<School>(schools);
     int actual = schoolsList.size();

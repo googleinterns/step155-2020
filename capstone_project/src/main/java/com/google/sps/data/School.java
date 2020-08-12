@@ -40,6 +40,11 @@ public class School {
   }
 
   @Override
+  public int hashCode() {
+    return (int) name.hashCode();
+  }
+
+  @Override
   public boolean equals(Object o) {
 
     if (o == this) {
