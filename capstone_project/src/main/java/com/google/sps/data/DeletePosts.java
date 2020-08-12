@@ -22,9 +22,9 @@ import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 
 /**
- * Cloud function that runs when triggered by a PubSubMessa e. Deletes all posts that are older th
- * 24 hours. Note: This uses google clou datastore since a cloud function does not have access t app
- * engine datstor properties. Cloud datastore uses the same database as app engine. The only
+ * Cloud function that runs when triggered by a PubSubMessage. Deletes all posts that are older the
+ * 24 hours. Note: This uses google cloud datastore since a cloud function does not have access to
+ * app engine datastore properties. Cloud datastore uses the same database as app engine. The only
  * differences are in API usages and methods.
  */
 public class DeletePosts implements BackgroundFunction<PubSubMessage> {
