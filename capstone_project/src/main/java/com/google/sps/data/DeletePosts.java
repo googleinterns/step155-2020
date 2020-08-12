@@ -20,6 +20,7 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import java.time.Clock;
 
 /**
  * Cloud function that runs when triggered by a PubSubMessage. Deletes all posts that are older the
@@ -32,7 +33,7 @@ public class DeletePosts implements BackgroundFunction<PubSubMessage> {
 
   @Override
   public void accept(PubSubMessage message, Context context) {
-    DeletePostService deleteService = new DeletePostService(datastore);
+    DeletePostService deleteService = new DeletePostService(datastore, Clock.systemUTC());
     deleteService.deleteOldPosts();
   }
 }

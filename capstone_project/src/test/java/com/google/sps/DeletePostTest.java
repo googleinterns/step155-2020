@@ -36,8 +36,7 @@ public final class DeletePostTest extends Mockito {
   @Before
   public void setUpServiceHelper() {
     clock = mock(Clock.class);
-    deleteService = spy(new DeletePostService(datastore));
-    deleteService.setClock(clock);
+    deleteService = spy(new DeletePostService(datastore, clock));
   }
 
   @Test

@@ -37,12 +37,8 @@ public class DeletePostService {
   private Datastore datastore;
   private Clock clock;
 
-  public DeletePostService(Datastore datastore) {
+  public DeletePostService(Datastore datastore, Clock clock) {
     this.datastore = datastore;
-    this.clock = Clock.systemUTC();
-  }
-
-  public void setClock(Clock clock) {
     this.clock = clock;
   }
 
