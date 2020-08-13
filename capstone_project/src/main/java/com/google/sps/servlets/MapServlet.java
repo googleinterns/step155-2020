@@ -23,6 +23,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.School;
 import java.io.IOException;
@@ -64,6 +66,46 @@ public class MapServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    UserService userService = UserServiceFactory.getUserService();
+
+    if (!userService.isUserLoggedIn()) {
+      System.out.println("USER IS NOT LOGGED IN");
+      String loginUrl = userService.createLoginURL("/pages/maps.html");
+      response.sendRedirect(loginUrl);
+      return;
+    }
+
+    addToDatastore(request);
+
+    /*
+    // Initialize datastore object.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    // Get the input from the school entry form.
+    String schoolName = getParameter(request, "name-input");
+    double schoolLatitude = Double.parseDouble(getParameter(request, "latitude-input"));
+    double schoolLongitude = Double.parseDouble(getParameter(request, "longitude-input"));
+
+    // Check if the School is already in Datastore.
+    Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, schoolName);
+    Query query = new Query("School").setFilter(nameFilter);
+    PreparedQuery results = datastore.prepare(query);
+
+    // If it is not, create a schoolEntity for the School and add it to Datastore.
+    if (results.countEntities(FetchOptions.Builder.withDefaults()) == 0) {
+      Entity schoolEntity = new Entity("School");
+      schoolEntity.setProperty("name", schoolName);
+      schoolEntity.setProperty("latitude", schoolLatitude);
+      schoolEntity.setProperty("longitude", schoolLongitude);
+      datastore.put(schoolEntity);
+    }
+    */
+
+    // Respond with the result.
+    response.sendRedirect("pages/maps.html");
+  }
+
+  public void addToDatastore(HttpServletRequest request) throws IOException {
     // Initialize datastore object.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -87,7 +129,7 @@ public class MapServlet extends HttpServlet {
     }
 
     // Respond with the result.
-    response.sendRedirect("pages/maps.html");
+    //response.sendRedirect("pages/maps.html");
   }
 
   private String getParameter(HttpServletRequest request, String name) {

@@ -142,13 +142,13 @@ public final class SchoolTest extends Mockito {
     when(request.getParameter("latitude-input")).thenReturn(Double.toString(uciLatitude));
     when(request.getParameter("longitude-input")).thenReturn(Double.toString(uciLongitude));
 
-    mapServlet.doPost(request, response);
+    mapServlet.addToDatastore(request);
 
     when(request.getParameter("name-input")).thenReturn("UCB");
     when(request.getParameter("latitude-input")).thenReturn("37.871942");
     when(request.getParameter("longitude-input")).thenReturn("-122.258476");
 
-    mapServlet.doPost(request, response);
+    mapServlet.addToDatastore(request);
 
     // Make sure that UCB was added, since it was not already in Datastore.
     int actual =
@@ -163,8 +163,8 @@ public final class SchoolTest extends Mockito {
     when(request.getParameter("latitude-input")).thenReturn(Double.toString(uciLatitude));
     when(request.getParameter("longitude-input")).thenReturn(Double.toString(uciLongitude));
 
-    mapServlet.doPost(request, response);
-    mapServlet.doPost(request, response);
+    mapServlet.addToDatastore(request);
+    mapServlet.addToDatastore(request);
 
     // Make sure that UCI was not added again, as it was already in Datastore.
     int actual =
