@@ -14,21 +14,65 @@
 
 package com.google.sps;
 
+import static org.junit.Assert.assertEquals;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.School;
+import com.google.sps.servlets.MapServlet;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
 /** Class that tests the basic 'get' methods and equals operator of School objects. */
 @RunWith(JUnit4.class)
-public final class SchoolTest {
+public final class SchoolTest extends Mockito {
 
   private final double uciLatitude = 33.640339;
   private final double uciLongitude = -117.844248;
+
+  private DatastoreService datastore;
+  private MapServlet mapServlet;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+
+  private LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+
+  @Before
+  public void setUp() {
+    helper.setUp();
+    datastore = DatastoreServiceFactory.getDatastoreService();
+    mapServlet = new MapServlet();
+    request = Mockito.mock(HttpServletRequest.class);
+    response = Mockito.mock(HttpServletResponse.class);
+
+    Entity schoolEntity = new Entity("School");
+    schoolEntity.setProperty("name", "UCI");
+    schoolEntity.setProperty("latitude", Double.toString(uciLatitude));
+    schoolEntity.setProperty("longitude", Double.toString(uciLongitude));
+    datastore.put(schoolEntity);
+  }
+
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
 
   @Test
   public void getNameReturnsSchoolName() {
@@ -99,5 +143,41 @@ public final class SchoolTest {
     int actual = schoolsList.size();
     int expected = 3;
     Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testUploadingSchoolsWithNoDuplicatesInDatastore() {
+    when(request.getParameter("name-input")).thenReturn("UCB");
+    when(request.getParameter("latitude-input")).thenReturn("37.871942");
+    when(request.getParameter("longitude-input")).thenReturn("-122.258476");
+
+    try {
+      mapServlet.doPost(request, response);
+    } catch (IOException ex) {
+      System.out.println(ex.toString());
+    }
+
+    // Make sure that UCB was added, since it was not already in Datastore.
+    assertEquals(
+        2,
+        datastore.prepare(new Query("School")).countEntities(FetchOptions.Builder.withDefaults()));
+  }
+
+  @Test
+  public void testUploadingSchoolsWithExistingDuplicatesInDatastore() {
+    when(request.getParameter("name-input")).thenReturn("UCI");
+    when(request.getParameter("latitude-input")).thenReturn(Double.toString(uciLatitude));
+    when(request.getParameter("longitude-input")).thenReturn(Double.toString(uciLongitude));
+
+    try {
+      mapServlet.doPost(request, response);
+    } catch (IOException ex) {
+      System.out.println(ex.toString());
+    }
+
+    // Make sure that UCI was not added again, as it was already in Datastore.
+    assertEquals(
+        1,
+        datastore.prepare(new Query("School")).countEntities(FetchOptions.Builder.withDefaults()));
   }
 }
