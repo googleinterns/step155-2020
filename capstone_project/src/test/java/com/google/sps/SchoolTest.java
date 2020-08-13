@@ -61,12 +61,6 @@ public final class SchoolTest extends Mockito {
     mapServlet = new MapServlet();
     request = Mockito.mock(HttpServletRequest.class);
     response = Mockito.mock(HttpServletResponse.class);
-
-    Entity schoolEntity = new Entity("School");
-    schoolEntity.setProperty("name", "UCI");
-    schoolEntity.setProperty("latitude", Double.toString(uciLatitude));
-    schoolEntity.setProperty("longitude", Double.toString(uciLongitude));
-    datastore.put(schoolEntity);
   }
 
   @After
@@ -146,38 +140,37 @@ public final class SchoolTest extends Mockito {
   }
 
   @Test
-  public void testUploadingSchoolsWithNoDuplicatesInDatastore() {
-    when(request.getParameter("name-input")).thenReturn("UCB");
-    when(request.getParameter("latitude-input")).thenReturn("37.871942");
-    when(request.getParameter("longitude-input")).thenReturn("-122.258476");
-
-    try {
-      mapServlet.doPost(request, response);
-    } catch (IOException ex) {
-      System.out.println(ex.toString());
-    }
-
-    // Make sure that UCB was added, since it was not already in Datastore.
-    assertEquals(
-        2,
-        datastore.prepare(new Query("School")).countEntities(FetchOptions.Builder.withDefaults()));
-  }
-
-  @Test
-  public void testUploadingSchoolsWithExistingDuplicatesInDatastore() {
+  public void testUploadingSchoolsWithNoDuplicatesInDatastore() throws IOException {
     when(request.getParameter("name-input")).thenReturn("UCI");
     when(request.getParameter("latitude-input")).thenReturn(Double.toString(uciLatitude));
     when(request.getParameter("longitude-input")).thenReturn(Double.toString(uciLongitude));
 
-    try {
-      mapServlet.doPost(request, response);
-    } catch (IOException ex) {
-      System.out.println(ex.toString());
-    }
+    mapServlet.doPost(request, response);
+
+    when(request.getParameter("name-input")).thenReturn("UCB");
+    when(request.getParameter("latitude-input")).thenReturn("37.871942");
+    when(request.getParameter("longitude-input")).thenReturn("-122.258476");
+
+    mapServlet.doPost(request, response);
+
+    // Make sure that UCB was added, since it was not already in Datastore.
+    int actual = datastore.prepare(new Query("School")).countEntities(FetchOptions.Builder.withDefaults());
+    int expected = 2;
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testUploadingSchoolsWithExistingDuplicatesInDatastore() throws IOException {
+    when(request.getParameter("name-input")).thenReturn("UCI");
+    when(request.getParameter("latitude-input")).thenReturn(Double.toString(uciLatitude));
+    when(request.getParameter("longitude-input")).thenReturn(Double.toString(uciLongitude));
+
+    mapServlet.doPost(request, response);
+    mapServlet.doPost(request, response);
 
     // Make sure that UCI was not added again, as it was already in Datastore.
-    assertEquals(
-        1,
-        datastore.prepare(new Query("School")).countEntities(FetchOptions.Builder.withDefaults()));
+    int actual = datastore.prepare(new Query("School")).countEntities(FetchOptions.Builder.withDefaults());
+    int expected = 1;
+    Assert.assertEquals(expected, actual);
   }
 }
