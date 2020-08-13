@@ -19,9 +19,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.sps.data.Authenticator;
 import com.google.sps.data.PostService;
 import java.io.IOException;
 import java.util.List;
@@ -48,11 +47,7 @@ public class PostServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-
-    if (!userService.isUserLoggedIn()) {
-      String loginUrl = userService.createLoginURL("/pages/comments.jsp");
-      response.sendRedirect(loginUrl);
+    if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
       return;
     }
 
