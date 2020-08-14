@@ -47,7 +47,7 @@ public final class DeletePostTest extends Mockito {
     when(clock.millis()).thenReturn(ONE_DAY + 1);
 
     List<Entity> posts = Arrays.asList(post1);
-    doReturn(posts).when(deleteService).retrieveAllPosts();
+    doReturn(posts).when(deleteService).retrieveAllPostsAscending();
 
     deleteService.deleteOldPosts();
     verify(datastore, times(1)).delete(any());
@@ -65,7 +65,7 @@ public final class DeletePostTest extends Mockito {
     when(clock.millis()).thenReturn(ONE_DAY);
 
     List<Entity> posts = Arrays.asList(post1, post2, post3);
-    doReturn(posts).when(deleteService).retrieveAllPosts();
+    doReturn(posts).when(deleteService).retrieveAllPostsAscending();
 
     deleteService.deleteOldPosts();
     verify(datastore, times(2)).delete(any());

@@ -44,7 +44,7 @@ public class DeletePostService {
 
   // Retrieves a query of all posts entities in ascending order based on timestamp. Returns a list
   // of entities of all posts inside of datastore in sorted ascending order.
-  public List<Entity> retrieveAllPosts() {
+  public List<Entity> retrieveAllPostsAscending() {
     Query<Entity> query =
         Query.newEntityQueryBuilder().setKind("Post").setOrderBy(OrderBy.asc("timestamp")).build();
 
@@ -66,7 +66,7 @@ public class DeletePostService {
 
   // Deletes all posts with an elapsed time equal to or older than 24 hours from its creation time.
   public void deleteOldPosts() {
-    List<Entity> posts = retrieveAllPosts();
+    List<Entity> posts = retrieveAllPostsAscending();
     if (posts.isEmpty()) {
       return;
     }
