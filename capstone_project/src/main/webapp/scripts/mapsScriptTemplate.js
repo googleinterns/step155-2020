@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the 'License');
 // you may not use this file except in compliance with the License.
@@ -24,21 +24,24 @@ function createMap() { // eslint-disable-line no-unused-vars
   loadMarkersOntoMap(map);
 }
 
-/** Fetches, loads, and creates a marker/infowindow for each school,
- * and places this marker on the map.
+/** Fetches and webscrapes articles for each school,
+ * and creates/places each school's marker on the map.
  * @param {Object} map - A google maps Map object.
  */
 function loadMarkersOntoMap(map) {
   fetch('/school-data').then((response) => response.json()).then((schools) => {
     for (const school of schools) {
-      createMarker(map, school.latitude, school.longitude,
-          school.name, school.articles);
+      url = `https://www.googleapis.com/customsearch/v1?key=CAPSTONE_API_KEY&cx=CAPSTONE_SEARCH_ENG_ID&q=${school.name}`;
+      $.getJSON(url, function (result) {
+        createMarker(map, school.latitude, school.longitude,
+          school.name, result);
+      });
     }
   });
 }
 
 /** Creates and returns the "News" tab portion of a content string for a marker.
- * @param {Array.<string>} articles - A list of articles about a school.
+ * @param {Array.<string>} articles - A list of search results about a school.
  * @return {string} - A newsFeed string containing the HTML code for
  * the "News" tab of an infowindow.
  */
@@ -46,7 +49,7 @@ function createNewsFeed(articles) {
   let newsFeed = '<ul>';
 
   for (const article of articles) {
-    newsFeed += `<li><a href="${article}">${article}</a></li>`;
+    newsFeed += `<li><a href="${article.link}">${article.htmlTitle}</a></li>`;
   }
 
   newsFeed += '</ul>';
@@ -55,11 +58,11 @@ function createNewsFeed(articles) {
 
 /** Creates and returns the content string for a marker.
  * @param {string} name - The name of a school.
- * @param {Array.<string>} articles - A list of articles about that school.
+ * @param {Array.<Object>} items - A list of search results about that school.
  * @return {string} - A contentString containing the
  * HTML code for an infowindow.
  */
-function createContentString(name, articles) {
+function createContentString(name, items) {
   const contentString =
     `<div id="content">
         <div id="siteNotice">
@@ -77,7 +80,9 @@ function createContentString(name, articles) {
             `<div class="tab-content">
                 <div id="news" class="tab-pane fade in active">
                     <h5><b>Here's the latest news on ${name}:</b></h5>
-                    ${createNewsFeed(articles)}
+
+                    ${createNewsFeed(items)}
+
                 </div>
                 <div id="posts" class="tab-pane fade">
                     <h4>This is where the posts for ${name} will go.</h4>
@@ -95,16 +100,16 @@ function createContentString(name, articles) {
  * @param {number} latitude - The latitude of the marker's location.
  * @param {number} longitude - The longitude of the marker's location.
  * @param {string} name - The name of the school associated with the marker.
- * @param {Array.<string>} articles - A list of links to articles
- * about the school.
+ * @param {Array.<Object>} result - A list of JSON objects that represent
+ * the search results for news articles about a school.
  */
-function createMarker(map, latitude, longitude, name, articles) {
+function createMarker(map, latitude, longitude, name, result) {
   const pos = {lat: latitude, lng: longitude};
-  const contentString = createContentString(name, articles);
+  const contentString = createContentString(name, result.items);
 
   // Make the marker.
   const markerIcon = {
-    url: 'http://maps.google.com/mapfiles/kml/paddle/purple-stars.png',
+    url: 'https://maps.google.com/mapfiles/kml/paddle/purple-stars.png',
     scaledSize: new google.maps.Size(40, 40),
   };
 

@@ -14,21 +14,17 @@
 
 package com.google.sps.data;
 
-import java.util.ArrayList;
-
 /** Class representing a school that corresponds to a pin on the map. */
 public class School {
 
   private final String name;
   private final double latitude;
   private final double longitude;
-  private ArrayList<String> articles;
 
-  public School(String name, double latitude, double longitude, ArrayList<String> articles) {
+  public School(String name, double latitude, double longitude) {
     this.name = name;
     this.latitude = latitude;
     this.longitude = longitude;
-    this.articles = articles;
   }
 
   public String getName() {
@@ -43,7 +39,28 @@ public class School {
     return longitude;
   }
 
-  public ArrayList<String> getArticles() {
-    return articles;
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+
+    if (o == this) {
+      return true;
+    }
+
+    if (!(o instanceof School)) {
+      return false;
+    }
+
+    // typecast o to School so that data members can be compared
+    School s = (School) o;
+
+    // Compare the data members and return the result
+    return ((s.getName()).equals(this.name))
+        && (s.getLatitude() == this.latitude)
+        && (s.getLongitude() == this.longitude);
   }
 }
