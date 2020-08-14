@@ -30,29 +30,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that handles loading and uploading posts. */
-@WebServlet("/post-process")
-public class PostServlet extends HttpServlet {
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
-    Query query = new Query("Post");
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-
-    Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(posts));
-  }
-
+@WebServlet("/sort-posts")
+public class SortServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
       return;
     }
 
+    String sortType = request.getParameter("sort-type");
+
+    if (sortType == null) {
+      return;
+    }
+
+    Query query = new Query("Post");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     PostService postService = PostService.Builder.builder().build();
-    postService.storePost(request);
-    response.sendRedirect("/pages/comments.jsp");
+
+    postService.sortEntities(sortType, posts);
+    response.setContentType("application/json");
+
+    Gson gson = new Gson();
+    response.getWriter().println(gson.toJson(posts));
   }
 }

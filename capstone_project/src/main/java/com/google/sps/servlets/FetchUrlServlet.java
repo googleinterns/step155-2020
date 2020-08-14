@@ -14,32 +14,29 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.repackaged.com.google.gson.Gson;
-import com.google.sps.data.Authenticator;
-import com.google.sps.data.PostService;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet that handles upvoting a post. increases the upvote count of a post by one at every POST
- * request.
- */
-@WebServlet("/upvote")
-public class UpvoteServlet extends HttpServlet {
+/** Creates a blobstore url with a parameter for the file type. */
+@WebServlet("/fetch-blobstore-url")
+public class FetchUrlServlet extends HttpServlet {
+  private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String fileType = request.getParameter("file-type");
+
+    if (fileType == null || fileType.isEmpty()) {
       return;
     }
 
-    response.setContentType("application/json;");
-
-    Gson gson = new Gson();
-    long newCount = PostService.Builder.builder().build().upvotePost(request);
-
-    response.getWriter().println(gson.toJson(newCount));
+    String uploadUrl = blobstoreService.createUploadUrl("/post-process?file-type=" + fileType);
+    response.setContentType("text/html");
+    response.getWriter().println(uploadUrl);
   }
 }
