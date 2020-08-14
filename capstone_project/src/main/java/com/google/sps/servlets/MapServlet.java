@@ -77,30 +77,6 @@ public class MapServlet extends HttpServlet {
 
     addToDatastore(request);
 
-    /*
-    // Initialize datastore object.
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    // Get the input from the school entry form.
-    String schoolName = getParameter(request, "name-input");
-    double schoolLatitude = Double.parseDouble(getParameter(request, "latitude-input"));
-    double schoolLongitude = Double.parseDouble(getParameter(request, "longitude-input"));
-
-    // Check if the School is already in Datastore.
-    Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, schoolName);
-    Query query = new Query("School").setFilter(nameFilter);
-    PreparedQuery results = datastore.prepare(query);
-
-    // If it is not, create a schoolEntity for the School and add it to Datastore.
-    if (results.countEntities(FetchOptions.Builder.withDefaults()) == 0) {
-      Entity schoolEntity = new Entity("School");
-      schoolEntity.setProperty("name", schoolName);
-      schoolEntity.setProperty("latitude", schoolLatitude);
-      schoolEntity.setProperty("longitude", schoolLongitude);
-      datastore.put(schoolEntity);
-    }
-    */
-
     // Respond with the result.
     response.sendRedirect("pages/maps.html");
   }
@@ -127,9 +103,6 @@ public class MapServlet extends HttpServlet {
       schoolEntity.setProperty("longitude", schoolLongitude);
       datastore.put(schoolEntity);
     }
-
-    // Respond with the result.
-    //response.sendRedirect("pages/maps.html");
   }
 
   private String getParameter(HttpServletRequest request, String name) {
