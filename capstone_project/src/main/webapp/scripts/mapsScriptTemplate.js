@@ -22,6 +22,54 @@ function createMap() { // eslint-disable-line no-unused-vars
 
   // Create a marker for each school and load these onto the map.
   loadMarkersOntoMap(map);
+
+  // Create the autocomplete Places search.
+  loadAutocomplete(map);
+}
+
+/** Creates and displays an autocompleted Places search engine on the page.
+ * @param {Object} map - A google maps Map object.
+*/
+function loadAutocomplete(map) {
+  // Set up the autocomplete search widget.
+  const input = document.getElementById('school-search');
+  const autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+  autocomplete.setFields(
+      ['address_components', 'geometry', 'icon', 'name']);
+
+  // Grab the place submission from autocomplete and post it only when the
+  // 'submit' button is clicked.
+  document.getElementById('school-submit')
+      .addEventListener('click', function() {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+          // The user entered the name of a Place that was not suggested,
+          // or the request for Place Details failed.
+          window.alert(`No details were found for submission: '${place.name}'`);
+          return;
+        }
+        const submission = {
+          name: place.name,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+        };
+        postSchool(submission);
+      });
+}
+
+/** Sends the school submission to a MapServlet.
+ * @param {Object} submission - An object representing a school submission.
+*/
+function postSchool(submission) {
+  fetch('/school-data', {
+    method: 'POST',
+    body: JSON.stringify(submission),
+    headers: {
+      'Accept': 'application/json',
+    },
+  });
+  location.reload();
 }
 
 /** Fetches and webscrapes articles for each school,
@@ -32,9 +80,9 @@ function loadMarkersOntoMap(map) {
   fetch('/school-data').then((response) => response.json()).then((schools) => {
     for (const school of schools) {
       url = `https://www.googleapis.com/customsearch/v1?key=CAPSTONE_API_KEY&cx=CAPSTONE_SEARCH_ENG_ID&q=${school.name}`;
-      $.getJSON(url, function (result) {
+      $.getJSON(url, function(result) {
         createMarker(map, school.latitude, school.longitude,
-          school.name, result);
+            school.name, result);
       });
     }
   });

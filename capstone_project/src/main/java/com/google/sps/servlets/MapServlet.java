@@ -41,7 +41,6 @@ public class MapServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     Set<School> schoolsSet = new HashSet<School>();
 
     // Load Schools from Datastore.
@@ -75,20 +74,22 @@ public class MapServlet extends HttpServlet {
       return;
     }
 
-    addToDatastore(request);
+    School submission = new Gson().fromJson(request.getReader(), School.class);
+    addToDatastore(submission);
 
     // Respond with the result.
-    response.sendRedirect("pages/maps.html");
+    response.sendRedirect("/pages/maps.html");
   }
 
-  public void addToDatastore(HttpServletRequest request) throws IOException {
+  public void addToDatastore(School submission) throws IOException {
+
     // Initialize datastore object.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Get the input from the school entry form.
-    String schoolName = getParameter(request, "name-input");
-    double schoolLatitude = Double.parseDouble(getParameter(request, "latitude-input"));
-    double schoolLongitude = Double.parseDouble(getParameter(request, "longitude-input"));
+    // Parse the submission.
+    String schoolName = submission.getName();
+    double schoolLatitude = submission.getLatitude();
+    double schoolLongitude = submission.getLongitude();
 
     // Check if the School is already in Datastore.
     Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, schoolName);
@@ -103,10 +104,5 @@ public class MapServlet extends HttpServlet {
       schoolEntity.setProperty("longitude", schoolLongitude);
       datastore.put(schoolEntity);
     }
-  }
-
-  private String getParameter(HttpServletRequest request, String name) {
-    String value = request.getParameter(name);
-    return value == null ? "" : value;
   }
 }
