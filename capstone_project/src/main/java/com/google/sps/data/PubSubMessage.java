@@ -31,28 +31,28 @@ public class PubSubMessage {
     return data;
   }
 
-  public void setData(String data) {
-    this.data = data;
-  }
-
   public Map<String, String> getAttributes() {
     return attributes;
   }
 
-  public void setAttributes(Map<String, String> attributes) {
-    this.attributes = attributes;
+  public String getPublishTime() {
+    return publishTime;
   }
 
   public String getMessageId() {
     return messageId;
   }
 
-  public void setMessageId(String messageId) {
-    this.messageId = messageId;
+  public void setData(String data) {
+    this.data = data;
   }
 
-  public String getPublishTime() {
-    return publishTime;
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
+
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
   }
 
   public void setPublishTime(String publishTime) {
