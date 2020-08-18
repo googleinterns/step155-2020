@@ -68,8 +68,7 @@ function postSchool(submission) {
     headers: {
       'Accept': 'application/json',
     },
-  });
-  location.reload();
+  }).then((response) => location.reload());
 }
 
 /** Fetches and webscrapes articles for each school,

@@ -64,7 +64,6 @@ public class MapServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     UserService userService = UserServiceFactory.getUserService();
 
     if (!userService.isUserLoggedIn()) {
@@ -74,22 +73,21 @@ public class MapServlet extends HttpServlet {
       return;
     }
 
-    School submission = new Gson().fromJson(request.getReader(), School.class);
-    addToDatastore(submission);
+    School requestedSchool = new Gson().fromJson(request.getReader(), School.class);
+    addToDatastore(requestedSchool);
 
     // Respond with the result.
     response.sendRedirect("/pages/maps.html");
   }
 
-  public void addToDatastore(School submission) throws IOException {
-
+  public void addToDatastore(School requestedSchool) throws IOException {
     // Initialize datastore object.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Parse the submission.
-    String schoolName = submission.getName();
-    double schoolLatitude = submission.getLatitude();
-    double schoolLongitude = submission.getLongitude();
+    // Parse the requestedSchool.
+    String schoolName = requestedSchool.getName();
+    double schoolLatitude = requestedSchool.getLatitude();
+    double schoolLongitude = requestedSchool.getLongitude();
 
     // Check if the School is already in Datastore.
     Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, schoolName);
