@@ -78,7 +78,7 @@ function postSchool(submission) {
 function loadMarkersOntoMap(map) {
   fetch('/school-data').then((response) => response.json()).then((schools) => {
     for (const school of schools) {
-      url = `https://www.googleapis.com/customsearch/v1?key=CAPSTONE_API_KEY&cx=CAPSTONE_SEARCH_ENG_ID&q=${school.name}`;
+      const url = `https://www.googleapis.com/customsearch/v1?key=CAPSTONE_API_KEY&cx=CAPSTONE_SEARCH_ENG_ID&q=${school.name}`;
       $.getJSON(url, function(result) {
         createMarker(map, school.latitude, school.longitude,
             school.name, result);

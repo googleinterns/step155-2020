@@ -73,21 +73,21 @@ public class MapServlet extends HttpServlet {
       return;
     }
 
-    School requestedSchool = new Gson().fromJson(request.getReader(), School.class);
-    addToDatastore(requestedSchool);
+    School submission = new Gson().fromJson(request.getReader(), School.class);
+    addToDatastore(submission);
 
     // Respond with the result.
     response.sendRedirect("/pages/maps.html");
   }
 
-  public void addToDatastore(School requestedSchool) throws IOException {
+  public void addToDatastore(School submission) throws IOException {
     // Initialize datastore object.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Parse the requestedSchool.
-    String schoolName = requestedSchool.getName();
-    double schoolLatitude = requestedSchool.getLatitude();
-    double schoolLongitude = requestedSchool.getLongitude();
+    // Parse the submission.
+    String schoolName = submission.getName();
+    double schoolLatitude = submission.getLatitude();
+    double schoolLongitude = submission.getLongitude();
 
     // Check if the School is already in Datastore.
     Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, schoolName);
