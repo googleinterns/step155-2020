@@ -80,6 +80,9 @@ public class MapServlet extends HttpServlet {
     response.sendRedirect("/pages/maps.html");
   }
 
+  /** Adds the user's school submission to Datastore, if not already
+   * contained within Datastore.
+   */
   public void addToDatastore(School submission) throws IOException {
     // Initialize datastore object.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

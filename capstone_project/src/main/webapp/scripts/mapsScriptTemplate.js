@@ -29,7 +29,7 @@ function createMap() { // eslint-disable-line no-unused-vars
 
 /** Creates and displays an autocompleted Places search engine on the page.
  * @param {Object} map - A google maps Map object.
-*/
+ */
 function loadAutocomplete(map) {
   // Set up the autocomplete search widget.
   const input = document.getElementById('school-search');
@@ -60,7 +60,7 @@ function loadAutocomplete(map) {
 
 /** Sends the school submission to a MapServlet.
  * @param {Object} submission - An object representing a school submission.
-*/
+ */
 function postSchool(submission) {
   fetch('/school-data', {
     method: 'POST',
