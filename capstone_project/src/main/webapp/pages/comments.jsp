@@ -15,6 +15,7 @@ limitations under the License.
 <%! BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(); %>
 
 <!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="../scripts/comments.js"></script>
 <link rel="stylesheet" href="../styles/posts.css">
 <body onload="loadPosts()">
