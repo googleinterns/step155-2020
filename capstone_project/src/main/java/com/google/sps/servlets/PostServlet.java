@@ -40,7 +40,6 @@ public class PostServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(posts));
   }
