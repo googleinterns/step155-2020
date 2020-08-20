@@ -90,7 +90,7 @@ async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
 
   if (newUpvoteCount.length !== 0) {
     interactionsBar.innerHTML =
-      `${upvoteBtn.outerHTML} ${newUpvoteCount} ${ await renderReactions(id)}`;
+      `${upvoteBtn.outerHTML} ${newUpvoteCount} ${ await getReactionsHTML(id)}`;
   }
 }
 
@@ -133,7 +133,7 @@ async function renderPosts(posts) {
         <button class='upvote-button'
                 onclick='upvotePost(this)'>
             <i class='upvote'></i></button> ${postProperties.upvotes}
-            ${await renderReactions(post.key.id)}
+            ${await getReactionsHTML(post.key.id)}
       </div>
     `.trim();
 
@@ -149,7 +149,7 @@ async function renderPosts(posts) {
  * Returns an HTML string representation of all reactions for a post.
  * @param {number} postID - the unique id of the post
  */
-async function renderReactions(postID) {
+async function getReactionsHTML(postID) {
   const reactionsCount = await getReactionCounts(postID);
   const reacionsHTML = `
     <a class='like-btn'>
@@ -239,8 +239,7 @@ function disableInput(event) { // eslint-disable-line no-unused-vars
  * @param {HTMLDivElement} element - the requested reaction to send.
  */
 async function reactToPost(element) { // eslint-disable-line no-unused-vars
-  // the fourth parent is the container for the post, which contains its id.
-  const postID = $(element).parents()[3].dataset.id;
+  const postID = element.closest(".post-container[data-id]").dataset.id;
   const reaction = element.dataset.reaction;
   if (reaction === undefined || reaction === '') {
     return;
