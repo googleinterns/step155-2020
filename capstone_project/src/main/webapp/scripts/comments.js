@@ -239,7 +239,7 @@ function disableInput(event) { // eslint-disable-line no-unused-vars
  * @param {HTMLDivElement} element - the requested reaction to send.
  */
 async function reactToPost(element) { // eslint-disable-line no-unused-vars
-  const postID = element.closest(".post-container[data-id]").dataset.id;
+  const postID = element.closest('.post-container[data-id]').dataset.id;
   const reaction = element.dataset.reaction;
   if (reaction === undefined || reaction === '') {
     return;
