@@ -54,7 +54,11 @@ public class ReactServlet extends HttpServlet {
     }
 
     PostService postService = PostService.Builder.builder().build();
-    long newReactCount = postService.reactToPost(request);
-    response.getWriter().println(gson.toJson(newReactCount));
+    Optional<Long> newReactCount = postService.reactToPost(request);
+    if (newReactCount.isPresent()) {
+      response.getWriter().println(gson.toJson(newReactCount.get()));
+    } else {
+      response.getWriter().println("[]");
+    }
   }
 }

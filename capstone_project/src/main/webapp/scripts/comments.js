@@ -88,7 +88,7 @@ async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
     body: `id=${id}&sort-type=${sortedBy}`,
   }).then((response) => response.json());
 
-  if (newUpvoteCount != -1) {
+  if (newUpvoteCount.length !== 0) {
     interactionsBar.innerHTML =
       `${upvoteBtn.outerHTML} ${newUpvoteCount} ${ await renderReactions(id)}`;
   }
@@ -239,7 +239,8 @@ function disableInput(event) { // eslint-disable-line no-unused-vars
  * @param {HTMLDivElement} element - the requested reaction to send.
  */
 async function reactToPost(element) { // eslint-disable-line no-unused-vars
-  const postID = $(element).parents().eq(3).dataset.id;
+  // the fourth parent is the container for the post, which contains its id. 
+  const postID = $(element).parents()[3].dataset.id;
   const reaction = element.dataset.reaction;
   if (reaction === undefined || reaction === '') {
     return;
@@ -253,7 +254,9 @@ async function reactToPost(element) { // eslint-disable-line no-unused-vars
     body: `reaction=${reaction}&post-id=${postID}`,
   });
   const newCount = await response.json();
-  element.querySelector('span.badge').innerText = newCount;
+  if (newCount.length !== 0) {
+    element.querySelector('span.badge').innerText = newCount;
+  }
 }
 
 /**

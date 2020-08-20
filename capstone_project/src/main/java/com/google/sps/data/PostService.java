@@ -127,20 +127,21 @@ public class PostService {
 
   /**
    * Increases the upvote count of a post by one. 'request' must have the parameter 'id'. Returns
-   * the new upvote count after increase.
+   * the new upvote count after increase. If post does not exist, returns an empty Optional
+   * instance.
    */
-  public long upvotePost(HttpServletRequest request) {
+  public Optional<Long> upvotePost(HttpServletRequest request) {
     long postID = Long.parseLong(request.getParameter("id"));
     Optional<Entity> post = getEntityFromId(postID);
     if (!post.isPresent()) {
-      return -1;
+      return Optional.empty();
     }
 
     Entity postToUpvote = post.get();
     long currentUpvotes = (long) postToUpvote.getProperty("upvotes");
     postToUpvote.setProperty("upvotes", ++currentUpvotes);
     datastore.put(postToUpvote);
-    return currentUpvotes;
+    return Optional.of(currentUpvotes);
   }
 
   /**
@@ -199,18 +200,18 @@ public class PostService {
 
   /**
    * Increases the reaction count of the submitted reaction by one. Returns the new reaction count
-   * after increase.
+   * after increase. If the post or reaction does not exist, returns an empty Optional instance.
    */
-  public long reactToPost(HttpServletRequest request) {
+  public Optional<Long> reactToPost(HttpServletRequest request) {
     String reaction = request.getParameter("reaction");
     if (reaction == null || reaction.isEmpty()) {
-      return -1;
+      return Optional.empty();
     }
 
     long postID = Long.parseLong(request.getParameter("post-id"));
     Optional<Entity> post = getEntityFromId(postID);
     if (!post.isPresent()) {
-      return -1;
+      return Optional.empty();
     }
 
     Entity postToReact = post.get();
@@ -221,7 +222,7 @@ public class PostService {
     reactions.setProperty(reaction, ++reactionCount);
     postToReact.setProperty("reactions", reactions);
     datastore.put(postToReact);
-    return reactionCount;
+    return Optional.of(reactionCount);
   }
 
   /** Returns an EmbeddedEntity with all possible reactions set to 0. */

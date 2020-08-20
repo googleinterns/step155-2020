@@ -117,8 +117,8 @@ public final class PostTest extends Mockito {
     when(request.getParameter("id")).thenReturn("1");
     // Mock datastore to return the prebuilt Entity.
     when(datastore.get(any(Key.class))).thenReturn(postEntity);
-    long expected = 1;
-    long actual = postService.upvotePost(request);
+    Optional<Long> expected = Optional.of(1L);
+    Optional<Long> actual = postService.upvotePost(request);
 
     assertEquals(expected, actual);
   }
@@ -127,8 +127,8 @@ public final class PostTest extends Mockito {
   public void returnNegOneOnEntityNotFound() {
     when(request.getParameter("id")).thenReturn("1");
 
-    long expected = -1;
-    long actual = postService.upvotePost(request);
+    Optional<Long> expected = Optional.empty();
+    Optional<Long> actual = postService.upvotePost(request);
     assertEquals(expected, actual);
   }
 
@@ -211,8 +211,8 @@ public final class PostTest extends Mockito {
     when(request.getParameter("post-id")).thenReturn("1");
     doReturn(post).when(postService).getEntityFromId(1);
 
-    long expected = 1;
-    long actual = postService.reactToPost(request);
+    Optional<Long> expected = Optional.of(1L);
+    Optional<Long> actual = postService.reactToPost(request);
 
     assertEquals(expected, actual);
   }
@@ -220,8 +220,8 @@ public final class PostTest extends Mockito {
   @Test
   public void returnNegOneOnInvalidReaction() {
     when(request.getParameter("reaction")).thenReturn("");
-    long expected = -1;
-    long actual = postService.reactToPost(request);
+    Optional<Long> expected = Optional.empty();
+    Optional<Long> actual = postService.reactToPost(request);
 
     assertEquals(expected, actual);
   }
@@ -230,8 +230,8 @@ public final class PostTest extends Mockito {
   public void returnNegOneOnPostNotFound() {
     when(request.getParameter("reaction")).thenReturn("");
     when(request.getParameter("post-id")).thenReturn("");
-    long expected = -1;
-    long actual = postService.reactToPost(request);
+    Optional<Long> expected = Optional.empty();
+    Optional<Long> actual = postService.reactToPost(request);
 
     assertEquals(expected, actual);
   }
