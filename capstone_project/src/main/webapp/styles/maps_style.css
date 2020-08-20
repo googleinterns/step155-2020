@@ -5,14 +5,15 @@
   font: 15px 'Quicksand', sans-serif;
 }
 
-/* Button Section */
-button {
-  background-color: #9fc3fc;
-}
-
 /* Map Section */
 #map {
   height: 500px;
   width: 80%;
   margin: 0 auto;
+}
+
+/* School Submission Section */
+#school-search {
+  text-overflow: ellipsis;
+  width: 400px;
 }

@@ -138,17 +138,10 @@ public final class SchoolTest extends Mockito {
 
   @Test
   public void testUploadingSchoolsWithNoDuplicatesInDatastore() throws IOException {
-    when(request.getParameter("name-input")).thenReturn("UCI");
-    when(request.getParameter("latitude-input")).thenReturn(Double.toString(uciLatitude));
-    when(request.getParameter("longitude-input")).thenReturn(Double.toString(uciLongitude));
-
-    mapServlet.addToDatastore(request);
-
-    when(request.getParameter("name-input")).thenReturn("UCB");
-    when(request.getParameter("latitude-input")).thenReturn("37.871942");
-    when(request.getParameter("longitude-input")).thenReturn("-122.258476");
-
-    mapServlet.addToDatastore(request);
+    School uci = new School("UCI", uciLatitude, uciLongitude);
+    mapServlet.addToDatastore(uci);
+    School ucb = new School("UCB", 37.871942, -122.258476);
+    mapServlet.addToDatastore(ucb);
 
     // Make sure that UCB was added, since it was not already in Datastore.
     int actual =
@@ -159,12 +152,10 @@ public final class SchoolTest extends Mockito {
 
   @Test
   public void testUploadingSchoolsWithExistingDuplicatesInDatastore() throws IOException {
-    when(request.getParameter("name-input")).thenReturn("UCI");
-    when(request.getParameter("latitude-input")).thenReturn(Double.toString(uciLatitude));
-    when(request.getParameter("longitude-input")).thenReturn(Double.toString(uciLongitude));
-
-    mapServlet.addToDatastore(request);
-    mapServlet.addToDatastore(request);
+    School uci1 = new School("UCI", uciLatitude, uciLongitude);
+    School uci2 = new School("UCI", uciLatitude, uciLongitude);
+    mapServlet.addToDatastore(uci1);
+    mapServlet.addToDatastore(uci2);
 
     // Make sure that UCI was not added again, as it was already in Datastore.
     int actual =
