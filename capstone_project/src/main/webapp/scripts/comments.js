@@ -239,7 +239,7 @@ function disableInput(event) { // eslint-disable-line no-unused-vars
  * @param {HTMLDivElement} element - the requested reaction to send.
  */
 async function reactToPost(element) { // eslint-disable-line no-unused-vars
-  // the fourth parent is the container for the post, which contains its id. 
+  // the fourth parent is the container for the post, which contains its id.
   const postID = $(element).parents()[3].dataset.id;
   const reaction = element.dataset.reaction;
   if (reaction === undefined || reaction === '') {
