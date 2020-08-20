@@ -248,7 +248,6 @@ public class PostService {
     } catch (EntityNotFoundException ok) {
       // this is okay because by default post is empty so there is a default value.
     }
-
     return post;
   }
 }
