@@ -124,7 +124,7 @@ public final class PostTest extends Mockito {
   }
 
   @Test
-  public void returnNegOneOnEntityNotFound() {
+  public void returnEmptyOptionalOnUpvotePostNotFound() {
     when(request.getParameter("id")).thenReturn("1");
 
     Optional<Long> expected = Optional.empty();
@@ -218,7 +218,7 @@ public final class PostTest extends Mockito {
   }
 
   @Test
-  public void returnNegOneOnInvalidReaction() {
+  public void returnEmptyOptionalOnInvalidReaction() {
     when(request.getParameter("reaction")).thenReturn("");
     Optional<Long> expected = Optional.empty();
     Optional<Long> actual = postService.reactToPost(request);
@@ -227,7 +227,7 @@ public final class PostTest extends Mockito {
   }
 
   @Test
-  public void returnNegOneOnPostNotFound() {
+  public void returnEmptyOptionalOnReactionPostNotFound() {
     when(request.getParameter("reaction")).thenReturn("");
     when(request.getParameter("post-id")).thenReturn("");
     Optional<Long> expected = Optional.empty();
