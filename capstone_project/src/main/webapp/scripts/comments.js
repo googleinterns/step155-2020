@@ -128,7 +128,7 @@ async function renderPosts(posts) {
 
     const HTML = `
       ${getProperFileTag(postProperties.fileType, postProperties.fileBlobKey)}
-      <p>${postProperties.text}</p>
+      <p>${postProperties.text.value.value}</p>
       <div class='interactions'>
         <button class='upvote-button'
                 onclick='upvotePost(this)'>
