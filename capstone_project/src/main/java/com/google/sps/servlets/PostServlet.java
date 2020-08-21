@@ -24,6 +24,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.PostAnalysis;
+import com.google.sps.data.Authenticator;
 import com.google.sps.data.PostService;
 import com.google.sps.data.Resource;
 import java.io.IOException;
@@ -57,7 +58,6 @@ public class PostServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(posts));
   }
@@ -66,10 +66,7 @@ public class PostServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
-    if (!userService.isUserLoggedIn()) {
-      System.out.println("USER IS NOT LOGGED IN");
-      String loginUrl = userService.createLoginURL("/pages/maps.html");
-      response.sendRedirect(loginUrl);
+    if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
       return;
     }
 

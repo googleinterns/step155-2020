@@ -15,8 +15,10 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.sps.data.Authenticator;
 import com.google.sps.data.PostService;
 import java.io.IOException;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +32,19 @@ import javax.servlet.http.HttpServletResponse;
 public class UpvoteServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
+      return;
+    }
+
     response.setContentType("application/json;");
 
     Gson gson = new Gson();
-    long newCount = PostService.Builder.builder().build().upvotePost(request);
+    Optional<Long> newCount = PostService.Builder.builder().build().upvotePost(request);
 
-    response.getWriter().println(gson.toJson(newCount));
+    if (newCount.isPresent()) {
+      response.getWriter().println(gson.toJson(newCount.get()));
+    } else {
+      response.getWriter().println("[]");
+    }
   }
 }

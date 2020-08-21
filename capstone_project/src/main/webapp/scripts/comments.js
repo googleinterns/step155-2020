@@ -64,7 +64,7 @@ async function loadPosts() { // eslint-disable-line no-unused-vars
         .then((response) => response.json())
         .then((json) => json);
 
-  renderPosts(posts);
+  await renderPosts(posts);
 }
 
 /**
@@ -88,8 +88,9 @@ async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
     body: `id=${id}&sort-type=${sortedBy}`,
   }).then((response) => response.json());
 
-  if (newUpvoteCount != -1) {
-    interactionsBar.innerHTML = `${upvoteBtn.outerHTML} ${newUpvoteCount}`;
+  if (newUpvoteCount.length !== 0) {
+    interactionsBar.innerHTML =
+      `${upvoteBtn.outerHTML} ${newUpvoteCount} ${ await getReactionsHTML(id)}`;
   }
 }
 
@@ -119,7 +120,7 @@ async function sortPosts(sortType) { // eslint-disable-line no-unused-vars
  * Renders the posts onto the page.
  * @param {Array<Entity>} posts - an array of the post entities to render.
  */
-function renderPosts(posts) {
+async function renderPosts(posts) {
   const postContainer = document.getElementById('user-posts');
 
   for (const post of posts) {
@@ -132,6 +133,7 @@ function renderPosts(posts) {
         <button class='upvote-button'
                 onclick='upvotePost(this)'>
             <i class='upvote'></i></button> ${postProperties.upvotes}
+            ${await getReactionsHTML(post.key.id)}
       </div>
     `.trim();
 
@@ -141,6 +143,57 @@ function renderPosts(posts) {
     postElement.innerHTML = HTML;
     postContainer.appendChild(postElement);
   }
+}
+
+/**
+ * Returns an HTML string representation of all reactions for a post.
+ * @param {number} postID - the unique id of the post
+ */
+async function getReactionsHTML(postID) {
+  const reactionsCount = await getReactionCounts(postID);
+  const reactionsHTML = `
+    <a class='like-btn'>
+      <div class='reaction-box'>
+        <div class='reaction-icon emoji-think'
+             data-reaction='think'
+             onclick='reactToPost(this)'>
+          <label>Think</label>
+          <span class='badge'>${reactionsCount.think}</span>
+        </div>
+        <div class='reaction-icon emoji-wow'
+             data-reaction='wow'
+             onclick='reactToPost(this)'>
+          <label>Wow</label>
+          <span class='badge'>${reactionsCount.wow}</span>
+        </div>
+        <div class='reaction-icon emoji-love'
+             data-reaction='love'
+             onclick='reactToPost(this)'>
+          <label>Love</label>
+          <span class='badge'>${reactionsCount.love}</span>
+        </div>
+        <div class='reaction-icon emoji-sad'
+             data-reaction='sad'
+             onclick='reactToPost(this)'>
+          <label>Sad</label>
+          <span class='badge'>${reactionsCount.sad}</span>
+        </div>
+        <div class='reaction-icon emoji-laugh'
+             data-reaction='laugh'
+             onclick='reactToPost(this)'>
+          <label>Laugh</label>
+          <span class='badge'>${reactionsCount.laugh}</span>
+        </div>
+        <div class='reaction-icon emoji-yikes'
+             data-reaction='yikes'
+             onclick='reactToPost(this)'>
+          <label>Yikes</label>
+          <span class='badge'>${reactionsCount.yikes}</span>
+        </div>
+      </div>
+    </a>
+  `.trim();
+  return reactionsHTML;
 }
 
 /**
@@ -179,4 +232,45 @@ function disableInput(event) { // eslint-disable-line no-unused-vars
   // the submit is the last element in the form.
   const inputButton = event.target.lastElementChild;
   inputButton.disabled = true;
+}
+
+/**
+ * Increments the count of the chosen reaction locally and on the server side.
+ * @param {HTMLDivElement} element - the requested reaction to send.
+ */
+async function reactToPost(element) { // eslint-disable-line no-unused-vars
+  const postID = element.closest('.post-container[data-id]').dataset.id;
+  const reaction = element.dataset.reaction;
+  if (reaction === undefined || reaction === '') {
+    return;
+  }
+
+  const response = await fetch('/post-react', {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    method: 'POST',
+    body: `reaction=${reaction}&post-id=${postID}`,
+  });
+  const newCount = await response.json();
+  if (newCount.length !== 0) {
+    element.querySelector('span.badge').innerText = newCount;
+  }
+}
+
+/**
+ * Given a post id, retrieves a map of the reactions of that post and returns
+ * that map as a JavaScript object.
+ * @param {number} postID - the unique id of the post
+ * @return {Object} reactions - return an object of reactions with each
+ *                              reactions count.
+ */
+async function getReactionCounts(postID) {
+  const reactionRequest = await fetch(`/post-react?post-id=${postID}`, {
+    headers: {
+      'Accept': 'application/json',
+    },
+  });
+  const reactionPropertyMap = await reactionRequest.json();
+  return reactionPropertyMap.propertyMap;
 }

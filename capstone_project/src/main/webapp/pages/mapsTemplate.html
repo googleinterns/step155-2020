@@ -1,5 +1,3 @@
-<%! String mapsAPIKey = System.getenv("CAPSTONE_API_KEY"); %>
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,8 +8,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=<%= mapsAPIKey %>"></script>
-    <script src=" ../scripts/maps_script.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=CAPSTONE_API_KEY&libraries=places"></script>
+    <script src=" ../scripts/mapsScriptTemplate.js"></script>
   </head>
   <body onload="createMap();">
     <div id="content">
@@ -19,6 +17,15 @@
       <p>This is the maps feature of our capstone project.</p>
       <br>
       <div id="map"></div>
+      <br>
+      <h3>Don't see your college?</h3>
+      </p>Submit your school's info below and it'll appear on the map!</p>
+      <div id="school-submission">
+        <input id="school-search" type="text"
+               placeholder="Search for your school here">
+        <br>
+        <input id="school-submit" type="submit"> 
+      </div>
       <br>
       <p>Click <a href="../index.html">here</a> to navigate back to the homepage.</p>
     </div>

@@ -14,11 +14,22 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.School;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,52 +39,69 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/school-data")
 public class MapServlet extends HttpServlet {
 
-  private ArrayList<School> schools = new ArrayList<School>();
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Set<School> schoolsSet = new HashSet<School>();
 
-  private void addUCIToSchools() {
-    ArrayList<String> uciNews =
-        new ArrayList<String>(
-            Arrays.asList(
-                "https://news.uci.edu/2020/06/30/virtual-nurses-make-a-real-difference/",
-                "https://news.uci.edu/2020/07/07/uci-chancellor-emeritus-michael-v-drake-named-university-of-california-president/",
-                "https://news.uci.edu/2020/06/18/uci-podcast-jessica-millward-on-the-meaning-and-importance-of-juneteenth/"));
-    School uci = new School("UCI", 33.640339, -117.844248, uciNews);
-    schools.add(uci);
-  }
+    // Load Schools from Datastore.
+    Query query = new Query("School");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
 
-  private void addUWToSchools() {
-    ArrayList<String> uwNews =
-        new ArrayList<String>(
-            Arrays.asList(
-                "https://www.washington.edu/coronavirus/2020/07/10/back-to-school-town-hall/",
-                "https://www.washington.edu/news/2020/07/16/wsas-2020/?utm_source=UW%20News&utm_medium=tile&utm_campaign=UW%20NEWS",
-                "https://www.washington.edu/news/2020/07/29/expert-faq-wildfires-in-the-pacific-northwest-during-the-covid-19-pandemic/"));
-    School uw = new School("UW", 47.655277, -122.303606, uwNews);
-    schools.add(uw);
-  }
+    for (Entity entity : results.asIterable()) {
+      String schoolName = (String) entity.getProperty("name");
+      double schoolLatitude = (double) entity.getProperty("latitude");
+      double schoolLongitude = (double) entity.getProperty("longitude");
+      School retrievedSchool = new School(schoolName, schoolLatitude, schoolLongitude);
+      schoolsSet.add(retrievedSchool);
+    }
 
-  private void addUWBToSchools() {
-    ArrayList<String> uwbNews =
-        new ArrayList<String>(
-            Arrays.asList(
-                "https://news.uci.edu/2020/06/30/virtual-nurses-make-a-real-difference/",
-                "https://news.uci.edu/2020/07/07/uci-chancellor-emeritus-michael-v-drake-named-university-of-california-president/",
-                "https://news.uci.edu/2020/06/18/uci-podcast-jessica-millward-on-the-meaning-and-importance-of-juneteenth/"));
-    School uwb = new School("UWB", 47.758821, -122.190725, uwbNews);
-    schools.add(uwb);
-  }
-
-  /*Add some hard-coded School objects to the array of schools that will later be converted into markers on the map.*/
-  public MapServlet() {
-    addUCIToSchools();
-    addUWToSchools();
-    addUWBToSchools();
+    // Send the School objects retrieved from Datastore.
+    response.setContentType("application/json;");
+    Gson gson = new Gson();
+    response.getWriter().println(gson.toJson(schoolsSet));
   }
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
-    Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(schools));
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+
+    if (!userService.isUserLoggedIn()) {
+      System.out.println("USER IS NOT LOGGED IN");
+      String loginUrl = userService.createLoginURL("/pages/maps.html");
+      response.sendRedirect(loginUrl);
+      return;
+    }
+
+    School submission = new Gson().fromJson(request.getReader(), School.class);
+    addToDatastore(submission);
+
+    // Respond with the result.
+    response.sendRedirect("/pages/maps.html");
+  }
+
+  /** Adds the user's school submission to Datastore, if not already contained within Datastore. */
+  public void addToDatastore(School submission) throws IOException {
+    // Initialize datastore object.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    // Parse the submission.
+    String schoolName = submission.getName();
+    double schoolLatitude = submission.getLatitude();
+    double schoolLongitude = submission.getLongitude();
+
+    // Check if the School is already in Datastore.
+    Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, schoolName);
+    Query query = new Query("School").setFilter(nameFilter);
+    PreparedQuery results = datastore.prepare(query);
+
+    // If it is not, create a schoolEntity for the School and add it to Datastore.
+    if (results.countEntities(FetchOptions.Builder.withDefaults()) == 0) {
+      Entity schoolEntity = new Entity("School");
+      schoolEntity.setProperty("name", schoolName);
+      schoolEntity.setProperty("latitude", schoolLatitude);
+      schoolEntity.setProperty("longitude", schoolLongitude);
+      datastore.put(schoolEntity);
+    }
   }
 }

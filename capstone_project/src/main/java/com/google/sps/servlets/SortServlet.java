@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.sps.data.Authenticator;
 import com.google.sps.data.PostService;
 import java.io.IOException;
 import java.util.List;
@@ -33,6 +34,10 @@ import javax.servlet.http.HttpServletResponse;
 public class SortServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
+      return;
+    }
+
     String sortType = request.getParameter("sort-type");
 
     if (sortType == null) {
