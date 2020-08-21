@@ -42,4 +42,10 @@ limitations under the License.
     <br>
     <input type="submit" value="Post">
   </form>
+  <hr>
+  <c:if test="${not empty categories}">
+    <script>
+      alert("${categories}");
+    </script>
+  </c:if>
 </body>
