@@ -17,8 +17,6 @@ package com.google.sps.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -33,17 +31,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 public class PostAnalysis {
   private DatastoreService datastore;
   private final String message;
-  private final List <String> categories;
-  private final List <String> resources;
- 
-  public PostAnalysis (HttpServletRequest request) throws IOException {
+  private final List<String> categories;
+  private final List<String> resources;
+
+  public PostAnalysis(HttpServletRequest request) throws IOException {
     datastore = DatastoreServiceFactory.getDatastoreService();
     categories = new ArrayList<>();
     resources = new ArrayList<>();
@@ -66,7 +62,7 @@ public class PostAnalysis {
 
     List<ClassificationCategory> classCategories = new ArrayList<>();
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {  
+    try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set content to the text string
       Document doc = Document.newBuilder().setContent(message).setType(Type.PLAIN_TEXT).build();
       ClassifyTextRequest classifyReq = ClassifyTextRequest.newBuilder().setDocument(doc).build();
@@ -100,10 +96,10 @@ public class PostAnalysis {
     Filter categoryFilter;
     Query query;
     for (String category : categories) {
-        categoryFilter = new FilterPredicate("category", FilterOperator.EQUAL, category);
-        query = new Query("Resource").setFilter(categoryFilter);
-        Entity resource = datastore.prepare(query).asSingleEntity();
-        resources.add((String) resource.getProperty("resource"));
+      categoryFilter = new FilterPredicate("category", FilterOperator.EQUAL, category);
+      query = new Query("Resource").setFilter(categoryFilter);
+      Entity resource = datastore.prepare(query).asSingleEntity();
+      resources.add((String) resource.getProperty("resource"));
     }
   }
 }
