@@ -151,7 +151,7 @@ async function renderPosts(posts) {
  */
 async function getReactionsHTML(postID) {
   const reactionsCount = await getReactionCounts(postID);
-  const reacionsHTML = `
+  const reactionsHTML = `
     <a class='like-btn'>
       <div class='reaction-box'>
         <div class='reaction-icon emoji-think'
@@ -193,7 +193,7 @@ async function getReactionsHTML(postID) {
       </div>
     </a>
   `.trim();
-  return reacionsHTML;
+  return reactionsHTML;
 }
 
 /**
