@@ -20,3 +20,120 @@
 .upvote-button {
   background-color: rgba(0, 0, 0, 0);
 }
+
+.badge {
+  background-color: red;
+  border-radius: 50%;
+  bottom: 30px;
+  color: white;
+  font-size: 17px;
+  height: 20px;
+  position: absolute;
+  width: 20px;
+}
+
+.like-btn {
+  background-color: cornflowerblue;
+  bottom: 15px;
+  cursor: pointer;
+  float: right;
+  height: 25px;
+  left: 15px;
+  width: 50px;
+}
+
+.like-btn::before {
+  bottom: 10px;
+  content: ".";
+  display: block;
+  height: 10px;
+  opacity: 0;
+  left: 0;
+  position: absolute;
+  width: 45px;
+}
+
+.reaction-box {
+  background-color: rgba(105, 105, 105, 0.7);
+  border-radius: 25px;
+  bottom: 35px;
+  display: none;
+  height: 55px;
+  position: relative;
+  right: 140px;
+  width: 330px;
+}
+
+.reaction-icon {
+  display: inline-block;
+  height: 40px;
+  margin: 10px 0 0 10px;
+  text-align: center;
+  transition: all 0.3s;
+  user-select: none;
+  width: 40px;
+}
+
+label {
+  background-color: #333;
+  border-radius: 10px;
+  bottom: 25px;
+  color: #fff;
+  font-size: 10px;
+  padding: 5px 5px 5px 5px;
+  position: relative;
+  visibility: hidden;
+}
+
+.like-btn:hover {
+  background-color: darkturquoise;
+}
+
+.like-btn:hover .reaction-box {
+  display: block;
+}
+
+.reaction-icon:hover {
+  transform: scale(1.5);
+  transform-origin: bottom;
+}
+
+.reaction-icon:hover label {
+  visibility: visible;
+}
+
+.emoji-love {
+  background-image: url("../images/reactions/emoji_u1f60d.svg");
+  height: 40px;
+  width: 40px;
+}
+
+.emoji-sad {
+  background-image: url("../images/reactions/emoji_u1f622.svg");
+  height: 40px;
+  width: 40px;
+}
+
+.emoji-wow {
+  background-image: url("../images/reactions/emoji_u1f62e.svg");
+  height: 40px;
+  width: 40px;
+}
+
+.emoji-laugh {
+  background-image: url("../images/reactions/emoji_u1f602.svg");
+  height: 40px;
+  width: 40px;
+}
+
+.emoji-think {
+  background-image: url("../images/reactions/emoji_u1f914.svg");
+  height: 40px;
+  width: 40px;
+}
+
+.emoji-yikes {
+  background-image: url("../images/reactions/emoji_u1f62c.svg");
+  height: 40px;
+  width: 40px;
+}

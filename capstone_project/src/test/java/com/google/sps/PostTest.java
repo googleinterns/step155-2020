@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -116,18 +117,18 @@ public final class PostTest extends Mockito {
     when(request.getParameter("id")).thenReturn("1");
     // Mock datastore to return the prebuilt Entity.
     when(datastore.get(any(Key.class))).thenReturn(postEntity);
-    long expected = 1;
-    long actual = postService.upvotePost(request);
+    Optional<Long> expected = Optional.of(1L);
+    Optional<Long> actual = postService.upvotePost(request);
 
     assertEquals(expected, actual);
   }
 
   @Test
-  public void returnNegOneOnEntityNotFound() {
+  public void returnEmptyOptionalOnUpvotePostNotFound() {
     when(request.getParameter("id")).thenReturn("1");
 
-    long expected = -1;
-    long actual = postService.upvotePost(request);
+    Optional<Long> expected = Optional.empty();
+    Optional<Long> actual = postService.upvotePost(request);
     assertEquals(expected, actual);
   }
 
@@ -194,6 +195,43 @@ public final class PostTest extends Mockito {
 
     List<Entity> expected = Arrays.asList();
     List<Entity> actual = postService.sortEntities("invalid", posts);
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void reactionCountUpByOne() {
+    EmbeddedEntity reactions = new EmbeddedEntity();
+    reactions.setProperty("laugh", 0L);
+    Entity postEntity = new Entity("Post");
+    postEntity.setProperty("reactions", reactions);
+    Optional<Entity> post = Optional.ofNullable(postEntity);
+
+    when(request.getParameter("reaction")).thenReturn("laugh");
+    when(request.getParameter("post-id")).thenReturn("1");
+    doReturn(post).when(postService).getEntityFromId(1);
+
+    Optional<Long> expected = Optional.of(1L);
+    Optional<Long> actual = postService.reactToPost(request);
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void returnEmptyOptionalOnInvalidReaction() {
+    when(request.getParameter("reaction")).thenReturn("");
+    Optional<Long> expected = Optional.empty();
+    Optional<Long> actual = postService.reactToPost(request);
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void returnEmptyOptionalOnReactionPostNotFound() {
+    when(request.getParameter("reaction")).thenReturn("");
+    when(request.getParameter("post-id")).thenReturn("");
+    Optional<Long> expected = Optional.empty();
+    Optional<Long> actual = postService.reactToPost(request);
 
     assertEquals(expected, actual);
   }
