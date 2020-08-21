@@ -17,8 +17,6 @@ package com.google.sps.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +33,7 @@ public class Resource {
     this.resource = null;
   }
 
-  // will be used 
+  // will be used
   public Resource(String category, String resource) {
     datastore = DatastoreServiceFactory.getDatastoreService();
     this.category = category;
@@ -62,7 +60,7 @@ public class Resource {
     resourceMap.put("Depression", "https://www.crisistextline.org/");
     resourceMap.put("Troubled Relationships", "https://www.loveisrespect.org/");
     resourceMap.put("Anxiety & Stress", "https://www.nami.org/help");
-    
+
     for (String category : resourceMap.keySet()) {
       Entity resourceEntity = new Entity("Resource");
       resourceEntity.setProperty("category", category);
