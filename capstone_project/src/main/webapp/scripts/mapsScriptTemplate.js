@@ -19,71 +19,71 @@ function createMap() { // eslint-disable-line no-unused-vars
   const map = new google.maps.Map(
       document.getElementById('map'),
       {center: {lat: 39.828502, lng: -98.579512},
-        zoom: 4
-      }
-      );
+        zoom: 4,
+      },
+  );
 
   // Set custom color scheme for the map.
-  var styles = 
+  const styles =
     [
       {
-        "featureType": "administrative",
-        "elementType": "labels.text.fill",
-        "stylers": [
+        'featureType': 'administrative',
+        'elementType': 'labels.text.fill',
+        'stylers': [
           {
-            "color": "#000000"
-          }
-        ]
+            'color': '#000000',
+          },
+        ],
       },
       {
-        "featureType": "landscape.man_made",
-        "elementType": "geometry.fill",
-        "stylers": [
+        'featureType': 'landscape.man_made',
+        'elementType': 'geometry.fill',
+        'stylers': [
           {
-            "color": "#b6e59e"
+            'color': '#b6e59e',
           },
           {
-            "visibility": "on"
-          }
-        ]
+            'visibility': 'on',
+          },
+        ],
       },
       {
-        "featureType": "landscape.natural.landcover",
-        "elementType": "geometry.stroke",
-        "stylers": [
+        'featureType': 'landscape.natural.landcover',
+        'elementType': 'geometry.stroke',
+        'stylers': [
           {
-            "color": "#bddda7"
-          }
-        ]
+            'color': '#bddda7',
+          },
+        ],
       },
       {
-        "featureType": "road",
-        "elementType": "geometry.fill",
-        "stylers": [
+        'featureType': 'road',
+        'elementType': 'geometry.fill',
+        'stylers': [
           {
-            "color": "#f3d36b"
-          }
-        ]
+            'color': '#f3d36b',
+          },
+        ],
       },
       {
-        "featureType": "road.highway",
-        "elementType": "geometry.fill",
-        "stylers": [
+        'featureType': 'road.highway',
+        'elementType': 'geometry.fill',
+        'stylers': [
           {
-            "color": "#ffa662"
-          }
-        ]
+            'color': '#ffa662',
+          },
+        ],
       },
       {
-        "featureType": "water",
-        "elementType": "geometry.fill",
-        "stylers": [
+        'featureType': 'water',
+        'elementType': 'geometry.fill',
+        'stylers': [
           {
-            "color": "#75cff0"
-          }
-        ]
-      }
-    ]
+            'color': '#75cff0',
+          },
+        ],
+      },
+    ];
 
   map.setOptions({styles: styles});
 
