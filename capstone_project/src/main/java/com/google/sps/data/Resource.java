@@ -20,34 +20,35 @@ import com.google.appengine.api.datastore.Entity;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Class representing a school that corresponds to a pin on the map. */
+/** Associates a category, from the Natural Language API taxonomy, to a link to a resource */
 public class Resource {
   private final DatastoreService datastore;
   private final String category;
   private final String resource;
-  // want to include String for state / university as well
 
   public Resource() {
     datastore = DatastoreServiceFactory.getDatastoreService();
-    this.category = null;
-    this.resource = null;
+    this.category = "";
+    this.resource = "";
   }
 
-  // will be used
   public Resource(String category, String resource) {
     datastore = DatastoreServiceFactory.getDatastoreService();
     this.category = category;
     this.resource = resource;
   }
 
+  /** Returns category */
   public String getCategory() {
     return category;
   }
 
+  /** Returns the resource url associated with the category */
   public String getResource() {
     return resource;
   }
 
+  /** Creates an Entity with this.fields and stores it in Datastore */
   public void storeResource() {
     Entity resourceEntity = new Entity("Resource");
     resourceEntity.setProperty("category", category);
@@ -55,6 +56,7 @@ public class Resource {
     datastore.put(resourceEntity);
   }
 
+  /** Adds hard-coded Resources to Datastore */
   public void addPreexistingResources() {
     Map<String, String> resourceMap = new HashMap<>();
     resourceMap.put("Depression", "https://www.crisistextline.org/");

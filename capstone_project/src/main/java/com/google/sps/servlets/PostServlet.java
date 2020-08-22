@@ -38,13 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PostServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    UserService userService = UserServiceFactory.getUserService();
-
-    if (!userService.isUserLoggedIn()) {
-      System.out.println("USER IS NOT LOGGED IN");
-      String loginUrl = userService.createLoginURL("/pages/maps.html");
-      response.sendRedirect(loginUrl);
+    if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
       return;
     }
 
@@ -63,8 +57,6 @@ public class PostServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-
     if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
       return;
     }
