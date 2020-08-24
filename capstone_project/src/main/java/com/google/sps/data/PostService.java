@@ -104,6 +104,7 @@ public class PostService {
     Entity postEntity = new Entity("Post");
     Text message = new Text(request.getParameter("text"));
     String fileType = request.getParameter("file-type");
+    String title = request.getParameter("title");
     Optional<String> fileBlobKey = uploadFile(request);
 
     if (fileType == null || fileType.isEmpty()) {
@@ -123,6 +124,7 @@ public class PostService {
     postEntity.setProperty("upvotes", 0);
     // current milliseconds since the unix epoch.
     postEntity.setProperty("timestamp", clock.millis());
+    postEntity.setProperty("title", title);
     datastore.put(postEntity);
   }
 
