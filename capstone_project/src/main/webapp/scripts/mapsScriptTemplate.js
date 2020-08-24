@@ -16,13 +16,15 @@
  * adds it to the page.
  */
 function createMap() { // eslint-disable-line no-unused-vars
-  const map = 
+  const map =
     new google.maps.Map(
-      document.getElementById('map'),
-      {
-        center: {lat: 39.828502, lng: -98.579512},
-        zoom: 4,
-      },
+        document.getElementById('map'), {
+          center: {
+            lat: 39.828502,
+            lng: -98.579512,
+          },
+          zoom: 4,
+        },
     );
 
   // Set custom color scheme for the map.
