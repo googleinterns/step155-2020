@@ -16,12 +16,14 @@
  * adds it to the page.
  */
 function createMap() { // eslint-disable-line no-unused-vars
-  const map = new google.maps.Map(
+  const map = 
+    new google.maps.Map(
       document.getElementById('map'),
-      {center: {lat: 39.828502, lng: -98.579512},
+      {
+        center: {lat: 39.828502, lng: -98.579512},
         zoom: 4,
       },
-  );
+    );
 
   // Set custom color scheme for the map.
   const styles =
@@ -85,7 +87,7 @@ function createMap() { // eslint-disable-line no-unused-vars
       },
     ];
 
-  map.setOptions({styles: styles});
+  map.setOptions({styles});
 
   // Create a marker for each school and load these onto the map.
   loadMarkersOntoMap(map);
@@ -200,7 +202,7 @@ function createContentString(name, items) {
                 </div>
                 <div id="posts" class="tab-pane fade">
                     <h5>There are no posts for ${name} yet. Click
-                    <a href="../pages/comments.jsp"><u>here</u></a>
+                    <a href="../pages/comments.jsp">here</a>
                     to be the first to make one.</h5>
                 </div>
             </div>
