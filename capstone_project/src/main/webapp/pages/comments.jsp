@@ -42,11 +42,11 @@ limitations under the License.
     <br>
     <img alt="" id="image-preview" src="//:0">
     <br>
-    <input  accept="image/*,video/*"
-            id="image-upload"
-            name="file"
-            onchange="previewImage(event)"
-            type="file">
+    <input accept="image/*,video/*"
+           id="image-upload"
+           name="file"
+           onchange="previewImage(event)"
+           type="file">
     <br>
     <input type="submit" value="Post">
   </form>
