@@ -44,7 +44,7 @@ public final class FetchSchoolPostsTest extends Mockito {
   private HttpServletRequest request;
   private HttpServletResponse response;
   private LocalServiceTestHelper serviceHelper =
-      new LocalServiceTestHelper(
+    new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig(), new LocalUserServiceTestConfig())
           .setEnvIsLoggedIn(true);
   private PostService postService;
