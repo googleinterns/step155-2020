@@ -203,9 +203,11 @@ function createContentString(name, items) {
 
                 </div>
                 <div id="posts" class="tab-pane fade">
-                    <h5>There are no posts for ${name} yet. Click
-                    <a href="../pages/comments.jsp">here</a>
-                    to be the first to make one.</h5>
+                    <h5>
+                        There are no posts for ${name} yet. Click
+                        <a href="../pages/comments.jsp">here</a>
+                        to be the first to make one.
+                    </h5>
                 </div>
             </div>
         </div>
