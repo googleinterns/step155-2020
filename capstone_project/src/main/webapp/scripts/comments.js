@@ -75,8 +75,6 @@ async function loadPosts() { // eslint-disable-line no-unused-vars
 async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
   const interactionsBar = upvoteBtn.parentElement;
   const id = interactionsBar.parentElement.getAttribute('data-id');
-  const postContainer = document.getElementById('user-posts');
-  const sortedBy = postContainer.getAttribute('data-sort');
 
   // Makes the POST request to get the new upvote count on the serverside to
   // later update it on the client side.
@@ -85,7 +83,7 @@ async function upvotePost(upvoteBtn) { // eslint-disable-line no-unused-vars
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     method: 'POST',
-    body: `id=${id}&sort-type=${sortedBy}`,
+    body: `id=${id}`,
   }).then((response) => response.json());
 
   if (newUpvoteCount.length !== 0) {
@@ -124,10 +122,19 @@ async function renderPosts(posts) {
   const postContainer = document.getElementById('user-posts');
 
   for (const post of posts) {
-    const postProperties = post.propertyMap;
+    const postElement = await createPost(post);
+    postContainer.appendChild(postElement);
+  }
+}
 
-    const HTML = `
-      ${getProperFileTag(postProperties.fileType, postProperties.fileBlobKey)}
+/**
+ * Returns an HTML Div Element representing the post.
+ * @param {Entity} post - an entity representing the post.
+ */
+async function createPost(post) {
+  const postProperties = post.propertyMap;
+  const postHTML =
+    `${getProperFileTag(postProperties.fileType, postProperties.fileBlobKey)}
       <p>${postProperties.text.value.value}</p>
       <div class='interactions'>
         <button class='upvote-button'
@@ -137,12 +144,25 @@ async function renderPosts(posts) {
       </div>
     `.trim();
 
-    const postElement = document.createElement('div');
-    postElement.setAttribute('class', 'post-container');
-    postElement.setAttribute('data-id', post.key.id);
-    postElement.innerHTML = HTML;
-    postContainer.appendChild(postElement);
-  }
+  const postElement = document.createElement('div');
+  postElement.setAttribute('class', 'post-container');
+  postElement.setAttribute('data-id', post.key.id);
+  postElement.innerHTML = postHTML;
+  return postElement;
+}
+
+/**
+ * Loads a single post. Must be called from a url containing the 'post-id'
+ * parameter.
+ */
+async function loadSinglePost() { // eslint-disable-line no-unused-vars
+  const postUrl = new URL(location.href);
+  const postId = postUrl.searchParams.get('post-id');
+  const post = await fetch(`/serve-post?post-id=${postId}`)
+      .then((response) => response.json());
+  const postElement = await createPost(post);
+  const postContainer = document.getElementById('post');
+  postContainer.appendChild(postElement);
 }
 
 /**

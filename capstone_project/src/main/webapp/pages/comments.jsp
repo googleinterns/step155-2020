@@ -30,6 +30,9 @@ limitations under the License.
         id="post-input"
         method="POST"
         onsubmit="disableInput(event)">
+    <span>Title:</span>
+    <input name="title" type="text" maxlength="64" required>
+    <br>
     <textarea required id="post-entry" name="text"></textarea>
     <br>
     <img alt="" id="image-preview" src="//:0">
