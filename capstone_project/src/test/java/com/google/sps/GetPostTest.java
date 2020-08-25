@@ -61,7 +61,6 @@ public final class GetPostTest extends Mockito {
     when(request.getParameter("post-id")).thenReturn("1");
     getPostServlet.doGet(request, response);
     verify(response).setStatus(404);
-    ;
   }
 
   @Test
@@ -82,6 +81,7 @@ public final class GetPostTest extends Mockito {
   public void redirectOnNotLoggedIn() throws IOException {
     serviceHelper.setEnvIsLoggedIn(false);
     doNothing().when(response).sendRedirect(any(String.class));
+
     getPostServlet.doGet(request, response);
     verify(response).sendRedirect(any(String.class));
   }
