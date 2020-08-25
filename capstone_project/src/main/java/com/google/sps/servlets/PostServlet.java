@@ -43,7 +43,6 @@ public class PostServlet extends HttpServlet {
     }
 
     Resource resource = new Resource();
-    resource.addPreexistingResources();
 
     response.setContentType("application/json;");
     Query query = new Query("Post");
@@ -66,6 +65,7 @@ public class PostServlet extends HttpServlet {
     PostAnalysis postAnalysis = new PostAnalysis(request);
 
     request.getSession().setAttribute("categories", postAnalysis.getCategories());
+    request.getSession().setAttribute("score", postAnalysis.getSentimentScore());
     response.sendRedirect("/pages/comments.jsp");
   }
 }

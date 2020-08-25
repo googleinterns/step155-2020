@@ -48,4 +48,9 @@ limitations under the License.
       alert("${categories}");
     </script>
   </c:if>
+  <c:if test="${not empty score}">
+    <script>
+      alert("${score}");
+    </script>
+  </c:if>
 </body>

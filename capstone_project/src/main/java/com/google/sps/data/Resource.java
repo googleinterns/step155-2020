@@ -30,6 +30,8 @@ public class Resource {
     datastore = DatastoreServiceFactory.getDatastoreService();
     this.category = "";
     this.resource = "";
+
+    addPreexistingResources();
   }
 
   public Resource(String category, String resource) {
