@@ -39,7 +39,7 @@ public class FetchSchoolPostsServlet extends HttpServlet {
       return;
     }
 
-    PostService postService = PostService.Builder.builder().build();
+    PostService postService = new PostService.Builder().build();
     List<Entity> posts = postService.getPostsBySchool(schoolName);
     response.setContentType("application/json");
     response.getWriter().println(new Gson().toJson(posts));
