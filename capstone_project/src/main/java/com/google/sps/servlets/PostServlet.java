@@ -19,8 +19,6 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.Authenticator;
 import com.google.sps.data.PostAnalysis;
