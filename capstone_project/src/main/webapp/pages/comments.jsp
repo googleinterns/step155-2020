@@ -17,7 +17,7 @@ limitations under the License.
 <!DOCTYPE html>
 <script src="../scripts/comments.js"></script>
 <link rel="stylesheet" href="../styles/posts.css">
-<body onload="loadPosts()">
+<body onload="loadPosts(); loadSchools()">
   <div id="sort-types">
     <button onclick="sortPosts('new')">New</button>
     <button onclick="sortPosts('top')">Top</button>
@@ -33,15 +33,20 @@ limitations under the License.
     <span>Title:</span>
     <input name="title" type="text" maxlength="64" required>
     <br>
+    <label for="schools">Select a School: </label>
+    <select name="schools" id="schools" required>
+      <option value="">---</option>
+    </select>
+    <p><a href="maps.html">Don't See Your School?</a></p>
     <textarea required id="post-entry" name="text"></textarea>
     <br>
     <img alt="" id="image-preview" src="//:0">
     <br>
-    <input accept="image/*,video/*"
-           id="image-upload"
-           name="file"
-           onchange="previewImage(event)"
-           type="file">
+    <input  accept="image/*,video/*"
+            id="image-upload"
+            name="file"
+            onchange="previewImage(event)"
+            type="file">
     <br>
     <input type="submit" value="Post">
   </form>

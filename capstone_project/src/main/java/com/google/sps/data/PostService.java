@@ -22,8 +22,13 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Text;
 import java.time.Clock;
 import java.util.Arrays;
@@ -105,6 +110,7 @@ public class PostService {
     Text message = new Text(request.getParameter("text"));
     String fileType = request.getParameter("file-type");
     String title = request.getParameter("title");
+    String schoolName = request.getParameter("schools");
     Optional<String> fileBlobKey = uploadFile(request);
 
     if (fileType == null || fileType.isEmpty()) {
@@ -122,6 +128,7 @@ public class PostService {
     postEntity.setProperty("fileType", fileType);
     postEntity.setProperty("text", message);
     postEntity.setProperty("upvotes", 0);
+    postEntity.setProperty("schoolName", schoolName);
     // current milliseconds since the unix epoch.
     postEntity.setProperty("timestamp", clock.millis());
     postEntity.setProperty("title", title);
@@ -253,5 +260,15 @@ public class PostService {
       // this is okay because by default post is empty so there is a default value.
     }
     return post;
+  }
+
+  /**
+   * Returns a list of all post entities with the given school name. An empty list is returned if no
+   * posts belong to the school.
+   */
+  public List<Entity> getPostsBySchool(String schoolName) {
+    Filter nameFilter = new FilterPredicate("schoolName", FilterOperator.EQUAL, schoolName);
+    Query query = new Query("Post").setFilter(nameFilter);
+    return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
   }
 }
