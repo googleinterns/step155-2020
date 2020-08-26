@@ -54,14 +54,14 @@ public class PostAnalysis {
       return new Builder();
     }
 
-    public Builder languageService(LanguageServiceClient languageService) {
+    public Builder setLanguageService(LanguageServiceClient languageService) {
       this.languageService = languageService;
       return this;
     }
 
     public PostAnalysis build() throws IOException {
       if (this.languageService == null) {
-        this.languageService(LanguageServiceClient.create());
+        this.setLanguageService(LanguageServiceClient.create());
       }
       return new PostAnalysis(this);
     }
@@ -99,11 +99,6 @@ public class PostAnalysis {
    */
   public List<String> getResources() {
     return Collections.unmodifiableList(resources);
-  }
-
-  /** Set LanguageServiceClient from Google Natural Language API */
-  public void setLanguageServiceClient(LanguageServiceClient languageService) throws IOException {
-    this.languageService = languageService;
   }
 
   /**

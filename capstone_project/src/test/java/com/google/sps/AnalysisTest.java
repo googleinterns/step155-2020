@@ -63,7 +63,7 @@ public final class AnalysisTest extends Mockito {
     helper.setUp();
     request = mock(HttpServletRequest.class);
     languageService = mock(LanguageServiceClient.class);
-    postAnalysis = new PostAnalysis.Builder().languageService(languageService).build();
+    postAnalysis = new PostAnalysis.Builder().setLanguageService(languageService).build();
   }
 
   @After
@@ -73,17 +73,20 @@ public final class AnalysisTest extends Mockito {
 
   @Test
   public void runClassifyContentOnTwentyPlusTokens() throws IOException {
+    String mockedCategory = "/Arts & Entertainment/Comics & Animation/Comics";
+    String expectedCategory = "Comics";
+
     ClassifyTextResponse classifyResp = mock(ClassifyTextResponse.class);
     ClassificationCategory classifyCat = mock(ClassificationCategory.class);
 
     when(request.getParameter("text")).thenReturn(LONG_MESSAGE);
     when(languageService.classifyText(any(ClassifyTextRequest.class))).thenReturn(classifyResp);
     when(classifyResp.getCategoriesList()).thenReturn(Arrays.asList(classifyCat));
-    when(classifyCat.getName()).thenReturn("/Arts & Entertainment/Comics & Animation/Comics");
+    when(classifyCat.getName()).thenReturn(mockedCategory);
 
     postAnalysis.analyzeText(request);
 
-    List<String> expected = Arrays.asList("Comics");
+    List<String> expected = Arrays.asList(expectedCategory);
     List<String> actual = postAnalysis.getCategories();
 
     assertEquals(expected, actual);
