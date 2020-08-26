@@ -53,9 +53,8 @@ public final class AnalysisTest extends Mockito {
 
   private static final String SHORT_MESSAGE = "This is a short test";
   private static final String LONG_MESSAGE =
-      "This is a long message, which has over twenty tokens, since that is the minimum number of tokens for classification";
-  private static final String DEPRESSION_MESSAGE =
-      "Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression Depression";
+      "This is a long message, which has over twenty tokens, since that is the minimum number of"
+          + " tokens for classification";
   private static final double SENTIMENT_LOWERBOUND = -1.0;
   private static final double SENTIMENT_UPPERBOUND = 1.0;
 
