@@ -44,6 +44,7 @@ import org.mockito.Mockito;
 public final class AnalysisTest extends Mockito {
 
   private DatastoreService datastore;
+  private LanguageServiceClient languageService;
   private HttpServletRequest request;
   private Resource resource;
   private PostAnalysis postAnalysis;
@@ -59,9 +60,11 @@ public final class AnalysisTest extends Mockito {
   private static final double SENTIMENT_UPPERBOUND = 1.0;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
     helper.setUp();
     request = mock(HttpServletRequest.class);
+    languageService = mock(LanguageServiceClient.class);
+    postAnalysis = new PostAnalysis.Builder().languageService(languageService).build();
   }
 
   @After
@@ -71,14 +74,10 @@ public final class AnalysisTest extends Mockito {
 
   @Test
   public void runClassifyContentOnTwentyPlusTokens() throws IOException {
-    when(request.getParameter("text")).thenReturn(LONG_MESSAGE);
-
-    PostAnalysis postAnalysis = new PostAnalysis();
-    LanguageServiceClient languageService = mock(LanguageServiceClient.class);
-    postAnalysis.setLanguageServiceClient(languageService);
     ClassifyTextResponse classifyResp = mock(ClassifyTextResponse.class);
     ClassificationCategory classifyCat = mock(ClassificationCategory.class);
 
+    when(request.getParameter("text")).thenReturn(LONG_MESSAGE);
     when(languageService.classifyText(any(ClassifyTextRequest.class))).thenReturn(classifyResp);
     when(classifyResp.getCategoriesList()).thenReturn(Arrays.asList(classifyCat));
     when(classifyCat.getName()).thenReturn("/Arts & Entertainment/Comics & Animation/Comics");
@@ -93,15 +92,10 @@ public final class AnalysisTest extends Mockito {
 
   @Test
   public void runAnalyzeSentimentOnLessThanTwentyTokens() throws IOException {
-    when(request.getParameter("text")).thenReturn(SHORT_MESSAGE);
-
-    PostAnalysis postAnalysis = new PostAnalysis();
-    LanguageServiceClient languageService = mock(LanguageServiceClient.class);
-    postAnalysis.setLanguageServiceClient(languageService);
-
     AnalyzeSentimentResponse sentimentResponse = mock(AnalyzeSentimentResponse.class);
     Sentiment sentiment = mock(Sentiment.class);
 
+    when(request.getParameter("text")).thenReturn(SHORT_MESSAGE);
     when(languageService.analyzeSentiment(any(Document.class))).thenReturn(sentimentResponse);
     when(sentimentResponse.getDocumentSentiment()).thenReturn(sentiment);
     when(sentiment.getScore()).thenReturn(0F);

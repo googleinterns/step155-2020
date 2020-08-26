@@ -47,9 +47,29 @@ public class PostAnalysis {
   private final List<String> resources;
   public final int MIN_TOKENS = 20;
 
-  public PostAnalysis() throws IOException {
+  public static class Builder {
+    private LanguageServiceClient languageService;
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public Builder languageService(LanguageServiceClient languageService) {
+      this.languageService = languageService;
+      return this;
+    }
+
+    public PostAnalysis build() throws IOException {
+      if (this.languageService == null) {
+        this.languageService(LanguageServiceClient.create());
+      }
+      return new PostAnalysis(this);
+    }
+  }
+
+  private PostAnalysis(Builder builder) throws IOException {
     datastore = DatastoreServiceFactory.getDatastoreService();
-    setLanguageServiceClient(LanguageServiceClient.create());
+    languageService = builder.languageService;
     categories = new ArrayList<>();
     resources = new ArrayList<>();
   }
