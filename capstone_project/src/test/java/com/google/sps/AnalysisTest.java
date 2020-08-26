@@ -42,7 +42,6 @@ import org.mockito.Mockito;
 /** Class that tests the analyzeText, analyzeCon of PostAnalysis */
 @RunWith(JUnit4.class)
 public final class AnalysisTest extends Mockito {
-
   private DatastoreService datastore;
   private LanguageServiceClient languageService;
   private HttpServletRequest request;
