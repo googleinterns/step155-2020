@@ -181,21 +181,24 @@ function createNewsFeed(articles) {
  * to make the first post for a school.
  */
 function createLinks(schoolPosts, schoolName) {
-  // If there are no existing posts for a school, provide the user with a link to
-  // the page where they can create one.
+  // If there are no existing posts for a school, provide the user with a link
+  // to the page where they can create one.
   if (schoolPosts === undefined|| schoolPosts.length == 0) {
-    return  `<h5>
+    return `<h5>
                 There are no posts for ${schoolName} yet. Click
                 <a href="../pages/comments.jsp">here</a>
                 to be the first to make one.
             </h5>`;
   }
 
-  // Generate an unordered list of links to individual posts. 
+  // Generate an unordered list of links to individual posts.
   let postFeed= `<h5><b>Check out posts from students at ${name}:</b></h5>`;
   postFeed += '<ul>';
   for (const post of schoolPosts) {
-    postFeed += `<li><a href="../pages/post_displayer.html?post-id=${post.key.id}">${post.propertyMap.title}</a></li>`;
+    postFeed += `<li>
+                  <a href="../pages/post_displayer.html?post-id=${post.key.id}">
+                  ${post.propertyMap.title}</a>
+                </li>`;
   }
   postFeed += '</ul>';
   return postFeed;
@@ -208,16 +211,17 @@ function createLinks(schoolPosts, schoolName) {
  * the "Posts" tab of an infowindow.
  */
 async function createPostsFeed(schoolName) {
-  var schoolPosts;
+  let schoolPosts;
   await fetch(`/fetch-school-posts?school-name=${schoolName}`)
-    .then(res=> res.json())
-    .then(data => schoolPosts = createLinks(data, schoolName));
+      .then((res)=> res.json())
+      .then((data) => schoolPosts = createLinks(data, schoolName));
   return schoolPosts;
 }
 
 /** Creates and returns the content string for a marker.
  * @param {string} name - The name of a school.
  * @param {Array.<Object>} items - A list of search results about that school.
+ * @param {string} posts - The HTML code for links to posts for that school.
  * @return {string} - A contentString containing the
  * HTML code for an infowindow.
  */
@@ -263,7 +267,7 @@ function createContentString(name, items, posts) {
  */
 async function createMarker(map, latitude, longitude, name, result) {
   // Get the posts to be featured in the infowindow and set up marker fields.
-  var posts = await createPostsFeed(name);
+  const posts = await createPostsFeed(name);
   const pos = {lat: latitude, lng: longitude};
   const contentString = createContentString(name, result.items, posts);
 
