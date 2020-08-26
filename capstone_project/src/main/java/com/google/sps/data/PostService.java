@@ -19,10 +19,12 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Text;
 import java.time.Clock;
 import java.util.Arrays;
 import java.util.Collections;
@@ -100,8 +102,9 @@ public class PostService {
    */
   public void storePost(HttpServletRequest request) {
     Entity postEntity = new Entity("Post");
-    String message = request.getParameter("text");
+    Text message = new Text(request.getParameter("text"));
     String fileType = request.getParameter("file-type");
+    String title = request.getParameter("title");
     Optional<String> fileBlobKey = uploadFile(request);
 
     if (fileType == null || fileType.isEmpty()) {
@@ -114,37 +117,34 @@ public class PostService {
       postEntity.setProperty("fileBlobKey", fileBlobKey.get());
     }
 
+    EmbeddedEntity reactions = getReactionsEntity();
+    postEntity.setProperty("reactions", reactions);
     postEntity.setProperty("fileType", fileType);
     postEntity.setProperty("text", message);
     postEntity.setProperty("upvotes", 0);
     // current milliseconds since the unix epoch.
     postEntity.setProperty("timestamp", clock.millis());
+    postEntity.setProperty("title", title);
     datastore.put(postEntity);
   }
 
   /**
    * Increases the upvote count of a post by one. 'request' must have the parameter 'id'. Returns
-   * the new upvote count after increase.
+   * the new upvote count after increase. If post does not exist, returns an empty Optional
+   * instance.
    */
-  public long upvotePost(HttpServletRequest request) {
+  public Optional<Long> upvotePost(HttpServletRequest request) {
     long postID = Long.parseLong(request.getParameter("id"));
-    Key key = KeyFactory.createKey("Post", postID);
-    Entity postToUpvote = null;
-
-    try {
-      postToUpvote = datastore.get(key);
-    } catch (EntityNotFoundException ok) {
-      // this is okay because by default postToUpvote is null and there is a null check
+    Optional<Entity> post = getEntityFromId(postID);
+    if (!post.isPresent()) {
+      return Optional.empty();
     }
 
-    if (postToUpvote == null) {
-      return -1;
-    }
-
+    Entity postToUpvote = post.get();
     long currentUpvotes = (long) postToUpvote.getProperty("upvotes");
     postToUpvote.setProperty("upvotes", ++currentUpvotes);
     datastore.put(postToUpvote);
-    return currentUpvotes;
+    return Optional.of(currentUpvotes);
   }
 
   /**
@@ -199,5 +199,59 @@ public class PostService {
     float minDifference = msDifference / 60f / 1000f;
 
     return upvotes / minDifference;
+  }
+
+  /**
+   * Increases the reaction count of the submitted reaction by one. Returns the new reaction count
+   * after increase. If the post or reaction does not exist, returns an empty Optional instance.
+   */
+  public Optional<Long> reactToPost(HttpServletRequest request) {
+    String reaction = request.getParameter("reaction");
+    if (reaction == null || reaction.isEmpty()) {
+      return Optional.empty();
+    }
+
+    long postID = Long.parseLong(request.getParameter("post-id"));
+    Optional<Entity> post = getEntityFromId(postID);
+    if (!post.isPresent()) {
+      return Optional.empty();
+    }
+
+    Entity postToReact = post.get();
+    EmbeddedEntity reactions = (EmbeddedEntity) postToReact.getProperty("reactions");
+    long reactionCount = (long) reactions.getProperty(reaction);
+
+    // Update the reaction count, then update the Reactions Entity of the post.
+    reactions.setProperty(reaction, ++reactionCount);
+    postToReact.setProperty("reactions", reactions);
+    datastore.put(postToReact);
+    return Optional.of(reactionCount);
+  }
+
+  /** Returns an EmbeddedEntity with all possible reactions set to 0. */
+  private EmbeddedEntity getReactionsEntity() {
+    EmbeddedEntity reactions = new EmbeddedEntity();
+    reactions.setProperty("laugh", 0L);
+    reactions.setProperty("love", 0L);
+    reactions.setProperty("sad", 0L);
+    reactions.setProperty("think", 0L);
+    reactions.setProperty("wow", 0L);
+    reactions.setProperty("yikes", 0L);
+    return reactions;
+  }
+
+  /**
+   * Using the post id provided, recreates the key of the post. If the Entity exists, returns an
+   * Optional with that Entity. Otherwise, returns an empty Optional.
+   */
+  public Optional<Entity> getEntityFromId(long postID) {
+    Key key = KeyFactory.createKey("Post", postID);
+    Optional<Entity> post = Optional.empty();
+    try {
+      post = Optional.ofNullable(datastore.get(key));
+    } catch (EntityNotFoundException ok) {
+      // this is okay because by default post is empty so there is a default value.
+    }
+    return post;
   }
 }

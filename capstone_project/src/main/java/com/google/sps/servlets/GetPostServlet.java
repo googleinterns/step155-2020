@@ -14,7 +14,8 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.appengine.api.datastore.Entity;
+import com.google.gson.Gson;
 import com.google.sps.data.Authenticator;
 import com.google.sps.data.PostService;
 import java.io.IOException;
@@ -24,27 +25,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet that handles upvoting a post. increases the upvote count of a post by one at every POST
- * request.
- */
-@WebServlet("/upvote")
-public class UpvoteServlet extends HttpServlet {
+/** Manually serves a post, using the id to render it onto the page. */
+@WebServlet("/serve-post")
+public class GetPostServlet extends HttpServlet {
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // The user is redirected to the the page with all posts rather than the single post.
     if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
       return;
     }
 
-    response.setContentType("application/json;");
+    long postID = Long.parseLong(request.getParameter("post-id"));
+    PostService postService = PostService.Builder.builder().build();
+    Optional<Entity> optionalPost = postService.getEntityFromId(postID);
 
-    Gson gson = new Gson();
-    Optional<Long> newCount = PostService.Builder.builder().build().upvotePost(request);
-
-    if (newCount.isPresent()) {
-      response.getWriter().println(gson.toJson(newCount.get()));
+    if (optionalPost.isPresent()) {
+      response.setContentType("application/json");
+      Gson gson = new Gson();
+      response.getWriter().println(gson.toJson(optionalPost.get()));
     } else {
-      response.getWriter().println("[]");
+      response.setStatus(404);
     }
   }
 }
