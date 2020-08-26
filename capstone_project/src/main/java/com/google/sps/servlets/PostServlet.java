@@ -60,7 +60,8 @@ public class PostServlet extends HttpServlet {
 
     PostService postService = PostService.Builder.builder().build();
     postService.storePost(request);
-    PostAnalysis postAnalysis = new PostAnalysis(request);
+    PostAnalysis postAnalysis = new PostAnalysis();
+    postAnalysis.analyzeText(request);
 
     request.getSession().setAttribute("categories", postAnalysis.getCategories());
     request.getSession().setAttribute("score", postAnalysis.getSentimentScore());

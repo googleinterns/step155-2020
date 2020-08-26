@@ -41,20 +41,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class PostAnalysis {
   private DatastoreService datastore;
-  private final String message;
+  private LanguageServiceClient languageService;
   private double sentimentScore;
   private final List<String> categories;
   private final List<String> resources;
   public final int MIN_TOKENS = 20;
 
-  public PostAnalysis(HttpServletRequest request) throws IOException {
+  public PostAnalysis() throws IOException {
     datastore = DatastoreServiceFactory.getDatastoreService();
+    setLanguageServiceClient(LanguageServiceClient.create());
     categories = new ArrayList<>();
     resources = new ArrayList<>();
-
-    message = request.getParameter("text");
-    sentimentScore = analyzeSentiment(message);
-    classifyContent(message);
   }
 
   /**
@@ -84,44 +81,54 @@ public class PostAnalysis {
     return Collections.unmodifiableList(resources);
   }
 
-  /** Inspects given text and identifies its emotional opinion (positive, negative, or neutral) */
-  private double analyzeSentiment(String message) throws IOException {
-    double score;
-    try (LanguageServiceClient languageService = LanguageServiceClient.create()) {
-      Document doc =
-          Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
-      Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-      score = (double) sentiment.getScore();
-      languageService.close();
+  /** Set LanguageServiceClient from Google Natural Language API */
+  public void setLanguageServiceClient(LanguageServiceClient languageService) throws IOException {
+    this.languageService = languageService;
+  }
+
+  /**
+   * Analyzes the text to prodive either the sentiment score or the list of categories associated
+   * with the text
+   *
+   * @param request the request from the webpage
+   */
+  public void analyzeText(HttpServletRequest request) {
+    String message = request.getParameter("text");
+
+    // messages must be at least 20 tokens long. StringTokenizer uses the default delimiter set
+    StringTokenizer tokens = new StringTokenizer(message);
+    if (tokens.countTokens() >= MIN_TOKENS) {
+      classifyContent(message);
+    } else {
+      calculateSentimentScore(message);
     }
-    return score;
   }
 
   /**
    * Classifies what categories the messages falls under by using the pre-trained model supplied by
    * the Cloud Natural Language API
    *
-   * @param request the HttpServletRequest containing user input
-   * @return the user's message
+   * @param message the user's message
    */
-  private void classifyContent(String message) throws IOException {
-    // messages must be at least 20 tokens long. StringTokenizer uses the default delimiter set
-    StringTokenizer tokens = new StringTokenizer(message);
-    if (tokens.countTokens() > MIN_TOKENS) {
-      List<ClassificationCategory> classCategories = new ArrayList<>();
+  private void classifyContent(String message) {
+    List<ClassificationCategory> classCategories = new ArrayList<>();
+    Document doc = Document.newBuilder().setContent(message).setType(Type.PLAIN_TEXT).build();
+    ClassifyTextRequest classifyReq = ClassifyTextRequest.newBuilder().setDocument(doc).build();
 
-      try (LanguageServiceClient language = LanguageServiceClient.create()) {
-        // set content to the text string
-        Document doc = Document.newBuilder().setContent(message).setType(Type.PLAIN_TEXT).build();
-        ClassifyTextRequest classifyReq = ClassifyTextRequest.newBuilder().setDocument(doc).build();
+    // detect categories in the given text
+    ClassifyTextResponse classifyResp = languageService.classifyText(classifyReq);
+    classCategories.addAll(classifyResp.getCategoriesList());
 
-        // detect categories in the given text
-        ClassifyTextResponse classifyResp = language.classifyText(classifyReq);
-        classCategories.addAll(classifyResp.getCategoriesList());
+    setCategories(classCategories);
+  }
 
-        setCategories(classCategories);
-      }
-    }
+  /** Inspects given text and identifies its emotional opinion (positive, negative, or neutral) */
+  private void calculateSentimentScore(String message) {
+    Document doc =
+        Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
+    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+    sentimentScore = (double) sentiment.getScore();
+    languageService.close();
   }
 
   /**
