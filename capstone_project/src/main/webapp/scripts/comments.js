@@ -68,6 +68,22 @@ async function loadPosts() { // eslint-disable-line no-unused-vars
 }
 
 /**
+ * Retrieves all schools from datastore and adds them to a selectable dropdown
+ * menu.
+ */
+async function loadSchools() { // eslint-disable-line no-unused-vars
+  const schools = await fetch('/school-data')
+      .then((response) => response.json());
+  const schoolsList = document.getElementById('schools');
+
+  let schoolsHTML = '';
+  for (const school of schools) {
+    schoolsHTML += `<option value='${school.name}'>${school.name}</option>`;
+  }
+  schoolsList.innerHTML += schoolsHTML;
+}
+
+/**
  * Increases the upvote count of a post locally and server side.
  * @param {HTMLButtonElement} upvoteBtn - the button element of the post to
  *                                        upvote.
