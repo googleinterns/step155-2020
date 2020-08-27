@@ -216,10 +216,10 @@ function createLinks(schoolPosts, schoolName) {
  * the "Posts" tab of an infowindow.
  */
 async function createPostsFeed(name) {
-  let schoolPosts = 
+  const schoolPosts =
     await fetch(`/fetch-school-posts?school-name=${encodeURIComponent(name)}`)
-    .then((res) => res.json())
-    .then((data) => createLinks(data, name));
+        .then((res) => res.json())
+        .then((data) => createLinks(data, name));
 
   return schoolPosts;
 }
