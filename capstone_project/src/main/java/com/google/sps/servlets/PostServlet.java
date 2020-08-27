@@ -21,7 +21,9 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.Authenticator;
+import com.google.sps.data.PostAnalysis;
 import com.google.sps.data.PostService;
+import com.google.sps.data.Resource;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -34,6 +36,12 @@ import javax.servlet.http.HttpServletResponse;
 public class PostServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    if (!Authenticator.isLoggedIn(response, "/pages/comments.jsp")) {
+      return;
+    }
+
+    new Resource().addPreexistingResources();
+
     response.setContentType("application/json;");
     Query query = new Query("Post");
 
@@ -52,6 +60,11 @@ public class PostServlet extends HttpServlet {
 
     PostService postService = PostService.Builder.builder().build();
     postService.storePost(request);
+    PostAnalysis postAnalysis = new PostAnalysis.Builder().build();
+    postAnalysis.analyzeText(request);
+
+    request.getSession().setAttribute("categories", postAnalysis.getCategories());
+    request.getSession().setAttribute("score", postAnalysis.getSentimentScore());
     response.sendRedirect("/pages/comments.jsp");
   }
 }
