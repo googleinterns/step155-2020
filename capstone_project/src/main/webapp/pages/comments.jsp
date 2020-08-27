@@ -17,13 +17,12 @@ limitations under the License.
 <!DOCTYPE html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="../scripts/comments.js"></script>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 <link rel="stylesheet" href="../styles/posts.css">
 <body onload="loadPosts(); loadSchools()">
   <div class="row">
-    <div class="col s3" id="sidebar">
-    </div>
+    <div class="col s3" id="sidebar"></div>
     <div class="col s6">
       <div class="center" id="sort-types">
         <button class="btn" onclick="sortPosts('new')">New</button>
