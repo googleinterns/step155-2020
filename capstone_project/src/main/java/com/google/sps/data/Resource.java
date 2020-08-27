@@ -62,6 +62,7 @@ public class Resource {
     resourceMap.put("Depression", "https://www.crisistextline.org/");
     resourceMap.put("Troubled Relationships", "https://www.loveisrespect.org/");
     resourceMap.put("Anxiety & Stress", "https://www.nami.org/help");
+    resourceMap.put("General", "https://www.happify.com");
 
     for (String category : resourceMap.keySet()) {
       Entity resourceEntity = new Entity("Resource");
