@@ -183,7 +183,7 @@ function createNewsFeed(articles) {
 function createLinks(schoolPosts, schoolName) {
   // If there are no existing posts for a school, provide the user with a link
   // to the page where they can create one.
-  if (schoolPosts === undefined|| schoolPosts.length == 0) {
+  if (schoolPosts === undefined || schoolPosts.length === 0) {
     return `<h5>
                 There are no posts for ${schoolName} yet. Click
                 <a href="../pages/comments.jsp">here</a>
@@ -192,12 +192,17 @@ function createLinks(schoolPosts, schoolName) {
   }
 
   // Generate an unordered list of links to individual posts.
-  let postFeed= `<h5><b>Check out posts from students at ${name}:</b></h5>`;
+  let postFeed= `<h5>
+                    <b>Check out posts from students at ${schoolName}:</b>
+                </h5>`;
+
   postFeed += '<ul>';
   for (const post of schoolPosts) {
+    postID = post.key.id;
     postFeed += `<li>
-                  <a href="../pages/post_displayer.html?post-id=${post.key.id}">
-                  ${post.propertyMap.title}</a>
+                   <a href="../pages/post_displayer.html?post-id=${postID}">
+                   ${post.propertyMap.title}
+                   </a>
                 </li>`;
   }
   postFeed += '</ul>';
@@ -206,15 +211,15 @@ function createLinks(schoolPosts, schoolName) {
 
 /** Fetches a school's posts and creates the "Posts" tab portion of a content
  * string for a marker.
- * @param {string} schoolName - The name of a school.
+ * @param {string} name - The name of a school.
  * @return {string} - A postFeed string containing the HTML code for
  * the "Posts" tab of an infowindow.
  */
-async function createPostsFeed(schoolName) {
+async function createPostsFeed(name) {
   let schoolPosts;
-  await fetch(`/fetch-school-posts?school-name=${schoolName}`)
+  await fetch(`/fetch-school-posts?school-name=${encodeURIComponent(name)}`)
       .then((res)=> res.json())
-      .then((data) => schoolPosts = createLinks(data, schoolName));
+      .then((data) => schoolPosts = createLinks(data, name));
   return schoolPosts;
 }
 
