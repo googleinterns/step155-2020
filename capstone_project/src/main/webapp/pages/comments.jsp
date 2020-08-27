@@ -58,7 +58,7 @@ limitations under the License.
                     name="text"></textarea>
           <label for="post-entry">Text</label>
         </div>
-        <img alt="" id="image-preview" src="//:0">
+        <img alt="Image Preview" id="image-preview" src="//:0">
         <div class="file-field input-field" id="file-container">
           <div class="btn">
             <span>File</span>
