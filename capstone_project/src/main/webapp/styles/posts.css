@@ -1,16 +1,101 @@
-.post-container {
-  border-color: #000;
-  border-style: double;
+body {
+  background-color: #282828;
+}
+
+.btn {
+  background-color: #49c4d4 !important;
+}
+
+.card-content {
+  white-space: pre-line;
+}
+
+#image-preview {
   max-width: 512px;
-  width: 50%;
+}
+
+.interactions {
+  padding: 2px !important;
+}
+
+.input-field textarea:focus + label {
+  color: #fff !important;
+}
+
+.input-field input[type=text]:focus + label {
+  color: #fff !important;
+}
+
+.input-field input[type=text]:focus {
+  border-bottom: 1px solid #fff !important;
+  box-shadow: 0 1px 0 0 #fff !important;
+}
+
+.input-field input[type=file] {
+  border-bottom: 1px solid #fff !important;
+  box-shadow: 0 1px 0 0 #fff !important;
+}
+
+.input-field textarea:focus {
+  border-bottom: 1px solid #fff !important;
+  box-shadow: 0 1px 0 0 #fff !important;
+}
+
+.input-field .prefix.active {
+  color: #fff !important;
+}
+
+#file-container {
+  max-width: 512px;
+}
+
+.material-icons {
+  color: #49c4d4;
+}
+
+.post-container {
+  color: #fff;
+  background-color: #3d3d3d;
+  margin: 12px auto;
+  max-width: 512px;
+}
+
+.post-card-title {
+  background: #1f1f1f;
+  padding: 5px 0;
+  text-align: center;
+}
+
+#post-entry {
+  color: #fff;
+  max-width: 512px;
+}
+
+#post-title {
+  color: #fff;
+  max-width: 512px;
 }
 
 .post-file {
   width: 100%;
 }
 
+#post-upload-container {
+  position: sticky;
+  top: 0;
+}
+
+#schools {
+  color: #fff;
+}
+
+.select-dropdown.dropdown-trigger {
+  color: #fff !important;
+  max-width: 512px;
+}
+
 .upvote {
-  border: solid black;
+  border: solid #b3b3b3;
   border-width: 0 3px 3px 0;
   display: inline-block;
   padding: 3px;
@@ -21,36 +106,22 @@
   background-color: rgba(0, 0, 0, 0);
 }
 
-.badge {
-  background-color: red;
+.reaction-counter {
+  position: relative;
+  left: 20px;
+  bottom: 50px;
+  color: #fff;
+  background-color: #49c4d4;
+  margin: 0 -0.8em;
   border-radius: 50%;
-  bottom: 30px;
-  color: white;
-  font-size: 17px;
-  height: 20px;
-  position: absolute;
-  width: 20px;
+  padding: 5px 10px;
 }
 
-.like-btn {
+.reaction-btn {
   background-color: cornflowerblue;
-  bottom: 15px;
   cursor: pointer;
   float: right;
-  height: 25px;
-  left: 15px;
-  width: 50px;
-}
-
-.like-btn::before {
-  bottom: 10px;
-  content: ".";
-  display: block;
-  height: 10px;
-  opacity: 0;
-  left: 0;
-  position: absolute;
-  width: 45px;
+  overflow: visible;
 }
 
 .reaction-box {
@@ -74,7 +145,7 @@
   width: 40px;
 }
 
-label {
+.reaction-label {
   background-color: #333;
   border-radius: 10px;
   bottom: 25px;
@@ -85,11 +156,11 @@ label {
   visibility: hidden;
 }
 
-.like-btn:hover {
+.reaction-btn:hover {
   background-color: darkturquoise;
 }
 
-.like-btn:hover .reaction-box {
+.reaction-btn:hover .reaction-box {
   display: block;
 }
 
@@ -98,7 +169,7 @@ label {
   transform-origin: bottom;
 }
 
-.reaction-icon:hover label {
+.reaction-icon:hover .reaction-label {
   visibility: visible;
 }
 
