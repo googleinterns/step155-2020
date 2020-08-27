@@ -194,7 +194,7 @@ function createLinks(schoolPosts, schoolName) {
   // Generate an unordered list of links to individual posts.
   let postFeed = `<h5>
                     <b>Check out posts from students at ${schoolName}:</b>
-                </h5>`;
+                  </h5>`;
 
   postFeed += '<ul>';
   for (const post of schoolPosts) {
@@ -203,7 +203,7 @@ function createLinks(schoolPosts, schoolName) {
                    <a href="../pages/post_displayer.html?post-id=${postID}">
                      ${post.propertyMap.title}
                    </a>
-                </li>`;
+                 </li>`;
   }
   postFeed += '</ul>';
   return postFeed;
@@ -216,10 +216,11 @@ function createLinks(schoolPosts, schoolName) {
  * the "Posts" tab of an infowindow.
  */
 async function createPostsFeed(name) {
-  let schoolPosts;
-  await fetch(`/fetch-school-posts?school-name=${encodeURIComponent(name)}`)
-      .then((res) => res.json())
-      .then((data) => schoolPosts = createLinks(data, name));
+  let schoolPosts = 
+    await fetch(`/fetch-school-posts?school-name=${encodeURIComponent(name)}`)
+    .then((res) => res.json())
+    .then((data) => createLinks(data, name));
+
   return schoolPosts;
 }
 
