@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 public class PostAnalysis {
   private final DatastoreService datastore;
   private final LanguageServiceClient languageService;
-  private final double sentimentScore;
+  private double sentimentScore;
   private final List<String> categories;
   private final List<String> resources;
   public final int MIN_TOKENS = 20;
