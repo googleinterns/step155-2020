@@ -40,9 +40,9 @@ import javax.servlet.http.HttpServletRequest;
  * resources in response to the specific categories
  */
 public class PostAnalysis {
-  private DatastoreService datastore;
-  private LanguageServiceClient languageService;
-  private double sentimentScore;
+  private final DatastoreService datastore;
+  private final LanguageServiceClient languageService;
+  private final double sentimentScore;
   private final List<String> categories;
   private final List<String> resources;
   public final int MIN_TOKENS = 20;

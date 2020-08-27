@@ -22,7 +22,7 @@ import java.util.Map;
 
 /** Associates a category, from the Natural Language API taxonomy, to a link to a resource */
 public class Resource {
-  private DatastoreService datastore;
+  private final DatastoreService datastore;
   private final String category;
   private final String resource;
 
