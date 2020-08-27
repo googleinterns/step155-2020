@@ -63,8 +63,7 @@ public class PostServlet extends HttpServlet {
     PostAnalysis postAnalysis = new PostAnalysis.Builder().build();
     postAnalysis.analyzeText(request);
 
-    request.getSession().setAttribute("categories", postAnalysis.getResources());
-    request.getSession().setAttribute("score", postAnalysis.getSentimentScore());
+    request.getSession().setAttribute("resources", postAnalysis.getResources());
     response.sendRedirect("/pages/comments.jsp");
   }
 }

@@ -17,6 +17,10 @@ package com.google.sps.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,10 +69,15 @@ public class Resource {
     resourceMap.put("General", "https://www.happify.com");
 
     for (String category : resourceMap.keySet()) {
-      Entity resourceEntity = new Entity("Resource");
-      resourceEntity.setProperty("category", category);
-      resourceEntity.setProperty("resource", resourceMap.get(category));
-      datastore.put(resourceEntity);
+      Filter categoryFilter = new FilterPredicate("category", FilterOperator.EQUAL, category);
+      Query query = new Query("Resource").setFilter(categoryFilter);
+      Entity resource = datastore.prepare(query).asSingleEntity();
+      if (resource == null) {
+        Entity resourceEntity = new Entity("Resource");
+        resourceEntity.setProperty("category", category);
+        resourceEntity.setProperty("resource", resourceMap.get(category));
+        datastore.put(resourceEntity);
+      }
     }
   }
 }
