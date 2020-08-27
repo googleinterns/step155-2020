@@ -22,7 +22,7 @@ import java.util.Map;
 
 /** Associates a category, from the Natural Language API taxonomy, to a link to a resource */
 public class Resource {
-  private final DatastoreService datastore;
+  private DatastoreService datastore;
   private final String category;
   private final String resource;
 
@@ -30,8 +30,6 @@ public class Resource {
     datastore = DatastoreServiceFactory.getDatastoreService();
     this.category = "";
     this.resource = "";
-
-    addPreexistingResources();
   }
 
   public Resource(String category, String resource) {

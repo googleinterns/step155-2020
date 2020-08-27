@@ -40,7 +40,7 @@ public class PostServlet extends HttpServlet {
       return;
     }
 
-    Resource resource = new Resource();
+    new Resource().addPreexistingResources();
 
     response.setContentType("application/json;");
     Query query = new Query("Post");

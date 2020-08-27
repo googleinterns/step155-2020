@@ -47,6 +47,10 @@ public class PostAnalysis {
   private final List<String> resources;
   public final int MIN_TOKENS = 20;
 
+  /**
+   * Instantiates the LanguageServiceClient to reduce the number of calls to the API when run in the
+   * server
+   */
   public static class Builder {
     private LanguageServiceClient languageService;
 
@@ -54,11 +58,13 @@ public class PostAnalysis {
       return new Builder();
     }
 
+    /** Sets LanguageServiceClient to the given argument */
     public Builder setLanguageService(LanguageServiceClient languageService) {
       this.languageService = languageService;
       return this;
     }
 
+    /** Instantiates and sets LanguageServiceClient */
     public PostAnalysis build() throws IOException {
       if (this.languageService == null) {
         this.setLanguageService(LanguageServiceClient.create());
