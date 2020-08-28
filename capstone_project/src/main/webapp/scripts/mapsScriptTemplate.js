@@ -174,13 +174,64 @@ function createNewsFeed(articles) {
   return newsFeed;
 }
 
+/** Converts post objects into links to be featured under the "Posts" tab.
+ * @param {Array.<Object>} schoolPosts - A list of posts pertaining to a school.
+ * @param {string} schoolName - The name of a school.
+ * @return {string} - The HTML code for providing either post links or an option
+ * to make the first post for a school.
+ */
+function createLinks(schoolPosts, schoolName) {
+  // If there are no existing posts for a school, provide the user with a link
+  // to the page where they can create one.
+  if (schoolPosts === undefined || schoolPosts.length === 0) {
+    return `<h5>
+                There are no posts for ${schoolName} yet. Click
+                <a href="../pages/comments.jsp">here</a>
+                to be the first to make one.
+            </h5>`;
+  }
+
+  // Generate an unordered list of links to individual posts.
+  let postFeed = `<h5>
+                    <b>Check out posts from students at ${schoolName}:</b>
+                  </h5>`;
+
+  postFeed += '<ul>';
+  for (const post of schoolPosts) {
+    postID = post.key.id;
+    postFeed += `<li>
+                   <a href="../pages/post_displayer.html?post-id=${postID}">
+                     ${post.propertyMap.title}
+                   </a>
+                 </li>`;
+  }
+  postFeed += '</ul>';
+  return postFeed;
+}
+
+/** Fetches a school's posts and creates the "Posts" tab portion of a content
+ * string for a marker.
+ * @param {string} name - The name of a school.
+ * @return {string} - A postFeed string containing the HTML code for
+ * the "Posts" tab of an infowindow.
+ */
+async function createPostsFeed(name) {
+  const schoolPosts =
+    await fetch(`/fetch-school-posts?school-name=${encodeURIComponent(name)}`)
+        .then((res) => res.json())
+        .then((data) => createLinks(data, name));
+
+  return schoolPosts;
+}
+
 /** Creates and returns the content string for a marker.
  * @param {string} name - The name of a school.
  * @param {Array.<Object>} items - A list of search results about that school.
+ * @param {string} posts - The HTML code for links to posts for that school.
  * @return {string} - A contentString containing the
  * HTML code for an infowindow.
  */
-function createContentString(name, items) {
+function createContentString(name, items, posts) {
   const contentString =
     `<div id="content">
         <div id="siteNotice">
@@ -194,20 +245,15 @@ function createContentString(name, items) {
              <li class="active"><a data-toggle="pill" href="#news">News</a></li>
              <li><a data-toggle="pill" href="#posts">Posts</a></li>
             </ul>`+
+
             // Create content stored in tabs for each pill.
             `<div class="tab-content">
                 <div id="news" class="tab-pane fade in active">
                     <h5><b>Here's the latest news on ${name}:</b></h5>
-
                     ${createNewsFeed(items)}
-
                 </div>
                 <div id="posts" class="tab-pane fade">
-                    <h5>
-                        There are no posts for ${name} yet. Click
-                        <a href="../pages/comments.jsp">here</a>
-                        to be the first to make one.
-                    </h5>
+                    ${posts}
                 </div>
             </div>
         </div>
@@ -225,9 +271,11 @@ function createContentString(name, items) {
  * @param {Array.<Object>} result - A list of JSON objects that represent
  * the search results for news articles about a school.
  */
-function createMarker(map, latitude, longitude, name, result) {
+async function createMarker(map, latitude, longitude, name, result) {
+  // Get the posts to be featured in the infowindow and set up marker fields.
+  const posts = await createPostsFeed(name);
   const pos = {lat: latitude, lng: longitude};
-  const contentString = createContentString(name, result.items);
+  const contentString = createContentString(name, result.items, posts);
 
   // Make the marker.
   const markerIcon = {
