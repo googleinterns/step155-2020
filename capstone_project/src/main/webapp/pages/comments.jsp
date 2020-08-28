@@ -34,9 +34,10 @@ limitations under the License.
     <input name="title" type="text" maxlength="64" required>
     <br>
     <label for="schools">Select a School: </label>
-    <select name="schools" id="schools" required>
+    <!-- NEED TO REMOVE THE COMMENTS HERE -->
+    <%--<select name="schools" id="schools" required>
       <option value="">---</option>
-    </select>
+    </select> --%>
     <p><a href="maps.html">Don't See Your School?</a></p>
     <textarea required id="post-entry" name="text"></textarea>
     <br>
@@ -51,14 +52,9 @@ limitations under the License.
     <input type="submit" value="Post">
   </form>
   <hr>
-  <c:if test="${not empty categories}">
+  <c:if test="${not empty resources}">
     <script>
-      alert("${categories}");
-    </script>
-  </c:if>
-  <c:if test="${not empty score}">
-    <script>
-      alert("${score}");
+      alert("${resources}");
     </script>
   </c:if>
 </body>
