@@ -57,12 +57,15 @@ function fetchBlobstoreURL(fileType) {
       });
 }
 
-/** Retrieves all posts from the server and adds them to the DOM. */
-async function loadPosts() { // eslint-disable-line no-unused-vars
-  const posts =
-    await fetch('/post-process')
-        .then((response) => response.json())
-        .then((json) => json);
+/**
+ * Retrieves all posts from the server and adds them to the DOM.
+ * @param {Array<Post>} posts - Optional. If passed in, loads the given list of
+ *                              posts.
+ */
+async function loadPosts(posts) { // eslint-disable-line no-unused-vars
+  posts = posts || await fetch('/post-process')
+      .then((response) => response.json())
+      .then((json) => json);
 
   await renderPosts(posts);
 }
@@ -150,22 +153,22 @@ async function renderPosts(posts) {
  * @param {Entity} post - an entity representing the post.
  */
 async function createPost(post) {
-  const postProperties = post.propertyMap;
   const postHTML = `
-    <div class="post-card-title">${postProperties.title}</div>
-    ${getProperFileTag(postProperties.fileType, postProperties.fileBlobKey)}
-    <div class='card-content'>${postProperties.text.value.value}</div>
+    <div class="post-card-title">${post.title}</div>
+    ${getProperFileTag(post.fileType, post.fileBlobKey)}
+    <div class='card-content'>${post.text}</div>
     <div class='card-action interactions'>
       <button class='btn-flat upvote-button'
               onclick='upvotePost(this)'>
-      <p class='upvote'></p></button> ${postProperties.upvotes}
-      ${await getReactionsHTML(post.key.id)}
+      <p class='upvote'></p></button> ${post.upvotes}
+      ${await getReactionsHTML(post.postId)}
     </div>
       `.trim();
 
   const postElement = document.createElement('div');
   postElement.setAttribute('class', 'post-container card');
-  postElement.setAttribute('data-id', post.key.id);
+  postElement.setAttribute('data-id', post.postId);
+  postElement.setAttribute('data-school', post.schoolName);
   postElement.innerHTML = postHTML;
   return postElement;
 }

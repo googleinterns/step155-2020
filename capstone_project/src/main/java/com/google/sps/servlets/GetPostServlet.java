@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.google.sps.data.Authenticator;
+import com.google.sps.data.Post;
 import com.google.sps.data.PostService;
 import java.io.IOException;
 import java.util.Optional;
@@ -42,7 +43,8 @@ public class GetPostServlet extends HttpServlet {
     if (optionalPost.isPresent()) {
       response.setContentType("application/json");
       Gson gson = new Gson();
-      response.getWriter().println(gson.toJson(optionalPost.get()));
+      Post post = PostService.convertEntityToPost(optionalPost.get());
+      response.getWriter().println(gson.toJson(post));
     } else {
       response.setStatus(404);
     }

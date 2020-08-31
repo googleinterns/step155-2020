@@ -16,7 +16,9 @@ package com.google.sps;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -66,6 +68,9 @@ public final class GetPostTest extends Mockito {
   @Test
   public void verifyWritesJsonToResponse() throws IOException {
     Entity post = new Entity("Post");
+    post.setProperty("upvotes", 0L);
+    post.setProperty("text", new Text("Default String"));
+    post.setProperty("reactions", new EmbeddedEntity());
     datastore.put(post);
 
     PrintWriter printWriter = mock(PrintWriter.class);
