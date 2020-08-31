@@ -69,7 +69,7 @@ public final class GetPostTest extends Mockito {
   public void verifyWritesJsonToResponse() throws IOException {
     Entity post = new Entity("Post");
     post.setProperty("upvotes", 0L);
-    post.setProperty("text", new Text("Default String"));
+    post.setProperty("text", new Text("Default Text"));
     post.setProperty("reactions", new EmbeddedEntity());
     datastore.put(post);
 
