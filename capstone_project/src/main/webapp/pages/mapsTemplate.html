@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Maps Feature</title>
     <link rel="stylesheet" href="../styles/maps_style.css">
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:100,200,300" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/sidebar.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand:100,200,300">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -13,12 +14,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=CAPSTONE_API_KEY&libraries=places"></script>
     <script src=" ../scripts/mapsScriptTemplate.js"></script>
+    <script src="../templates/sidebar_template.js"></script>
   </head>
   <body onload="createMap();">
     <div class="row">
-      <div class="col s3">
-        <!-- Navigation Sidebar -->
-      </div>
+    <div class="col s3" id="sidebar-column">
+      <side-bar id="sidebar" class="valign-wrapper"></side-bar>
+    </div>
       <div id="content" class="col s9">
         <h1>Explore college updates with Google Maps!</h1>
         <br>
