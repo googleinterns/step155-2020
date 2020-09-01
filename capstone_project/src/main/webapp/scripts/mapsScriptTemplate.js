@@ -198,10 +198,10 @@ function createLinks(schoolPosts, schoolName) {
 
   postFeed += '<ul>';
   for (const post of schoolPosts) {
-    postID = post.key.id;
+    postID = post.postId;
     postFeed += `<li>
                    <a href="../pages/post_displayer.html?post-id=${postID}">
-                     ${post.propertyMap.title}
+                     ${post.title}
                    </a>
                  </li>`;
   }

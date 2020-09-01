@@ -271,4 +271,28 @@ public class PostService {
     Query query = new Query("Post").setFilter(nameFilter);
     return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
   }
+
+  /** Converts an Entity into a Post. Entity 'post' must be of kind 'Post' */
+  public static Post convertEntityToPost(Entity post) {
+    Text text = (Text) post.getProperty("text");
+    String fileBlobKey = (String) post.getProperty("fileBlobKey");
+    String fileType = (String) post.getProperty("fileType");
+    long upvotes = (long) post.getProperty("upvotes");
+    String schoolName = (String) post.getProperty("schoolName");
+    String title = (String) post.getProperty("title");
+    long postId = post.getKey().getId();
+    EmbeddedEntity embeddedReactions = (EmbeddedEntity) post.getProperty("reactions");
+    Map<String, Object> reactions = embeddedReactions.getProperties();
+
+    return Post.newBuilder()
+        .setText(text)
+        .setTitle(title)
+        .setSchoolName(schoolName)
+        .setUpvotes(upvotes)
+        .setReactions(reactions)
+        .setFileType(fileType)
+        .setFileBlobKey(fileBlobKey)
+        .setPostId(postId)
+        .build();
+  }
 }
