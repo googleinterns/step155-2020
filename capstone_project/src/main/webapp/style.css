@@ -1,11 +1,11 @@
 html,
 body {
+  background-color: rgb(94, 191, 204);
+  background-image: linear-gradient(rgb(94, 191, 204), rgb(169, 212, 216), rgb(233, 229, 226)) !important;
+  color: #282828 !important;
   height: 100%;
   margin: 0;
   width: 100%;
-  color: #282828 !important;
-  background-color: rgb(94, 191, 204);
-  background-image: linear-gradient(rgb(94, 191, 204), rgb(169, 212, 216), rgb(233, 229, 226)) !important;
 }
 
 a.button {
