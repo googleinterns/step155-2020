@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="../scripts/resources.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand:100,200,300">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-<script src="../scripts/comments.js"></script>
-<link rel="stylesheet" href="../styles/posts.css">
-<body onload="loadResources()">
+<link rel="stylesheet" href="../styles/resources.css">
+<body onload="displaySubmissions()">
   <div class="row">
     <div class="col s3" id="sidebar"></div>
     <div class="col s6">
       <div class="center" id="header">
-        <h3>View All Resources Here</h3>
+        <h3>Resources Page</h3>
       </div>
       <div id="resources-display" data-sort="default">
         <div class="resource">
@@ -29,14 +30,20 @@
           <p class="resource-name"><a href="https://www.loveisrespect.org/">Love is Respect</a></p>
         </div>
       </div>
+      <br> <br>
+      <div id="submissions-container">
+          <h4 class="category-name">User-Submitted Resources</h4>
+      </div>
     </div>
     <div class="col s3" id="add-resource-container">
-      <form id="post-input"
+      <form action="/get-resources"
+            id="post-input"
             method="POST"
             onsubmit="disableInput(event)">
         <div class="input-field">
           <em class="material-icons prefix">label_outline</em>
           <label for="category-selector">Select a Category:</label>
+          <br>
           <input list="categories" name="category-selector" id="category-selector">
           <datalist id="categories" required>
             <option value="Anxiety &amp; Stress"></option>
@@ -44,12 +51,13 @@
             <option value="Troubled Relationships"></option>
           </datalist>
         </div>
-        <br><br>
+        <br>
         <div class="input-field">
           <em class="material-icons prefix">title</em>
           <input id="add-resource-name" name="title" type="text" maxlength="64" required>
           <label for="add-resource-name">name</label>
         </div>
+        <br>
         <div class="input-field">
           <em class="material-icons prefix">link</em>
           <input id="add-resource-url" name="url" type="text" maxlength="64" required>
@@ -60,4 +68,3 @@
     </div>
   </div>
 </body>
-
