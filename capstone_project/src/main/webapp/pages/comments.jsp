@@ -18,6 +18,7 @@ limitations under the License.
 <!DOCTYPE html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="../scripts/comments.js"></script>
+<script src="../scripts/analysis.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 <link rel="stylesheet" href="../styles/posts.css">
@@ -48,7 +49,8 @@ limitations under the License.
         </div>
         <div  class="input-field">
           <em class="material-icons prefix">school</em>
-          <select name="schools" id="schools" required>
+          <!-- COME BACK AND MAKE THIS REQUIRED -->
+          <select name="schools" id="schools">
             <option value="" disabled selected>---</option>
           </select>
           <label for="schools">Select a School:</label>
@@ -76,24 +78,26 @@ limitations under the License.
       </form>
     </div>
   </div>
-  <c:if test="${not empty categories}">
-    <script>
-      alert("${resources}");
-      loadResources(`${resources}`);
-      // ; loadResources(<%= request.getAttribute("resources") %>)
-    </script>
-  </c:if> 
   
   <div class="container">
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
       <div class="modal-content">
-        <h4>Modal Header</h4>
-        <p>A bunch of text</p>
+        <h4>Would any of these resources help you?</h4>
+        <p id="modal-text"></p>
       </div>
       <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Thanks!</a>
       </div>
     </div>
   </div>
+
+  <c:if test="${not empty resources}">
+    <c:forEach items="${resources}" var="resource">
+      <script>
+        loadResources("${resource}");
+      </script>
+    </c:forEach>
+  </c:if> 
+
 </body>

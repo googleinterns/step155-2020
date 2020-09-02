@@ -28,34 +28,10 @@ import java.util.Map;
 
 /** Associates a category, from the Natural Language API taxonomy, to a link to a resource */
 public class Resource {
-  private final DatastoreService datastore;
-  private final String category;
-  private final String resource;
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  public Resource() {
-    datastore = DatastoreServiceFactory.getDatastoreService();
-    this.category = "";
-    this.resource = "";
-  }
-
-  public Resource(String category, String resource) {
-    datastore = DatastoreServiceFactory.getDatastoreService();
-    this.category = category;
-    this.resource = resource;
-  }
-
-  /** Returns category */
-  public String getCategory() {
-    return category;
-  }
-
-  /** Returns the resource url associated with the category */
-  public String getResource() {
-    return resource;
-  }
-
-  /** Creates an Entity with this.fields and stores it in Datastore */
-  public void storeResource() {
+  /** Creates an Entity with parameters and stores it in Datastore */
+  public static void storeResource(String category, String resource) {
     Entity resourceEntity = new Entity("Resource");
     resourceEntity.setProperty("category", category);
     resourceEntity.setProperty("resource", resource);
@@ -63,7 +39,7 @@ public class Resource {
   }
 
   /** Adds hard-coded Resources to Datastore */
-  public void addPreexistingResources() {
+  public static void addPreexistingResources() {
     Map<String, String> resourceMap = new HashMap<>();
     resourceMap.put("Depression", "Crisis Textline");
     resourceMap.put("Troubled Relationships", "Love is Respect");

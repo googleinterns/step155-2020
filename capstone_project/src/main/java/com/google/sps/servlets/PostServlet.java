@@ -42,7 +42,7 @@ public class PostServlet extends HttpServlet {
       return;
     }
 
-    new Resource().addPreexistingResources();
+    Resource.addPreexistingResources();
 
     response.setContentType("application/json;");
     Query query = new Query("Post");
@@ -70,8 +70,6 @@ public class PostServlet extends HttpServlet {
     postAnalysis.analyzeText(request);
 
     request.getSession().setAttribute("resources", postAnalysis.getResources());
-    request.getSession().setAttribute("categories", postAnalysis.getCategories());
-    request.getSession().setAttribute("score", postAnalysis.getSentimentScore());
     response.sendRedirect("/pages/comments.jsp");
   }
 }
