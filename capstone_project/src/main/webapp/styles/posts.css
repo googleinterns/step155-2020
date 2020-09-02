@@ -208,3 +208,18 @@ body {
   height: 40px;
   width: 40px;
 }
+
+.resource {
+  color: #fff;
+  max-width: 512px;
+}
+
+.category-name {
+  color: #fff;
+  max-width: 512px;
+}
+
+.resource-name {
+  color: #fff;
+  max-width: 512px;
+}
