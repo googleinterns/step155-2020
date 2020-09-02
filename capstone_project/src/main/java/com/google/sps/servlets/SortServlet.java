@@ -21,9 +21,11 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.sps.data.Authenticator;
+import com.google.sps.data.Post;
 import com.google.sps.data.PostService;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,12 +48,16 @@ public class SortServlet extends HttpServlet {
 
     Query query = new Query("Post");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    List<Entity> posts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    List<Entity> postEntities =
+        datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+
     PostService postService = PostService.Builder.builder().build();
+    postService.sortEntities(sortType, postEntities);
 
-    postService.sortEntities(sortType, posts);
+    List<Post> posts =
+        postEntities.stream().map(PostService::convertEntityToPost).collect(Collectors.toList());
+
     response.setContentType("application/json");
-
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(posts));
   }
