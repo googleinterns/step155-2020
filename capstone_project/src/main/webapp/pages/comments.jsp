@@ -12,11 +12,16 @@ limitations under the License.
 --%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%! BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(); %>
 
 <!DOCTYPE html>
-<script src="../scripts/comments.js"></script>
 <link rel="stylesheet" href="../styles/posts.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="../scripts/comments.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 <body onload="loadPosts(); loadSchools()">
   <div id="sort-types">
     <button onclick="sortPosts('new')">New</button>
@@ -55,6 +60,31 @@ limitations under the License.
   <c:if test="${not empty resources}">
     <script>
       alert("${resources}");
+      loadResources(`${resources}`);
+      // ; loadResources(<%= request.getAttribute("resources") %>)
     </script>
-  </c:if>
+  </c:if> 
+  
+  <div class="container">
+    
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Here are some resources that might help you!</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>  
+  </div>
 </body>

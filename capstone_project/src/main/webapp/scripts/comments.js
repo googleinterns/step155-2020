@@ -310,3 +310,22 @@ async function getReactionCounts(postID) {
   const reactionPropertyMap = await reactionRequest.json();
   return reactionPropertyMap.propertyMap;
 }
+
+function loadResources(resources) { // eslint-disable-line no-unused-vars
+  // var resources = 'eval(${jsAtt})';
+  let resourceAlert = "Would any of these resources be helpful?";
+  // for (const resource of resources) {
+  //   resourceAlert += " " + resource;
+  // }
+  console.log(resources);
+  // resourceAlert += resources;
+  // for (const resource of resources) {
+  //   resourceAlert += '<a href="${resource}>${resource}</a>'
+  // }
+  // if (resources !== null) {
+  //   alert(resourceAlert);
+  // }
+  // $("#myModal").find('.modal-body').innerHTML = "<p>hi</p>";
+  $("#myModal").find('.modal-body').text(resourceAlert);
+  $("#myModal").modal('show');
+}

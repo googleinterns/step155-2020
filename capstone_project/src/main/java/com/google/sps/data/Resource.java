@@ -65,10 +65,10 @@ public class Resource {
   /** Adds hard-coded Resources to Datastore */
   public void addPreexistingResources() {
     Map<String, String> resourceMap = new HashMap<>();
-    resourceMap.put("Depression", "https://www.crisistextline.org/");
-    resourceMap.put("Troubled Relationships", "https://www.loveisrespect.org/");
-    resourceMap.put("Anxiety & Stress", "https://www.nami.org/help");
-    resourceMap.put("General", "https://www.happify.com");
+    resourceMap.put("Depression", "Crisis Textline");
+    resourceMap.put("Troubled Relationships", "Love is Respect");
+    resourceMap.put("Anxiety & Stress", "National Alliance on Mnetal Illness");
+    resourceMap.put("General", "Happify");
 
     for (String category : resourceMap.keySet()) {
       Filter categoryFilter = new FilterPredicate("category", FilterOperator.EQUAL, category);
