@@ -89,6 +89,21 @@ body {
   color: #fff;
 }
 
+#search-bar-bg {
+  background-color: #fff !important;
+  border-radius: 35px;
+}
+
+#search-bar-nav {
+  background-color: #fff !important;
+  border-radius: 35px;
+  margin: 10px 0;
+}
+
+#search-icon {
+  color: #000;
+}
+
 .select-dropdown.dropdown-trigger {
   color: #fff !important;
   max-width: 512px;
