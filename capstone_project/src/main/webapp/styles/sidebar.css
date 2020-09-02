@@ -1,0 +1,29 @@
+a.collection-item {
+  background-color: #1f1f1f !important;
+  color: #fff !important;
+}
+
+a.collection-item:hover {
+  background-color: #fff !important;
+  color: #1f1f1f !important;
+}
+
+.collection {
+  width: 100%;
+}
+
+.row {
+  margin-bottom: 0 !important;
+}
+
+#sidebar {
+  height: 100%;
+}
+
+#sidebar-column {
+  background-color: #3d3d3d;
+  height: 100vh;
+  padding: 0 !important;
+  position: sticky;
+  top: 0;
+}
