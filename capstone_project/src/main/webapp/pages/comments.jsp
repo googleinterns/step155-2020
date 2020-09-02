@@ -16,48 +16,67 @@ limitations under the License.
 <%! BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(); %>
 
 <!DOCTYPE html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="../scripts/comments.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 <link rel="stylesheet" href="../styles/posts.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="../scripts/comments.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <body onload="loadPosts(); loadSchools()">
-  <div id="sort-types">
-    <button onclick="sortPosts('new')">New</button>
-    <button onclick="sortPosts('top')">Top</button>
-    <button onclick="sortPosts('trending')">Trending</button>
+  <div class="row">
+    <div class="col s3" id="sidebar"></div>
+    <div class="col s6">
+      <div class="center" id="sort-types">
+        <button class="btn" onclick="sortPosts('new')">New</button>
+        <button class="btn" onclick="sortPosts('top')">Top</button>
+        <button class="btn" onclick="sortPosts('trending')">Trending</button>
+      </div>
+      <div id="user-posts" data-sort="default"></div>
+    </div>
+    <div class="col s3" id="post-upload-container">
+      <form action="<%= blobstoreService.createUploadUrl("/post-process?file-type=none") %>"
+            enctype="multipart/form-data"
+            id="post-input"
+            method="POST"
+            onsubmit="disableInput(event)">
+        <div class="input-field">
+          <em class="material-icons prefix">title</em>
+          <input id="post-title" name="title" type="text" maxlength="64" required>
+          <label for="post-title">Title</label>
+        </div>
+        <div  class="input-field">
+          <em class="material-icons prefix">school</em>
+          <select name="schools" id="schools" required>
+            <option value="" disabled selected>---</option>
+          </select>
+          <label for="schools">Select a School:</label>
+        </div>
+        <p><a href="maps.html">Don't See Your School?</a></p>
+        <div class="input-field">
+          <em class="material-icons prefix">mode_edit</em>
+          <textarea required
+                    class="materialize-textarea"
+                    id="post-entry"
+                    name="text"></textarea>
+          <label for="post-entry">Text</label>
+        </div>
+        <img alt="Image Preview" id="image-preview" src="//:0">
+        <div class="file-field input-field" id="file-container">
+          <div class="btn">
+            <span>File</span>
+            <input accept="image/*,video/*" id="image-upload" name="file" onchange="previewImage(event)" type="file">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate valid" type="text">
+          </div>
+        </div>
+        <input type="submit" value="Post" class="btn">
+      </form>
+    </div>
   </div>
-  <div id="user-posts" data-sort="default"></div>
-  <hr>
-  <form action="<%= blobstoreService.createUploadUrl("/post-process?file-type=none") %>"
-        enctype="multipart/form-data"
-        id="post-input"
-        method="POST"
-        onsubmit="disableInput(event)">
-    <span>Title:</span>
-    <input name="title" type="text" maxlength="64" required>
-    <br>
-    <label for="schools">Select a School: </label>
-    <!-- NEED TO REMOVE THE COMMENTS HERE -->
-    <%--<select name="schools" id="schools" required>
-      <option value="">---</option>
-    </select> --%>
-    <p><a href="maps.html">Don't See Your School?</a></p>
-    <textarea required id="post-entry" name="text"></textarea>
-    <br>
-    <img alt="" id="image-preview" src="//:0">
-    <br>
-    <input accept="image/*,video/*"
-           id="image-upload"
-           name="file"
-           onchange="previewImage(event)"
-           type="file">
-    <br>
-    <input type="submit" value="Post">
-  </form>
-  <hr>
-  <c:if test="${not empty resources}">
+  <c:if test="${not empty categories}">
     <script>
       alert("${resources}");
       loadResources(`${resources}`);
@@ -66,25 +85,15 @@ limitations under the License.
   </c:if> 
   
   <div class="container">
-    
-
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-      <div class="modal-dialog">
-      
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Here are some resources that might help you!</h4>
-          </div>
-          <div class="modal-body"></div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-        
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <h4>Modal Header</h4>
+        <p>A bunch of text</p>
       </div>
-    </div>  
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+      </div>
+    </div>
   </div>
 </body>

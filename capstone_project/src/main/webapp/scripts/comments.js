@@ -57,12 +57,15 @@ function fetchBlobstoreURL(fileType) {
       });
 }
 
-/** Retrieves all posts from the server and adds them to the DOM. */
-async function loadPosts() { // eslint-disable-line no-unused-vars
-  const posts =
-    await fetch('/post-process')
-        .then((response) => response.json())
-        .then((json) => json);
+/**
+ * Retrieves all posts from the server and adds them to the DOM.
+ * @param {Array<Post>} posts - Optional. If passed in, loads the given list of
+ *                              posts.
+ */
+async function loadPosts(posts) { // eslint-disable-line no-unused-vars
+  posts = posts || await fetch('/post-process')
+      .then((response) => response.json())
+      .then((json) => json);
 
   await renderPosts(posts);
 }
@@ -81,6 +84,8 @@ async function loadSchools() { // eslint-disable-line no-unused-vars
     schoolsHTML += `<option value='${school.name}'>${school.name}</option>`;
   }
   schoolsList.innerHTML += schoolsHTML;
+  const selectElems = document.querySelectorAll('select');
+  M.FormSelect.init(selectElems);
 }
 
 /**
@@ -148,21 +153,22 @@ async function renderPosts(posts) {
  * @param {Entity} post - an entity representing the post.
  */
 async function createPost(post) {
-  const postProperties = post.propertyMap;
-  const postHTML =
-    `${getProperFileTag(postProperties.fileType, postProperties.fileBlobKey)}
-      <p>${postProperties.text.value.value}</p>
-      <div class='interactions'>
-        <button class='upvote-button'
-                onclick='upvotePost(this)'>
-            <i class='upvote'></i></button> ${postProperties.upvotes}
-            ${await getReactionsHTML(post.key.id)}
-      </div>
-    `.trim();
+  const postHTML = `
+    <div class="post-card-title">${post.title}</div>
+    ${getProperFileTag(post.fileType, post.fileBlobKey)}
+    <div class='card-content'>${post.text}</div>
+    <div class='card-action interactions'>
+      <button class='btn-flat upvote-button'
+              onclick='upvotePost(this)'>
+      <p class='upvote'></p></button> ${post.upvotes}
+      ${await getReactionsHTML(post.postId)}
+    </div>
+      `.trim();
 
   const postElement = document.createElement('div');
-  postElement.setAttribute('class', 'post-container');
-  postElement.setAttribute('data-id', post.key.id);
+  postElement.setAttribute('class', 'post-container card');
+  postElement.setAttribute('data-id', post.postId);
+  postElement.setAttribute('data-school', post.schoolName);
   postElement.innerHTML = postHTML;
   return postElement;
 }
@@ -188,43 +194,43 @@ async function loadSinglePost() { // eslint-disable-line no-unused-vars
 async function getReactionsHTML(postID) {
   const reactionsCount = await getReactionCounts(postID);
   const reactionsHTML = `
-    <a class='like-btn'>
+    <a class='btn-floating btn-small reaction-btn'>
       <div class='reaction-box'>
         <div class='reaction-icon emoji-think'
              data-reaction='think'
              onclick='reactToPost(this)'>
-          <label>Think</label>
-          <span class='badge'>${reactionsCount.think}</span>
+          <label class='reaction-label'>Think</label>
+          <span class='reaction-counter'>${reactionsCount.think}</span>
         </div>
         <div class='reaction-icon emoji-wow'
              data-reaction='wow'
              onclick='reactToPost(this)'>
-          <label>Wow</label>
-          <span class='badge'>${reactionsCount.wow}</span>
+          <label class='reaction-label'>Wow</label>
+          <span class='reaction-counter'>${reactionsCount.wow}</span>
         </div>
         <div class='reaction-icon emoji-love'
              data-reaction='love'
              onclick='reactToPost(this)'>
-          <label>Love</label>
-          <span class='badge'>${reactionsCount.love}</span>
+          <label class='reaction-label'>Love</label>
+          <span class='reaction-counter'>${reactionsCount.love}</span>
         </div>
         <div class='reaction-icon emoji-sad'
              data-reaction='sad'
              onclick='reactToPost(this)'>
-          <label>Sad</label>
-          <span class='badge'>${reactionsCount.sad}</span>
+          <label class='reaction-label'>Sad</label>
+          <span class='reaction-counter'>${reactionsCount.sad}</span>
         </div>
         <div class='reaction-icon emoji-laugh'
              data-reaction='laugh'
              onclick='reactToPost(this)'>
-          <label>Laugh</label>
-          <span class='badge'>${reactionsCount.laugh}</span>
+          <label class='reaction-label'>Laugh</label>
+          <span class='reaction-counter'>${reactionsCount.laugh}</span>
         </div>
         <div class='reaction-icon emoji-yikes'
              data-reaction='yikes'
              onclick='reactToPost(this)'>
-          <label>Yikes</label>
-          <span class='badge'>${reactionsCount.yikes}</span>
+          <label class='reaction-label'>Yikes</label>
+          <span class='reaction-counter'>${reactionsCount.yikes}</span>
         </div>
       </div>
     </a>
@@ -252,7 +258,9 @@ function getProperFileTag(fileType, fileBlobKey) {
     `.trim();
   } else if (fileType === 'image') {
     fileTag = `
-    <img class='post-file' src='${src}'>
+    <div class='card-image'>
+      <img src='${src}'>
+    </div>
     `.trim();
   }
 
@@ -290,7 +298,7 @@ async function reactToPost(element) { // eslint-disable-line no-unused-vars
   });
   const newCount = await response.json();
   if (newCount.length !== 0) {
-    element.querySelector('span.badge').innerText = newCount;
+    element.querySelector('span.reaction-counter').innerText = newCount;
   }
 }
 

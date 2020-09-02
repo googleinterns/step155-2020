@@ -18,7 +18,9 @@ import static org.junit.Assert.assertEquals;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -66,8 +68,17 @@ public final class FetchSchoolPostsTest extends Mockito {
     post2 = new Entity("Post");
     post3 = new Entity("Post");
     post1.setProperty("schoolName", school1);
+    post1.setProperty("upvotes", 0L);
+    post1.setProperty("text", new Text("Default Text"));
+    post1.setProperty("reactions", new EmbeddedEntity());
     post2.setProperty("schoolName", school2);
+    post2.setProperty("upvotes", 0L);
+    post2.setProperty("text", new Text("Default Text"));
+    post2.setProperty("reactions", new EmbeddedEntity());
     post3.setProperty("schoolName", school3);
+    post3.setProperty("upvotes", 0L);
+    post3.setProperty("text", new Text("Default Text"));
+    post3.setProperty("reactions", new EmbeddedEntity());
     datastore.put(post1);
     datastore.put(post2);
     datastore.put(post3);
@@ -99,7 +110,7 @@ public final class FetchSchoolPostsTest extends Mockito {
     when(response.getWriter()).thenReturn(printWriter);
 
     Gson gson = new Gson();
-    String expectedJson = gson.toJson(Arrays.asList(post1));
+    String expectedJson = gson.toJson(Arrays.asList(PostService.convertEntityToPost(post1)));
 
     new FetchSchoolPostsServlet().doGet(request, response);
     verify(printWriter).println(expectedJson);

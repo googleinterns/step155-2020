@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../styles/maps_style.css">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:100,200,300" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -14,22 +15,33 @@
     <script src=" ../scripts/mapsScriptTemplate.js"></script>
   </head>
   <body onload="createMap();">
-    <div id="content">
-      <h1>Maps Feature</h1>
-      <p>This is the maps feature of our capstone project.</p>
-      <br>
-      <div id="map"></div>
-      <br>
-      <h3>Don't see your college?</h3>
-      </p>Submit your school's info below and it'll appear on the map!</p>
-      <div id="school-submission">
-        <input id="school-search" type="text"
-               placeholder="Search for your school here">
-        <br>
-        <input id="school-submit" type="submit"> 
+    <div class="row">
+      <div class="col s3">
+        <!-- Navigation Sidebar -->
       </div>
-      <br>
-      <p>Click <a href="../index.html">here</a> to navigate back to the homepage.</p>
+      <div id="content" class="col s9">
+        <h1>Explore college updates with Google Maps!</h1>
+        <br>
+        <h4>What's happening at your school?</h4>
+        <p>
+          From university news to posts from fellow students, stay informed and browse the latest updates from
+          colleges across North America by clicking the pins on the map.
+        </p>
+        <br>
+        <div id="map"></div>
+        <br>
+        <h4>Don't see your college?</h4>
+        <p>Enter your school below to have it appear on the map!</p>
+        <div id="school-submission">
+          <em class="material-icons prefix">search</em>
+          <input id="school-search" type="text"
+            placeholder="Search for your school here">
+          <br>
+          <input id="school-submit" type="submit" class="button" value="SUBMIT">
+        </div>
+        <br>
+        <p>Click <a href="../index.html">here</a> to navigate back to the homepage.</p>
+      </div>
     </div>
   </body>
 </html>

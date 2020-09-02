@@ -17,9 +17,11 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.google.sps.data.Authenticator;
+import com.google.sps.data.Post;
 import com.google.sps.data.PostService;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +42,9 @@ public class FetchSchoolPostsServlet extends HttpServlet {
     }
 
     PostService postService = new PostService.Builder().build();
-    List<Entity> posts = postService.getPostsBySchool(schoolName);
+    List<Entity> postEntities = postService.getPostsBySchool(schoolName);
+    List<Post> posts =
+        postEntities.stream().map(PostService::convertEntityToPost).collect(Collectors.toList());
     response.setContentType("application/json");
     response.getWriter().println(new Gson().toJson(posts));
   }
