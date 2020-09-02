@@ -12,6 +12,7 @@ limitations under the License.
 --%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%! BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(); %>
 
 <!DOCTYPE html>
@@ -20,6 +21,9 @@ limitations under the License.
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 <link rel="stylesheet" href="../styles/posts.css">
+<script src="../scripts/comments.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <body onload="loadPosts(); loadSchools()">
   <div class="row">
     <div class="col s3" id="sidebar"></div>
@@ -74,12 +78,22 @@ limitations under the License.
   </div>
   <c:if test="${not empty categories}">
     <script>
-      alert("${categories}");
+      alert("${resources}");
+      loadResources(`${resources}`);
+      // ; loadResources(<%= request.getAttribute("resources") %>)
     </script>
-  </c:if>
-  <c:if test="${not empty score}">
-    <script>
-      alert("${score}");
-    </script>
-  </c:if>
+  </c:if> 
+  
+  <div class="container">
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <h4>Modal Header</h4>
+        <p>A bunch of text</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+      </div>
+    </div>
+  </div>
 </body>
