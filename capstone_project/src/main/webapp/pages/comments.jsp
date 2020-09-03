@@ -18,6 +18,7 @@ limitations under the License.
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="../scripts/comments.js"></script>
 <script src="../templates/sidebar_template.js"></script>
+<script src="../scripts/search_bar.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 <link rel="stylesheet" href="../styles/posts.css">
@@ -28,6 +29,19 @@ limitations under the License.
       <side-bar id="sidebar" class="valign-wrapper"></side-bar>
     </div>
     <div class="col s6">
+      <div id="search-bar">
+        <nav id="search-bar-nav">
+          <div class="nav-wrapper">
+            <div class="input-field" id="search-bar-bg">
+              <input onkeypress="searchPosts()" id="post-search-bar" type="search" required>
+              <label class="label-icon" for="post-search-bar">
+                <i class="material-icons" id="search-icon">search</i>
+              </label>
+              <i class="material-icons">close</i>
+            </div>
+          </div>
+        </nav>
+      </div>
       <div class="center" id="sort-types">
         <button class="btn" onclick="sortPosts('new')">New</button>
         <button class="btn" onclick="sortPosts('top')">Top</button>
