@@ -80,7 +80,6 @@ public final class ResourceTest {
     Filter categoryFilter =
         new FilterPredicate("category", FilterOperator.EQUAL, PREEXISTING_CATEGORY);
     Query query = new Query("Resource").setFilter(categoryFilter);
-    PreparedQuery results = datastore.prepare(query);
     int actual = datastore.prepare(query).countEntities(FetchOptions.Builder.withDefaults());
     assertEquals(expected, actual);
   }
