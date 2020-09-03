@@ -62,7 +62,7 @@ public final class PostFilterTest extends Mockito {
 
   private final String SEARCH_QUERY = "Test University";
   private final String DEFAULT_STRING = "Some Text";
-  private final String NON_EXISTANT_QUERY = "DNE";
+  private final String NON_EXISTENT_QUERY = "DNE";
   private Entity post1;
   private Entity post2;
   private Entity post3;
@@ -110,7 +110,7 @@ public final class PostFilterTest extends Mockito {
   @Test
   public void returnsEmptyArrayOnNoMatchForQuery() {
     List<Entity> expected = Arrays.asList();
-    List<Entity> actual = PostFilter.filterPosts(NON_EXISTANT_QUERY);
+    List<Entity> actual = PostFilter.filterPosts(NON_EXISTENT_QUERY);
     assertEquals(expected, actual);
   }
 
