@@ -12,17 +12,20 @@ limitations under the License.
 --%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%! BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(); %>
 
 <!DOCTYPE html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="../scripts/comments.js"></script>
+<script src="../scripts/analysis.js"></script>
 <script src="../templates/sidebar_template.js"></script>
 <script src="../scripts/search_bar.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 <link rel="stylesheet" href="../styles/posts.css">
 <link rel="stylesheet" href="../styles/sidebar.css">
+
 <body onload="loadPosts(); loadSchools()">
   <div class="row">
     <div class="col s3" id="sidebar-column">
@@ -90,14 +93,23 @@ limitations under the License.
       </form>
     </div>
   </div>
-  <c:if test="${not empty categories}">
-    <script>
-      alert("${categories}");
-    </script>
-  </c:if>
-  <c:if test="${not empty score}">
-    <script>
-      alert("${score}");
-    </script>
-  </c:if>
+  <div class="container">
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <h4>Would any of these resources help you?</h4>
+        <p id="modal-text"></p>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Thanks!</a>
+      </div>
+    </div>
+  </div>
+  <c:if test="${not empty resources}">
+    <c:forEach items="${resources}" var="resource">
+      <script>
+        loadResources("${resource}");
+      </script>
+    </c:forEach>
+  </c:if> 
 </body>

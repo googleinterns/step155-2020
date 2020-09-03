@@ -123,6 +123,7 @@ public class PostAnalysis {
     } else {
       calculateSentimentScore(message);
     }
+    setResources();
   }
 
   /**
@@ -173,17 +174,24 @@ public class PostAnalysis {
 
   /**
    * Retrieves resources from datastore that are associated with the categories that the message
-   * falls under, and stores them in the "resources" field
+   * falls under
    */
-  public void setResources() {
-    Filter categoryFilter;
-    Query query;
-    for (String category : categories) {
-      // find Resource entity that is associated with the specific category
-      categoryFilter = new FilterPredicate("category", FilterOperator.EQUAL, category);
-      query = new Query("Resource").setFilter(categoryFilter);
-      Entity resource = datastore.prepare(query).asSingleEntity();
+  private void setResources() {
+    if (!categories.isEmpty()) {
+      for (String category : categories) {
+        queryDatastoreForEntity(category);
+      }
+    } else if (sentimentScore < -0.5) {
+      queryDatastoreForEntity("General");
+    }
+  }
 
+  /** Creates filter for querying the datastore and and stores resources in the "resources" field */
+  private void queryDatastoreForEntity(String category) {
+    Filter categoryFilter = new FilterPredicate("category", FilterOperator.EQUAL, category);
+    Query query = new Query("Resource").setFilter(categoryFilter);
+    Entity resource = datastore.prepare(query).asSingleEntity();
+    if (resource != null) {
       // add to resources for the message
       String resourceUrl = (String) resource.getProperty("resource");
       resources.add(resourceUrl);
