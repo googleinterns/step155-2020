@@ -17,7 +17,7 @@
  * contain the search query.
  */
 async function searchPosts() { // eslint-disable-line no-unused-vars
-  if (event.code !== "Enter") {
+  if (event.code !== 'Enter') {
     return;
   }
 
