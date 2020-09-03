@@ -17,8 +17,7 @@
  * contain the search query.
  */
 async function searchPosts() { // eslint-disable-line no-unused-vars
-  // Only run when the user presses enter.
-  if (event.keyCode !== 13) {
+  if (event.code !== "Enter") {
     return;
   }
 

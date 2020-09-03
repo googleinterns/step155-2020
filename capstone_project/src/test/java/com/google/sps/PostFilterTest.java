@@ -43,6 +43,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
+/**
+ * Tests the PostFilter methods. It tests to ensure that posts are retrieved in the expected
+ * priority order. In this class, the text "Test University" is set on three Post entities, all in
+ * different locations. The posts should be retrieved in an order where if the query is found in the
+ * school name, it is a top result. If it is found in a title of a post, it is second most top
+ * result. Lastly, if it is in the text content of a post, it will be the least top result.
+ */
 @RunWith(JUnit4.class)
 public final class PostFilterTest extends Mockito {
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -55,6 +62,7 @@ public final class PostFilterTest extends Mockito {
 
   private final String SEARCH_QUERY = "Test University";
   private final String DEFAULT_STRING = "Some Text";
+  private final String NON_EXISTANT_QUERY = "DNE";
   private Entity post1;
   private Entity post2;
   private Entity post3;
@@ -102,7 +110,7 @@ public final class PostFilterTest extends Mockito {
   @Test
   public void returnsEmptyArrayOnNoMatchForQuery() {
     List<Entity> expected = Arrays.asList();
-    List<Entity> actual = PostFilter.filterPosts("DNE");
+    List<Entity> actual = PostFilter.filterPosts(NON_EXISTANT_QUERY);
     assertEquals(expected, actual);
   }
 
@@ -117,7 +125,7 @@ public final class PostFilterTest extends Mockito {
     List<Entity> postEntities = Arrays.asList(post3, post2, post1);
     List<Post> expectedPostOrder =
         postEntities.stream().map(PostService::convertEntityToPost).collect(Collectors.toList());
-    String expectedGson = new Gson().toJson(expectedPostOrder);
-    verify(printWriter).println(expectedGson);
+    String expectedJson = new Gson().toJson(expectedPostOrder);
+    verify(printWriter).println(expectedJson);
   }
 }
