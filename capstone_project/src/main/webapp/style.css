@@ -1,6 +1,132 @@
-#content {
-  width: 100%;
+html,
+body {
+  background-color: rgb(94, 191, 204);
+  background-image: linear-gradient(rgb(94, 191, 204), rgb(169, 212, 216), rgb(233, 229, 226)) !important;
+  color: #282828 !important;
   height: 100%;
   margin: 0;
+  width: 100%;
 }
 
+a.button {
+  background-color: #282828 !important;
+  border: none !important;
+  color: #fff !important;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 15px 32px !important;
+  margin-top: 30px !important;
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+  text-decoration: none !important;
+}
+
+a.button:hover {
+  transform: scale(1.05) !important;
+}
+
+.center {
+  align-items: center;
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center;
+  width: 100% !important;
+}
+
+h1 {
+  font: 150px 'Raleway', sans-serif !important;
+  margin-bottom: 0 !important;
+}
+
+h6 {
+  font: 30px 'Raleway', sans-serif !important;
+  text-align: center !important;
+}
+
+#header {
+  display: flex !important;
+  justify-content: space-around !important;
+  width: 100% !important;
+}
+
+hr {
+  background: #282828 !important;
+  height: 5px !important;
+  width: 50% !important;
+}
+
+#intro {
+  align-items: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 65% !important;
+}
+
+section {
+  align-items: center !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  min-height: 100% !important;
+  width: 100% !important;
+}
+
+/* Typewriter effect on "UniSocial" */
+
+@keyframes typewriter {
+  0%,
+  100% {
+    width: 0;
+  }
+
+  20%,
+  80% {
+    width: 4.5em;
+  }
+}
+
+@keyframes caret {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.typewrite {
+  animation: typewriter;
+  animation-duration: 7s;
+  animation-timing-function: steps(13, end);
+  animation-iteration-count: infinite;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
+}
+
+.typewrite::after {
+  animation: caret infinite;
+  animation-duration: 0.75s;
+  animation-timing-function: steps(1, end);
+  content: "|";
+  position: absolute;
+  right: 0;
+}
+
+/* Fade-in effect on buttons */
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
