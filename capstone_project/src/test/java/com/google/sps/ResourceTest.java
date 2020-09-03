@@ -57,7 +57,7 @@ public final class ResourceTest {
   @Test
   public void checkAddPreexistingResourcesToEmptyDatastore() {
     // call addPreexistingResources(), which adds 4 hardcoded Resources to Datastore
-    Resource.addPreexistingResources();
+    Resource.addPreexistingResources(datastore);
 
     int expected = NUM_PREEXISTING;
     int actual =
@@ -71,8 +71,8 @@ public final class ResourceTest {
     // category as a preexisting Resource found in Resource.java, then call
     // addPreexistingResources(). Check that only one Resource with the shared
     // category name was added.
-    Resource.storeResource(PREEXISTING_CATEGORY, "");
-    Resource.addPreexistingResources();
+    Resource.storeResource(datastore, PREEXISTING_CATEGORY, "");
+    Resource.addPreexistingResources(datastore);
 
     // Check that there is only one Resource Entity with the category name in Datastore
     int expected = 1;

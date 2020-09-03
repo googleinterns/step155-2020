@@ -42,12 +42,10 @@ public class PostServlet extends HttpServlet {
       return;
     }
 
-    Resource.addPreexistingResources();
-
-    response.setContentType("application/json;");
-    Query query = new Query("Post");
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Resource.addPreexistingResources(datastore);
+
+    Query query = new Query("Post");
 
     List<Entity> postEntities =
         datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
@@ -55,6 +53,7 @@ public class PostServlet extends HttpServlet {
         postEntities.stream().map(PostService::convertEntityToPost).collect(Collectors.toList());
 
     Gson gson = new Gson();
+    response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(posts));
   }
 

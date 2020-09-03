@@ -15,7 +15,6 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -28,10 +27,8 @@ import java.util.Map;
 
 /** Associates a category, from the Natural Language API taxonomy, to a link to a resource */
 public class Resource {
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
   /** Creates a Resource Entity with category and resource properties and stores it in Datastore */
-  public static void storeResource(String category, String resource) {
+  public static void storeResource(DatastoreService datastore, String category, String resource) {
     Entity resourceEntity = new Entity("Resource");
     resourceEntity.setProperty("category", category);
     resourceEntity.setProperty("resource", resource);
@@ -39,7 +36,7 @@ public class Resource {
   }
 
   /** Adds hard-coded Resources to Datastore */
-  public static void addPreexistingResources() {
+  public static void addPreexistingResources(DatastoreService datastore) {
     Map<String, String> resourceMap = new HashMap<>();
     resourceMap.put("Depression", "Crisis Textline");
     resourceMap.put("Troubled Relationships", "Love is Respect");
@@ -51,10 +48,7 @@ public class Resource {
       Query query = new Query("Resource").setFilter(categoryFilter);
       PreparedQuery results = datastore.prepare(query);
       if (results.countEntities(FetchOptions.Builder.withDefaults()) == 0) {
-        Entity resourceEntity = new Entity("Resource");
-        resourceEntity.setProperty("category", category);
-        resourceEntity.setProperty("resource", resourceMap.get(category));
-        datastore.put(resourceEntity);
+        storeResource(datastore, category, resourceMap.get(category));
       }
     }
   }
