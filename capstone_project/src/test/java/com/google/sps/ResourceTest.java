@@ -15,7 +15,6 @@
 package com.google.sps;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -58,45 +57,31 @@ public final class ResourceTest {
 
   @Test
   public void checkAddPreexistingResourcesToEmptyDatastore() {
-    // First check that there are no Resources in Datastore
-    int expected = 0;
-    assertTrue(equalsDatastoreCount(expected));
-
     // call addPreexistingResources(), which adds 4 hardcoded Resources to Datastore
     Resource.addPreexistingResources();
 
-    expected = NUM_PREEXISTING;
-    assertTrue(equalsDatastoreCount(expected));
+    int expected = NUM_PREEXISTING;
+    int actual =
+        datastore.prepare(new Query("Resource")).countEntities(FetchOptions.Builder.withDefaults());
+    assertEquals(expected, actual);
   }
 
   @Test
   public void checkAddPreexistingResourcesNoDuplicates() {
     // First add a Resource Entity to Datastore that shares the same
     // category as a preexisting Resource found in Resource.java, then call
-    // addPreexistingResources(). If the duplicate is added, the count would be greater
-    // than the number of preexisting Resources
+    // addPreexistingResources(). Check that only one Resource with the shared
+    // category name was added.
     Resource.storeResource(PREEXISTING_CATEGORY, "");
-    assertTrue(equalsDatastoreCount(1));
-
     Resource.addPreexistingResources();
 
-    int expected = NUM_PREEXISTING;
-    assertTrue(equalsDatastoreCount(expected));
-
     // Check that there is only one Resource Entity with the category name in Datastore
-    expected = 1;
+    int expected = 1;
     Filter categoryFilter =
         new FilterPredicate("category", FilterOperator.EQUAL, PREEXISTING_CATEGORY);
     Query query = new Query("Resource").setFilter(categoryFilter);
     PreparedQuery results = datastore.prepare(query);
     int actual = datastore.prepare(query).countEntities(FetchOptions.Builder.withDefaults());
     assertEquals(expected, actual);
-  }
-
-  private Boolean equalsDatastoreCount(int expected) {
-    return expected
-        == datastore
-            .prepare(new Query("Resource"))
-            .countEntities(FetchOptions.Builder.withDefaults());
   }
 }

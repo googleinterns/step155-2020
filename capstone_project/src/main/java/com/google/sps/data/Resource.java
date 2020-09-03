@@ -30,7 +30,7 @@ import java.util.Map;
 public class Resource {
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  /** Creates an Entity with parameters and stores it in Datastore */
+  /** Creates a Resource Entity with category and resource properties and stores it in Datastore */
   public static void storeResource(String category, String resource) {
     Entity resourceEntity = new Entity("Resource");
     resourceEntity.setProperty("category", category);

@@ -177,7 +177,7 @@ public class PostAnalysis {
    * falls under
    */
   private void setResources() {
-    if (categories.size() > 0) {
+    if (!categories.isEmpty()) {
       for (String category : categories) {
         queryDatastoreForEntity(category);
       }

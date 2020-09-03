@@ -51,8 +51,7 @@ limitations under the License.
         </div>
         <div  class="input-field">
           <em class="material-icons prefix">school</em>
-          <!-- COME BACK AND MAKE THIS REQUIRED -->
-          <select name="schools" id="schools">
+          <select name="schools" id="schools" required>
             <option value="" disabled selected>---</option>
           </select>
           <label for="schools">Select a School:</label>
@@ -80,7 +79,6 @@ limitations under the License.
       </form>
     </div>
   </div>
-  
   <div class="container">
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
@@ -93,7 +91,6 @@ limitations under the License.
       </div>
     </div>
   </div>
-
   <c:if test="${not empty resources}">
     <c:forEach items="${resources}" var="resource">
       <script>
@@ -101,5 +98,4 @@ limitations under the License.
       </script>
     </c:forEach>
   </c:if> 
-
 </body>
