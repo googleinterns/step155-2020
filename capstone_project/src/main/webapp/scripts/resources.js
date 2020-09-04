@@ -17,12 +17,12 @@ function displaySubmissions() { // eslint-disable-line no-unused-vars
   fetch('/get-resources')
       .then((response) => response.json())
       .then((submissions) => {
-    const resContainer = document.getElementById('submissions-container');
-    for (const submission of submissions) {
-      const resource = createResource(submission);
-      resContainer.appendChild(resource);
-    }
-  });
+        const resContainer = document.getElementById('submissions-container');
+        for (const submission of submissions) {
+          const resource = createResource(submission);
+          resContainer.appendChild(resource);
+        }
+      });
 }
 
 /**
@@ -32,7 +32,7 @@ function displaySubmissions() { // eslint-disable-line no-unused-vars
  */
 function createResource(resource) { // eslint-disable-line no-unused-vars
   const resourceMap = resource.propertyMap;
-  let node = document.createElement('li');
+  const node = document.createElement('li');
   const text = `
   <a href="${resourceMap.resourceURL}">${resourceMap.resourceName}</a>
    (${resourceMap.category})
