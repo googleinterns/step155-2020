@@ -1,0 +1,37 @@
+body {
+  background-color: #282828 !important;
+  color: #fff !important;
+  font-family: 'Quicksand', sans-serif !important;
+  margin-right: 20px !important;
+}
+
+p {
+  font-size: 20px !important;
+}
+
+li {
+  font-size: 20px !important;
+}
+
+.material-icons {
+  color: #49c4d4;
+}
+
+.resource {
+  color: #fff;
+  max-width: 512px;
+}
+
+.category-name {
+  color: #fff;
+  max-width: 512px;
+}
+
+.resource-name {
+  color: #fff;
+  max-width: 512px;
+}
+
+input {
+  color: #fff !important;
+}
