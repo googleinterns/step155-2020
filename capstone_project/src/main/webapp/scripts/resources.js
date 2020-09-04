@@ -14,22 +14,28 @@
 
 /** Displays user submissions of resources */
 function displaySubmissions() { // eslint-disable-line no-unused-vars
-  fetch('/get-resources').then(response => response.json()).then((submissions) => {
-    const submissionContainer = document.getElementById("submissions-container");
+  fetch('/get-resources')
+      .then((response) => response.json())
+      .then((submissions) => {
+    const resContainer = document.getElementById('submissions-container');
     for (const submission of submissions) {
-        const resourceSubmission = createResourceSubmission(submission);
-        submissionContainer.appendChild(resourceSubmission);
+      const resource = createResource(submission);
+      resContainer.appendChild(resource);
     }
   });
 }
 
-/** Creates an <li> element */
-function createResourceSubmission(resourceSubmission) { // eslint-disable-line no-unused-vars
-  const submissionMap = resourceSubmission.propertyMap;
-  var node = document.createElement('li');
+/**
+ * Returns an HTML Li Element representing the resource.
+ * @param {Object} resource - ResourceSubmission Entity to display
+ * @return {LiElement} node - an HTML Li Element
+ */
+function createResource(resource) { // eslint-disable-line no-unused-vars
+  const resourceMap = resource.propertyMap;
+  let node = document.createElement('li');
   const text = `
-  <a href="${submissionMap.resourceURL}">${submissionMap.resourceName}</a>
-   (${submissionMap.category})
+  <a href="${resourceMap.resourceURL}">${resourceMap.resourceName}</a>
+   (${resourceMap.category})
   `.trim();
   node.innerHTML = text;
   return node;
